@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
+import userService from "./users.service";
 
 class UserController {
   async getAllUsers(req: Request, res: Response) {
     try {
+      const result = await userService.getAll(req);
       return res.status(200).json({
-        message: "success",
+        message: result,
       });
     } catch (error) {
       console.error(error);
