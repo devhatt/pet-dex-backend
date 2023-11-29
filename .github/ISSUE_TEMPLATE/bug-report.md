@@ -1,9 +1,9 @@
 ---
 name: Bug report
-about: Create a new bug report to help us improve Octopost
-title: ''
-labels: ''
-assignees: ''
+about: Create a new bug report to help us improve Petdex
+title: ""
+labels: ""
+assignees: ""
 ---
 
 **Describe the bug**
