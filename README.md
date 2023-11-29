@@ -36,8 +36,6 @@ Se você é um entusiasta de pets, desenvolvedor em ascensão ou simplesmente qu
    - Aprimore a documentação existente ou crie tutoriais para ajudar outros desenvolvedores.
 3. **Testes:**
    - Ajude a garantir a estabilidade do aplicativo testando as novas funcionalidades e relatar problemas.
-4. **Design:**
-   - Contribua com ideias de design para tornar o PetDex ainda mais atraente e intuitivo.
 
 ## Contato
 
