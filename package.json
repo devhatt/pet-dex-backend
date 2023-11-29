@@ -9,6 +9,9 @@
     "start": "ts-node src/infra/server.ts",
     "dev": "nodemon --exec ts-node src/infra/server.ts",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./src/test/e2e/jest.e2e.json",
     "prepare": "husky install"
   },
   "dependencies": {
