@@ -8,6 +8,8 @@
 
 Bem-vindo ao PetDex, o aplicativo que transforma a experiência de ser tutor de pets em algo único e interativo. Com o PetDex, os tutores podem catalogar e compartilhar informações sobre seus pets, semelhante à famosa Pokedex, mas para animais de estimação.
 
+![alecell_a_pet_with_a_smartphone_cute_vector_happy_puppy_focusin_955a8091-177d-405f-924f-bd37a57499fd-removebg-preview](https://github.com/devhatt/pet-dex-backend/assets/76929097/e1521917-2177-44eb-a267-e46e89ca6459)
+
 ## Funcionalidades Principais
 
 ### 1. **Catálogo de Pets Personalizado**
