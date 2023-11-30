@@ -1,4 +1,12 @@
-# PetDex - Seu Catálogo de Pets Virtual
+<p align="center">
+  <a href="#1-catálogo-de-pets-personalizado">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/devhatt/pet-dex-backend/assets/76929097/e1521917-2177-44eb-a267-e46e89ca6459">
+      <img src="https://github.com/devhatt/pet-dex-backend/assets/76929097/e1521917-2177-44eb-a267-e46e89ca6459" height="128">
+    </picture>
+    <h1 align="center">PetDex - Seu Catálogo de Pets Virtual</h1>
+  </a>
+</p>
 
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
@@ -7,8 +15,6 @@
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D.svg)](https://swagger.io/)
 
 Bem-vindo ao PetDex, o aplicativo que transforma a experiência de ser tutor de pets em algo único e interativo. Com o PetDex, os tutores podem catalogar e compartilhar informações sobre seus pets, semelhante à famosa Pokedex, mas para animais de estimação.
-
-![alecell_a_pet_with_a_smartphone_cute_vector_happy_puppy_focusin_955a8091-177d-405f-924f-bd37a57499fd-removebg-preview](https://github.com/devhatt/pet-dex-backend/assets/76929097/e1521917-2177-44eb-a267-e46e89ca6459)
 
 ## Funcionalidades Principais
 
