@@ -7,11 +7,11 @@
     },
     "servers": [
       {
-        "url": "http://localhost:300/v1/api",
+        "url": "http://localhost:3001/v1/api",
         "description": "API de test"
       },
       {
-        "url": "http://localhost:300/v1/api",
+        "url": "http://localhost:3001/v1/api",
         "description": "URL de produção"
       }
     ],
