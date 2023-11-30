@@ -3,6 +3,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import express from "express";
 import api from "../api/index";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocs from "./swagger.json";
+
 class App {
   public express: express.Application;
 
@@ -23,6 +26,8 @@ class App {
 
   private setRoutes(): void {
     this.express.use("/api", api);
+    this.express.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
   }
 
   private catchErrors(): void {}
