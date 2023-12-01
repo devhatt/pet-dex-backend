@@ -1,0 +1,72 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PETDEX API",
+    "description": "PETDEX é um projeto que você consegue pesquisar e exibir informações básicas sobre os Pets, como se fosse uma Pokedédex",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001/v1/api",
+      "description": "API de test"
+    },
+    {
+      "url": "http://localhost:3001/v1/api",
+      "description": "URL de produção"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Consulta de Usuarios",
+        "description": "Esta rota faz a busca dos Usuarios",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "400": {
+      "description": "Usuario nao existe"
+    },
+    "200": {
+      "description": "OK",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
