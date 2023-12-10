@@ -57,4 +57,4 @@ Bem-vindo à PetDex! Agradecemos pelo seu interesse em contribuir para este proj
 
 Agradecemos por ajudar a melhorar a PetDex! Sua dedicação à qualidade e inovação é fundamental para o sucesso contínuo deste projeto.
 
-Se você tiver alguma dúvida ou precisar de ajuda em qualquer etapa do processo de contribuição, sinta-se à vontade para criar um problema (issue) ou entrar em contato com a equipe de mantenedores.[Discord](discord.gg/fhutDfuDa9)
+Se você tiver alguma dúvida ou precisar de ajuda em qualquer etapa do processo de contribuição, sinta-se à vontade para criar um problema (issue) ou entrar em contato com a equipe de mantenedores.[Discord](discord.gg/3gsMAEumEd)
