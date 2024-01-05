@@ -6,4 +6,9 @@ services:
     ports:
       - '3306:3306'
     environment:
+      MARIADB_USER: maria
+      MARIADB_PASSWORD: 123
       MARIADB_ROOT_PASSWORD: 123
+      MARIADB_DATABASE: petdex
+    volumes:
+      - ./data:/var/lib/mysql/data
