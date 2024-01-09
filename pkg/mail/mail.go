@@ -5,28 +5,14 @@ import (
 	"net/smtp"
 )
 
-type EmailSendRequest struct {
-	From    string
-	To      []string
-	Html    string
-	Subject string
-	Cc      []string
-	Bcc     []string
-	ReplyTo []string
-}
-
 type Mail struct {
 	Config *Config
 }
 
-func NewMail() *Mail {
+func NewMail(config *Config) *Mail {
 	return &Mail{
-		Config: &Config{},
+		Config: config,
 	}
-}
-
-func (m *Mail) SetConfig(config *Config) {
-	m.Config = config
 }
 
 func (m *Mail) Send(request *EmailSendRequest) error {
