@@ -5,9 +5,16 @@ import (
 	"net/http"
 
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/usecase"
 )
 
-func HandleCreateOng(w http.ResponseWriter, r *http.Request) {
+var httphandler = struct{ UseCase usecase.OngUseCase }{}
+
+func NewHttpHandler(onguse usecase.OngUseCase) {
+	httphandler.UseCase = onguse
+}
+
+func CreateOng(w http.ResponseWriter, r *http.Request) {
 	var ong entity.Ong
 	err := json.NewDecoder(r.Body).Decode(&ong)
 	if err != nil {

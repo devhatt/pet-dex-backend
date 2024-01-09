@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
 )
@@ -14,6 +15,10 @@ func NewOngUseCase(repo interfaces.OngRepository) *OngUseCase {
 }
 
 func (c *OngUseCase) Save(ong entity.Ong) error {
-	c.repo.Save(ong)
+	err := c.repo.Save(ong)
+	if err != nil {
+		err := fmt.Errorf("error saving ong: %w", err)
+		return err
+	}
 	return nil
 }
