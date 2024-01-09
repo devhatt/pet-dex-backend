@@ -1,14 +1,16 @@
 package routes
 
 import (
+	ongcontroller "pet-dex-backend/v2/api/controllers/ong"
 	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type Controllers struct {
-	FindPetController *petcontroller.FindPetController
-	ExampleController *petcontroller.ExampleController
+	FindPetController   *petcontroller.FindPetController
+	ExampleController   *petcontroller.ExampleController
+	CreateOngController *ongcontroller.CreateOngController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
@@ -20,7 +22,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/ong", func(r chi.Router) {
-
+			r.Post("/", controllers.CreateOngController.CreateOng)
 		})
 
 		r.Route("/user", func(r chi.Router) {
