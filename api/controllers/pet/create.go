@@ -6,7 +6,6 @@ import (
 )
 
 func CreatePet(w http.ResponseWriter, r *http.Request) {
-	// Exemplo de Criacao Pet Use Case
 	usecase := NewPetUseCase(db.NewPetRepository())
 
 	err := usecase.Do()
