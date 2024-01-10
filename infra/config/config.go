@@ -11,11 +11,13 @@ var (
 	err error
 )
 
-func InitConfigs() {
+func InitConfigs() *sql.DB {
 	db, err = sql.Open("mysql", "maria:123@tcp(localhost:3306)/petdex")
 	if err != nil {
 		panic(err)
 	}
+
+	return db
 }
 
 func GetDB() *sql.DB {
