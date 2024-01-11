@@ -15,7 +15,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 	c.Route("/api", func(r chi.Router) {
 		r.Route("/pets", func(r chi.Router) {
-			r.Get("/", petcontroller.ExampleController)
+			r.Get("/", controllers.ExampleController.ExampleHandler)
 			r.Patch("/{id}", controllers.FindPetController.FindPet)
 		})
 
