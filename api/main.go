@@ -8,10 +8,14 @@ import (
 )
 
 func main() {
+	env, err := config.LoadEnv(".")
+	if err != nil {
+		panic(err)
+	}
 	config.InitConfigs()
 
 	router := routes.InitializeRouter()
 
-	fmt.Println("running on port 8000")
-	http.ListenAndServe(":8000", router)
+	fmt.Printf("running on port %v", env.PORT)
+	http.ListenAndServe(env.PORT, router)
 }

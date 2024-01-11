@@ -2,19 +2,19 @@ package config
 
 import "github.com/spf13/viper"
 
-var cfg *config
+var env *envconfig
 
-type config struct {
+type envconfig struct {
 	DBUrl string `mapstructure:"DATABASE_URL"`
 	PORT  string `mapstructure:"PORT"`
 	ENV   string `mapstructure:"ENVIROMENT"`
 }
 
-func GetConfig() *config {
-	return cfg
+func GetEnvConfig() *envconfig {
+	return env
 }
 
-func LoadConfig(path string) (*config, error) {
+func LoadEnv(path string) (*envconfig, error) {
 	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
@@ -26,10 +26,10 @@ func LoadConfig(path string) (*config, error) {
 		panic(err)
 	}
 
-	err = viper.Unmarshal(&cfg)
+	err = viper.Unmarshal(&env)
 	if err != nil {
 		panic(err)
 	}
 
-	return cfg, nil
+	return env, nil
 }

@@ -12,7 +12,9 @@ var (
 )
 
 func InitConfigs() *sql.DB {
-	db, err = sql.Open("mysql", "maria:123@tcp(localhost:3306)/petdex")
+	env := GetEnvConfig()
+
+	db, err = sql.Open("mysql", env.DBUrl)
 	if err != nil {
 		panic(err)
 	}
