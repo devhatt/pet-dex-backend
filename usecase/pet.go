@@ -14,8 +14,8 @@ func NewPetUseCase(repo interfaces.PetRepository) (*PetUseCase) {
 	return &PetUseCase{repo : repo}
 }
 
-func (c *PetUseCase) Find(id int) (*entity.Pet, error) {
-	pet, err := c.repo.Find(id)
+func (c *PetUseCase) FindById(id int) (*entity.Pet, error) {
+	pet, err := c.repo.FindById(id)
 	if err != nil {
 		fmt.Printf("failed")
 		return nil, err

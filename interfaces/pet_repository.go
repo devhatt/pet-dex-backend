@@ -5,6 +5,6 @@ import (
 )
 
 type PetRepository interface {
-	Find(id int) (*entity.Pet, error)
+	FindById(id int) (*entity.Pet, error)
 	Save(pet entity.Pet) error
 }
