@@ -11,11 +11,10 @@ type PetRepository struct {
 	dbconnection *sql.DB 
 }
 
-func NewPetRepository(db *sql.DB) interfaces.PetRepository {
-	
+func NewPetRepository(db *sql.DB) interfaces.PetRepository {	
 	return &PetRepository{
 		dbconnection: db,
-}
+	}
 }
 
 func (pr *PetRepository) Save(entity.Pet) error {
