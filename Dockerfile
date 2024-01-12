@@ -6,6 +6,7 @@ RUN mkdir -p /go/api
 WORKDIR /go/api
 
 COPY go.mod go.sum ./
+COPY /api ./
 RUN go mod download
 
 COPY /api ./
