@@ -17,7 +17,7 @@ func NewOngUseCase(repo interfaces.OngRepository) *OngUseCase {
 func (c *OngUseCase) Save(ong entity.Ong) error {
 	err := c.repo.Save(ong)
 	if err != nil {
-		err := fmt.Errorf("error saving ong: %w", err)
+		fmt.Errorf("error saving ong: %w", err)
 		return err
 	}
 	return nil

@@ -1,17 +1,17 @@
 package entity
 
 type Ong struct {
-	CNPJ         string      `json:"cnpj"`
-	Email        string      `json:"email"`
-	Localizacao  Location    `json:"localizacao"`
-	Imagem       string      `json:"imagem"`
-	RedesSociais SocialMedia `json:"redes_sociais"`
+	CNPJ        string      `json:"cnpj"`
+	Email       string      `json:"email"`
+	Location    Location    `json:"location"`
+	Imagem      string      `json:"image"`
+	SocialMedia SocialMedia `json:"socialmedia"`
 }
 
 type Location struct {
-	Endereco string `json:"endereco"`
-	Cidade   string `json:"cidade"`
-	Estado   string `json:"estado"`
+	Address string `json:"address"`
+	City    string `json:"city"`
+	State   string `json:"state"`
 }
 
 type SocialMedia struct {

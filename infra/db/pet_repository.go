@@ -9,8 +9,13 @@ import (
 
 type PetRepository struct {
 	dbconnection *sql.DB
+	dbconnection *sql.DB
 }
 
+func NewPetRepository(db *sql.DB) interfaces.PetRepository {
+	return &PetRepository{
+		dbconnection: db,
+	}
 func NewPetRepository(db *sql.DB) interfaces.PetRepository {
 	return &PetRepository{
 		dbconnection: db,

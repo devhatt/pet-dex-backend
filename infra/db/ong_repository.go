@@ -17,8 +17,8 @@ func NewOngRepository(db *sql.DB) interfaces.OngRepository {
 	}
 }
 
-func (or *OngRepository) Save(entity.Ong) error {
-	rows, err := or.dbconnection.Query("INSERT INTO ongs (cnpj, email, endereco, cidade, estado, imagem, facebook, instagram) VALUES (?,?,?,?,?,?,?,?)")
+func (or *OngRepository) Save(ong entity.Ong) error {
+	rows, err := or.dbconnection.Query("INSERT INTO ongs (cnpj, email, address, city, state, image, facebook, instagram) VALUES (?,?,?,?,?,?,?,?)", ong.CNPJ, ong.Email, ong.Location.Address, ong.Location.City, ong.Location.State, ong.Imagem, ong.SocialMedia.Facebook, ong.SocialMedia.Instagram)
 	if err != nil && err != sql.ErrConnDone {
 		err = fmt.Errorf("error inserting ong: %w", err)
 		return err

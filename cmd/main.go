@@ -15,6 +15,7 @@ func main() {
 	}
 	defer dbc.Close()
 	pr := db.NewPetRepository(dbc)
+
 	adoptUseCase := usecase.NewAdoptUseCase(pr)
 
 	adoptUseCase.Do()
