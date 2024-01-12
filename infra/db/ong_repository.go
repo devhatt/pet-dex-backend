@@ -11,13 +11,10 @@ type OngRepository struct {
 	dbconnection *sql.DB
 }
 
-func NewOngRepository() interfaces.OngRepository {
-	db, err := sql.Open("mysql", "root:root@tcp")
-	if err != nil {
-		panic(err)
+func NewOngRepository(db *sql.DB) interfaces.OngRepository {
+	return &OngRepository{
+		dbconnection: db,
 	}
-	defer db.Close()
-	return &OngRepository{}
 }
 
 func (or *OngRepository) Save(entity.Ong) error {
