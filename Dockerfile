@@ -9,11 +9,7 @@ COPY go.mod go.sum ./
 COPY /api ./
 RUN go mod download
 
-COPY /api ./
-
 RUN CGO_ENABLED=0 GOOS=linux go build -o pet-dex-api
-
-EXPOSE 8080
 
 FROM alpine:latest
 WORKDIR /
