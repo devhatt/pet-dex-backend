@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"pet-dex-backend/v2/infra/db"
-	"pet-dex-backend/v2/usecase/pet"
+	"pet-dex-backend/v2/usecase"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,7 +15,7 @@ func main() {
 	}
 	defer dbc.Close()
 	pr := db.NewPetRepository(dbc)
-	adoptUseCase := pet.NewAdoptUseCase(pr)
+	adoptUseCase := usecase.NewAdoptUseCase(pr)
 
 	adoptUseCase.Do()
 }
