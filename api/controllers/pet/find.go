@@ -1,6 +1,7 @@
 package petcontroller
 
 import (
+	"encoding/json"
 	"net/http"
 	"pet-dex-backend/v2/usecase"
 	"strconv"
@@ -26,12 +27,12 @@ func (cntrl *FindPetController) FindPet(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Erro ao converter 'id' para int", http.StatusBadRequest)
 		return
 	}
-	_, err := cntrl.UseCase.FindById(id)
+	pet, err := cntrl.UseCase.FindById(id)
 
 	if err != nil {
 		w.WriteHeader(400)
 		return
 	}
-
-	w.WriteHeader(201)
+	json.NewEncoder(w).Encode(&pet)
+	w.WriteHeader(http.StatusOK)
 }

@@ -4,9 +4,9 @@ type Pet struct {
 	Id int
 	Name string
 	Image string
-	LocalizationOng []string
-	PetDetails PetDetails
-	SocialMediaOng []string
+	LocalizationOng string
+	PetDetails string
+	SocialMediaOng string
 }
 type PetDetails struct {
 	Breed string
