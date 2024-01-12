@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/routes"
@@ -18,21 +17,21 @@ func main() {
 	}
 
 	database := config.InitConfigs()
-	config.RunMigrations(database)
 	dbPetRepo := db.NewPetRepository(database)
 
 	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
-	findPetUseCase := usecase.NewPetUseCase(dbPetRepo)
+	updateUseCase := usecase.NewUpdateUseCase(dbPetRepo)
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
-	findPetController := petcontroller.NewFindPetController(findPetUseCase)
+	updateController := petcontroller.NewUpdatePetController(updateUseCase)
 
 	contrllers := routes.Controllers{
-		FindPetController: findPetController,
-		ExampleController: exampleController,
+		ExampleController:    exampleController,
+		UpdateSizeController: updateController,
 	}
+
 	router := routes.InitializeRouter(contrllers)
 
-	fmt.Printf("running on port %v \n", env.PORT)
-	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
+	fmt.Printf("running on port %v", env.PORT)
+	http.ListenAndServe(":"+env.PORT, router)
 }

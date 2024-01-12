@@ -22,7 +22,7 @@ func (pr *PetRepository) Save(entity.Pet) error {
 }
 
 func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
-	var petToRecive entity.Pet 
+	var petToRecive entity.Pet
 	err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
 	if err != nil && err != sql.ErrNoRows {
 		err = fmt.Errorf("error finding pet %d: %w", id, err)
@@ -31,4 +31,13 @@ func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
 	}
 	pet = &petToRecive
 	return
+}
+
+func (pr *PetRepository) UpdateSize(id int, newSize string) error {
+	_, err := pr.dbconnection.Exec("UPDATE PetDetails SET size=? WHERE pet_id=?", newSize, id)
+	if err != nil {
+		fmt.Errorf("error updating size for pet %d: %w \n", id, err)
+		return err
+	}
+	return nil
 }

@@ -1,15 +1,15 @@
 package entity
 
 type Pet struct {
-	Id int
-	Name string
-	Image string
-	LocalizationOng string
-	PetDetails string
-	SocialMediaOng string
+	Id              int        `json:"id"`
+	Name            string     `json:"nome"`
+	Image           string     `json:"image"`
+	LocalizationOng []string   `json:"localizationOng"`
+	PetDetails      PetDetails `json:"details"`
+	SocialMediaOng  []string   `json:"socialmediaOng"`
 }
 type PetDetails struct {
-	Breed string
-	Age int
-	Size string
+	Breed string `json:"bree"`
+	Age   int    `json:"age"`
+	Size  string `json:"size"`
 }
