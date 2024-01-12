@@ -7,4 +7,5 @@ import (
 type PetRepository interface {
 	FindById(id int) (*entity.Pet, error)
 	Save(pet entity.Pet) error
+	UpdateSize(id int, newSize string) error
 }

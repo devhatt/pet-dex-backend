@@ -22,17 +22,21 @@ func main() {
 
 	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
 	findPetUseCase := usecase.NewPetUseCase(dbPetRepo)
+	updateUseCase := usecase.NewUpdateUseCase(dbPetRepo)
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
 	findPetController := petcontroller.NewFindPetController(findPetUseCase)
+	updateController := petcontroller.NewUpdatePetController(updateUseCase)
 
 	contrllers := routes.Controllers{
 		FindPetController: findPetController,
-		ExampleController: exampleController,
+		ExampleController:    exampleController,
+		UpdateSizeController: updateController,
 	}
 
 	router := routes.InitializeRouter(contrllers)
 
 	fmt.Printf("running on port %v", env.PORT)
-	log.Fatal(http.ListenAndServe(env.PORT, router))
+
+	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
 }

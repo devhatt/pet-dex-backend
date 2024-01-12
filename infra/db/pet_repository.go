@@ -12,6 +12,7 @@ type PetRepository struct {
 }
 
 func NewPetRepository(db *sql.DB) interfaces.PetRepository {
+
 	return &PetRepository{
 		dbconnection: db,
 	}
