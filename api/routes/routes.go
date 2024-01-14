@@ -7,16 +7,20 @@ import (
 )
 
 type Controllers struct {
-	PetController *controllers.PetController
+	PetController          *controllers.PetController
+	ExampleController      *petcontroller.ExampleController
+	FindPetController      *petcontroller.FindPetController
+	ListUserPetsController *petcontroller.ListUserPetsController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
 
-	c.Route("/api/v1", func(r chi.Router) {
-		r.Route("/users", func(r chi.Router) {
-			r.Route("/{userID}/pets", func(r chi.Router) {
-				r.Patch("/{petID}", controllers.PetController.Update)
-			})
+	c.Route("/api", func(r chi.Router) {
+		r.Route("/pets", func(r chi.Router) {
+			r.Get("/", controllers.ExampleController.ExampleHandler)
+			r.Get("/{id}", controllers.FindPetController.FindPet)
+			r.Get("/my-pets/{userID}", controllers.ListUserPetsController.ListUserPets)
+			r.Patch("/{petID}", controllers.PetController.Update)
 		})
 
 		r.Route("/ong", func(r chi.Router) {

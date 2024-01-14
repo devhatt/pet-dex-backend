@@ -55,16 +55,26 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 	return nil
 }
 
-// Incomplete method
 func (pr *PetRepository) ListUserPets(userID int) (pets []*entity.Pet, err error) {
-	// I am using * in the query because I don't know what needs to be fetched from the table
-	rows, err := pr.dbconnection.Query("SELECT * FROM pet WHERE userID = ?", userID)
-	if err != nil && err != sql.ErrNoRows {
-		err = fmt.Errorf("error finding pets from user %d: %w", userID, err)
-		fmt.Println(err)
-		return nil, err
+	var petToReceive entity.Pet
+
+	rows, err := pr.dbconnection.Query("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE user_id = ?", userID)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving pets for user %d: %w", userID, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&petToReceive.Id, &petToReceive.Name, &petToReceive.LocalizationOng, &petToReceive.PetDetails, &petToReceive.SocialMediaOng)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning pet row: %w", err)
+		}
+		pets = append(pets, &petToReceive)
 	}
 
-	fmt.Println(rows)
-	return pets, err
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over pet rows: %w", err)
+	}
+
+	return pets, nil
 }
