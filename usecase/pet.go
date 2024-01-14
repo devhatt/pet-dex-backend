@@ -41,3 +41,12 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 	return &petToUpdate.Size != nil && petToUpdate.Size != "" &&
 		(petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
+
+func (c *PetUseCase) ListUserPets(userID int) ([]*entity.Pet, error) {
+	pets, err := c.repo.ListUserPets(userID)
+	if err != nil {
+		fmt.Printf("failed")
+		return nil, err
+	}
+	return pets, nil
+}

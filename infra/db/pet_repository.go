@@ -54,3 +54,17 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 
 	return nil
 }
+
+// Incomplete method
+func (pr *PetRepository) ListUserPets(userID int) (pets []*entity.Pet, err error) {
+	// I am using * in the query because I don't know what needs to be fetched from the table
+	rows, err := pr.dbconnection.Query("SELECT * FROM pet WHERE userID = ?", userID)
+	if err != nil && err != sql.ErrNoRows {
+		err = fmt.Errorf("error finding pets from user %d: %w", userID, err)
+		fmt.Println(err)
+		return nil, err
+	}
+
+	fmt.Println(rows)
+	return pets, err
+}
