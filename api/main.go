@@ -23,14 +23,14 @@ func main() {
 	updateUseCase := usecase.NewUpdateUseCase(dbPetRepo)
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
-	updateController := petcontroller.NewUpdatePetController(updateUseCase)
+	updatePetSizeController := petcontroller.NewUpdatePetController(updateUseCase)
 
-	contrllers := routes.Controllers{
-		ExampleController:    exampleController,
-		UpdateSizeController: updateController,
+	controllers := routes.Controllers{
+		ExampleController:       exampleController,
+		UpdatePetSizeController: updatePetSizeController,
 	}
 
-	router := routes.InitializeRouter(contrllers)
+	router := routes.InitializeRouter(controllers)
 
 	fmt.Printf("running on port %v", env.PORT)
 	http.ListenAndServe(":"+env.PORT, router)
