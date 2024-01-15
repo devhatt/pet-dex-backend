@@ -15,15 +15,15 @@ func NewMail(config *Config) *Mail {
 	}
 }
 
-func (m *Mail) Send(request *EmailSendRequest) error {
-	emailValid := ValidateEmail(request.From)
+func (m *Mail) Send(message *Message) error {
+	emailValid := ValidateEmail(message.From)
 	if !emailValid {
 		return fmt.Errorf("invalid email address")
 	}
 
 	auth := m.Config.setAuth()
-	hostAddres := m.Config.HostAddress + ":" + m.Config.HostPort
-	err := smtp.SendMail(hostAddres, auth, request.From, request.To, []byte(request.Html))
+	hostAddres := fmt.Sprintf("%s:%s", m.Config.HostAddress, ":"+m.Config.HostPort)
+	err := smtp.SendMail(hostAddres, auth, message.From, message.To,  message.ToBytes())
 	if err != nil {
 		return err
 	}
