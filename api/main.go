@@ -25,16 +25,16 @@ func main() {
 	updateUseCase := usecase.NewUpdateUseCase(dbPetRepo)
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
+	updatePetSizeController := petcontroller.NewUpdatePetController(updateUseCase)
 	findPetController := petcontroller.NewFindPetController(findPetUseCase)
-	updateController := petcontroller.NewUpdatePetController(updateUseCase)
 
-	contrllers := routes.Controllers{
+	controllers := routes.Controllers{
 		FindPetController: findPetController,
-		ExampleController:    exampleController,
-		UpdateSizeController: updateController,
+		ExampleController:       exampleController,
+		UpdatePetSizeController: updatePetSizeController,
 	}
 
-	router := routes.InitializeRouter(contrllers)
+	router := routes.InitializeRouter(controllers)
 
 	fmt.Printf("running on port %v", env.PORT)
 

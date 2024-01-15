@@ -21,12 +21,12 @@ func NewUpdatePetController(usecase *usecase.UpdateUseCase) *UpdatePetController
 }
 func (cntrl *UpdatePetController) UpdateSize(w http.ResponseWriter, r *http.Request) {
 
-	id := chi.URLParam(r, "id")
-	convetedId, convertErr := strconv.Atoi(id)
+	paramId := chi.URLParam(r, "id")
+	convetedId, convertErr := strconv.Atoi(paramId)
 	if convertErr != nil {
 		fmt.Errorf("Invalid id!")
 		w.WriteHeader(400)
-		w.Write([]byte("Invalid Id"))
+		return
 	}
 
 	var petToBeUpdated entity.Pet
@@ -34,8 +34,7 @@ func (cntrl *UpdatePetController) UpdateSize(w http.ResponseWriter, r *http.Requ
 	err := cntrl.UseCase.Do(convetedId, petToBeUpdated.PetDetails.Size)
 
 	if err != nil {
-		fmt.Errorf("Invalid id!")
 		w.WriteHeader(400)
-		w.Write([]byte("Invalid Id"))
+		return
 	}
 }
