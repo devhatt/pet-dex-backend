@@ -2,6 +2,7 @@ package routes
 
 import (
 	"pet-dex-backend/v2/api/controllers"
+	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 
 	"github.com/go-chi/chi/v5"
 )

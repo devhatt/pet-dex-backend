@@ -7,6 +7,7 @@ import (
 	"pet-dex-backend/v2/api/errors"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/usecase"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -56,6 +57,22 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
+}
 
+func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "userID")
+
+	userID, erro := strconv.Atoi(idStr)
+	if erro != nil {
+		http.Error(w, "Error converting 'userID' to int", http.StatusBadRequest)
+		return
+	}
+	pets, err := cntrl.UseCase.ListUserPets(userID)
+
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+	json.NewEncoder(w).Encode(&pets)
 	w.WriteHeader(http.StatusOK)
 }

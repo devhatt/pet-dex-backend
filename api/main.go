@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"pet-dex-backend/v2/api/controllers"
+	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/routes"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/infra/db"
@@ -22,13 +23,13 @@ func main() {
 	dbPetRepo := db.NewPetRepository(database)
 
 	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
-	findPetUseCase := usecase.NewPetUseCase(dbPetRepo)
+	petUseCase := usecase.NewPetUseCase(dbPetRepo)
 
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	petController := controllers.NewPetController(petUsecase)
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
-	findPetController := petcontroller.NewFindPetController(findPetUseCase)
-	listUserPetsController := petcontroller.NewListUserPetsController(findPetUseCase)
+	findPetController := petcontroller.NewFindPetController(petUseCase)
+	petController := controllers.NewPetController(petUseCase)
 
 	contrllers := routes.Controllers{
 		FindPetController:      findPetController,
