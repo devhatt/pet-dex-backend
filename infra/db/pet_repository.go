@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
+	"strings"
 )
 
 type PetRepository struct {

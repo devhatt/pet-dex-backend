@@ -7,9 +7,9 @@ import (
 )
 
 type Controllers struct {
-	FindPetController *petcontroller.FindPetController
 	UpdatePetController *petcontroller.UpdatePetController
-	ExampleController    *petcontroller.ExampleController
+	ExampleController   *petcontroller.ExampleController
+	FindPetController *petcontroller.FindPetController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
