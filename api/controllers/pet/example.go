@@ -2,14 +2,14 @@ package petcontroller
 
 import (
 	"net/http"
-	"pet-dex-backend/v2/usecase"
+	"pet-dex-backend/v2/usecase/pet"
 )
 
 type ExampleController struct {
-	Usecase *usecase.ExampleUsecase
+	Usecase *pet.ExampleUsecase
 }
 
-func NewExampleController(usecase *usecase.ExampleUsecase) *ExampleController {
+func NewExampleController(usecase *pet.ExampleUsecase) *ExampleController {
 	return &ExampleController{
 		Usecase: usecase,
 	}

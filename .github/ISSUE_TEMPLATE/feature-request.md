@@ -22,7 +22,7 @@ A clear and short description of the feature.
   <summary>
     <b>Use Case</b>
   </summary>
-  
+
 [Explain the use for this feature and how it might benefits the project.]
 </details>
 
@@ -54,6 +54,6 @@ A clear and short description of the feature.
   <summary>
     <b>Additional Information</b>
   </summary>
-  
+
 [Provide any additional information, such as context that might be relevant to the implementation of this specific feature.]
 </details>

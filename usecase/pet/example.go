@@ -1,4 +1,4 @@
-package usecase
+package pet
 
 import (
 	"pet-dex-backend/v2/interfaces"

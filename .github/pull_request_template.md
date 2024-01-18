@@ -1,4 +1,4 @@
-Closes 
+Closes
 
 <details open> 
   <summary>
@@ -14,13 +14,14 @@ N/A
   </summary>
 
 - **Description**
-N/A
+  N/A
 
 - **Cause**
-N/A
+  N/A
 
 - **Solution**
-N/A
+  N/A
+
 </details>
 
 <details> 
@@ -42,9 +43,10 @@ N/A
     <b>Checklist</b>
   </summary>
 
-  - [ ] Issue linked
-  - [ ] Build working correctly
-  - [ ] Tests created
+- [ ] Issue linked
+- [ ] Build working correctly
+- [ ] Tests created
+
 </details>
 
 <details> 

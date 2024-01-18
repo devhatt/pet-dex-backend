@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
+	"strings"
 )
 
 type PetRepository struct {
@@ -33,11 +34,26 @@ func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
 	return
 }
 
-func (pr *PetRepository) UpdateSize(id int, newSize string) error {
-	_, err := pr.dbconnection.Exec("UPDATE PetDetails SET size=? WHERE pet_id=?", newSize, id)
+func (pr *PetRepository) Update(id int, updatePayload map[string]interface{}) error {
+	query := "UPDATE PetDetails SET "
+	values := []interface{}{}
+
+	for key, value := range updatePayload {
+		query += key + "=?, "
+		values = append(values, value)
+	}
+
+	query = strings.TrimSuffix(query, ", ")
+
+	query += " WHERE pet_id=?"
+
+	values = append(values, id)
+
+	_, err := pr.dbconnection.Exec(query, values...)
 	if err != nil {
-		fmt.Errorf("error updating size for pet %d: %w \n", id, err)
+		fmt.Errorf("error updating pet %d: %w \n", id, err)
 		return err
 	}
+
 	return nil
 }

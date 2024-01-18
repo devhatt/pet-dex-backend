@@ -1,4 +1,4 @@
-package usecase
+package pet
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ type AdoptUseCase struct {
 	petRepository interfaces.PetRepository
 }
 
-func NewAdoptUseCase (p interfaces.PetRepository) *AdoptUseCase {
+func NewAdoptUseCase(p interfaces.PetRepository) *AdoptUseCase {
 	return &AdoptUseCase{
 		petRepository: p,
 	}
 }
 
-func (auc *AdoptUseCase) Do () {
+func (auc *AdoptUseCase) Do() {
 	fmt.Println("Hello, World!")
 }
