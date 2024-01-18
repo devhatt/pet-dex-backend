@@ -14,7 +14,7 @@ func NewUpdateUseCase(repo interfaces.PetRepository) *UpdateUseCase {
 	return &UpdateUseCase{repo: repo}
 }
 
-func (c *UpdateUseCase) Do(id int, petToUpdate *entity.Pet) (err error) {
+func (c *UpdateUseCase) Do(id string, petToUpdate *entity.Pet) (err error) {
 
 	updateValues := map[string]interface{}{}
 
