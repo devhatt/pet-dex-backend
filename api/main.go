@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	ongcontroller "pet-dex-backend/v2/api/controllers/ong"
+	ongcontroller "pet-dex-backend/v2/api/controllers"
 	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/routes"
 	"pet-dex-backend/v2/infra/config"
