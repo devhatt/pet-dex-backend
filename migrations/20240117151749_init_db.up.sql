@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users
     phone      varchar(12)  not null
 );
 
-CREATE TABLE IF NOT EXISTS legal_person
+CREATE TABLE IF NOT EXISTS legal_persons
 (
     id             uuid primary key default UUID(),
     userId         uuid REFERENCES users (id),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS legal_person
     adoptionPolicy longtext    not null
 );
 
-CREATE TABLE IF NOT EXISTS person
+CREATE TABLE IF NOT EXISTS persons
 (
     id        uuid primary key default UUID(),
     userId    uuid REFERENCES users (id),
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS pets
     id                  uuid primary key default UUID(),
     name                varchar(128)                      not null,
     breedId             uuid                              not null,
-    size                varchar(20) check(size IN ('small', 'medium', 'large')),
+    size                varchar(20) check(size IN ('small', 'medium', 'large', 'giant')),
     weight              decimal(3, 2)                     not null,
     adoptionDate        date                              not null,
     birthdate           date                              not null,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS pets
     userId              uuid REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS pet_image
+CREATE TABLE IF NOT EXISTS pets_image
 (
     id    uuid primary key default UUID(),
     url   varchar(255),
@@ -74,18 +74,17 @@ CREATE TABLE IF NOT EXISTS breeds
     id              uuid primary key default UUID(),
     name            varchar(255)                      not null,
     specie          varchar(255)                      not null,
-    size            varchar(20) check(size IN ('small', 'medium', 'large')),
+    size            varchar(20) check(size IN ('small', 'medium', 'large', 'giant')),
     description     varchar(255),
-    height          int,
-    weight          int,
+    height          varchar(10),
+    weight          varchar(10),
     physicalCharact varchar(255),
     disposition     varchar(255),
     idealFor        varchar(255),
     fur             varchar(50),
     imgUrl          varchar(255),
-    weather         varchar(255),                      -- ?
-    climate         varchar(255),                      -- ?
-    dressage        varchar(255),                      -- ?
-    orgId           uuid REFERENCES legal_person (id), -- ? (FIFE, FCI)
+    weather         varchar(255),
+    dressage        varchar(255),
+    orgId           varchar(25),
     lifeExpectancy  varchar(30)
 );
