@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users
     phone      varchar(12)  not null
 );
 
-CREATE TABLE IF NOT EXISTS legal_persons
+CREATE TABLE IF NOT EXISTS legal_personss
 (
     id             uuid primary key default UUID(),
     userId         uuid REFERENCES users (id),
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS legal_persons
     adoptionPolicy longtext    not null
 );
 
+CREATE TABLE IF NOT EXISTS persons
 CREATE TABLE IF NOT EXISTS persons
 (
     id        uuid primary key default UUID(),
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS pets
     id                  uuid primary key default UUID(),
     name                varchar(128)                      not null,
     breedId             uuid REFERENCES breeds(id)  not null,
-    size                varchar(20) check(size IN ('small', 'medium', 'large', 'giant')),
+    size                varchar(20) check(size IN ('small', 'medium', 'large', 'giant', 'giant')),
     weight              decimal(3, 2)                     not null,
     adoptionDate        date                              not null,
     birthdate           date                              not null,
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS pets
     userId              uuid REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS pets_image
+CREATE TABLE IF NOT EXISTS petss_image
 (
     id    uuid primary key default UUID(),
     url   varchar(255),
