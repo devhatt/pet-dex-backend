@@ -18,6 +18,7 @@ func main() {
 	}
 
 	database := config.InitConfigs()
+	config.RunMigrations(database)
 	dbPetRepo := db.NewPetRepository(database)
 
 	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
@@ -30,9 +31,8 @@ func main() {
 		FindPetController: findPetController,
 		ExampleController: exampleController,
 	}
-
 	router := routes.InitializeRouter(contrllers)
 
-	fmt.Printf("running on port %v", env.PORT)
-	log.Fatal(http.ListenAndServe(env.PORT, router))
+	fmt.Printf("running on port %v \n", env.PORT)
+	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
 }
