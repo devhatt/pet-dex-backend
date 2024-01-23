@@ -5,9 +5,10 @@ import "github.com/spf13/viper"
 var env *envconfig
 
 type envconfig struct {
-	DBUrl string `mapstructure:"DATABASE_URL"`
-	PORT  string `mapstructure:"PORT"`
-	ENV   string `mapstructure:"ENVIROMENT"`
+	DBUrl           string `mapstructure:"DATABASE_URL"`
+	PORT            string `mapstructure:"PORT"`
+	ENV             string `mapstructure:"ENVIROMENT"`
+	MIGRATIONS_PATH string `mapstructure:"MIGRATIONS_PATH"`
 }
 
 func GetEnvConfig() *envconfig {

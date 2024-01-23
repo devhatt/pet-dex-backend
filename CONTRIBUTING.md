@@ -58,3 +58,17 @@ Bem-vindo à PetDex! Agradecemos pelo seu interesse em contribuir para este proj
 Agradecemos por ajudar a melhorar a PetDex! Sua dedicação à qualidade e inovação é fundamental para o sucesso contínuo deste projeto.
 
 Se você tiver alguma dúvida ou precisar de ajuda em qualquer etapa do processo de contribuição, sinta-se à vontade para criar um problema (issue) ou entrar em contato com a equipe de mantenedores.[Discord](discord.gg/3gsMAEumEd)
+
+
+## Banco de dados
+Usamos MariaDB como Banco de Dados Relacional da aplicação. 
+#### Migration
+Uma migration é um script que é usado para alterar o esquema de um banco de dados, como a adição de novas tabelas, colunas ou índices.
+Para criar uma migration, você deve criar um novo arquivo com a extensão .sql. O conteúdo do arquivo deve conter as alterações que você deseja fazer no esquema do banco de dados.
+Os arquivos .sql deverão ser criados com o comando abaixo:
+```bash
+   make create-migrations title=titulo_da_migration
+```
+Ao executar o comando, serão criados dois arquivos na pasta /migrations com sufixos `.up` e `.down`. Os arquivos `.up` representam as alterações desejadas que serão aplicados no banco de dados, enquantos os arquivos `.down`, representa a ação de rollback referente ao que foi executado no arquivos `.up` de mesma versão.
+
+Obs.: crie os script SQL de forma idempotente e caso o seu script tenha vários comando ou consultas, considere colocar isso em uma transação.
