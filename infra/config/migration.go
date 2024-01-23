@@ -21,7 +21,7 @@ func RunMigrations(dbconnection *sql.DB) {
 	error := m.Up()
 
 	if error != nil && error != migrate.ErrNoChange {
-		fmt.Println("Error trying execute migrations UP: %v \n", error)
+		fmt.Printf("Error trying execute migrations UP: %v \n", error)
 		panic(error)
 	}
 

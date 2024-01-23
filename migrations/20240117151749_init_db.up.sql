@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS users
     type       varchar(20) check(type IN ('fisica', 'juridica')),
     documentId varchar(14),
     avatarUrl  varchar(255),
-    avatarUrl  varchar(255),
     email      varchar(128) not null,
     phone      varchar(12)  not null
 );
@@ -20,7 +19,6 @@ CREATE TABLE IF NOT EXISTS legal_personss
     adoptionPolicy longtext    not null
 );
 
-CREATE TABLE IF NOT EXISTS persons
 CREATE TABLE IF NOT EXISTS persons
 (
     id        uuid primary key default UUID(),
