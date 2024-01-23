@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS addresses
     latitude  float,
     longitute float
 );
+
 CREATE TABLE IF NOT EXISTS breeds
 (
     id              uuid primary key default UUID(),
@@ -62,8 +63,8 @@ CREATE TABLE IF NOT EXISTS pets
 (
     id                  uuid primary key default UUID(),
     name                varchar(128)                      not null,
-    breedId             uuid REFERENCES breeds(id)  not null,
-    size                varchar(20) check(size IN ('small', 'medium', 'large', 'giant', 'giant')),
+    breedId             uuid REFERENCES breeds(id),
+    size                varchar(20) check(size IN ('small', 'medium', 'large', 'giant')),
     weight              decimal(3, 2)                     not null,
     adoptionDate        date                              not null,
     birthdate           date                              not null,
