@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users
     phone      varchar(12)  not null
 );
 
-CREATE TABLE IF NOT EXISTS legal_personss
+CREATE TABLE IF NOT EXISTS legal_persons
 (
     id             uuid primary key default UUID(),
     userId         uuid REFERENCES users (id),
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS pets
     userId              uuid REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS petss_image
+CREATE TABLE IF NOT EXISTS pets_image
 (
     id    uuid primary key default UUID(),
     url   varchar(255),
