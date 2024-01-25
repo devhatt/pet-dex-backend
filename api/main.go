@@ -28,7 +28,7 @@ func main() {
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
 	findPetController := petcontroller.NewFindPetController(findPetUseCase)
-	createOngController := ongcontroller.NewCreateOngcontroller(createOngUseCase)
+	createOngController := ongcontroller.NewOngcontroller(createOngUseCase)
 
 	contrllers := routes.Controllers{
 		FindPetController:   findPetController,

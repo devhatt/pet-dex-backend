@@ -6,6 +6,7 @@ type Ong struct {
 	Location    Location    `json:"location"`
 	Imagem      string      `json:"image"`
 	SocialMedia SocialMedia `json:"socialmedia"`
+	UserID      string      `json:"userid"`
 }
 
 type Location struct {

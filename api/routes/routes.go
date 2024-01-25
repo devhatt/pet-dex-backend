@@ -10,7 +10,7 @@ import (
 type Controllers struct {
 	FindPetController   *petcontroller.FindPetController
 	ExampleController   *petcontroller.ExampleController
-	CreateOngController *ongcontroller.CreateOngController
+	CreateOngController *ongcontroller.OngController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
