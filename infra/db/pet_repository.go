@@ -13,7 +13,6 @@ type PetRepository struct {
 }
 
 func NewPetRepository(db *sql.DB) interfaces.PetRepository {
-
 	return &PetRepository{
 		dbconnection: db,
 	}
@@ -23,7 +22,7 @@ func (pr *PetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
+func (pr *PetRepository) FindById(id string) (pet *entity.Pet, err error) {
 	/*var petToRecive entity.Pet
 	err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
 	if err != nil && err != sql.ErrNoRows {
