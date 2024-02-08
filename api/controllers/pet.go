@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"pet-dex-backend/v2/api/errors"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/usecase"
@@ -25,29 +26,33 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	petID := chi.URLParam(r, "petID")
 
-	if userID == "" || petID == "" {
-		err := fmt.Errorf("Invalid request: userID and petID must be provided in the URL parameters")
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
 	var petToBeUpdated entity.Pet
 	err := json.NewDecoder(r.Body).Decode(&petToBeUpdated)
 
 	if err != nil {
-		http.Error(w, "Invalid request: could not decode pet data from request body", http.StatusBadRequest)
+		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
+		err := errors.InvalidBody{
+			Description: "The body is invalid",
+		}
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 
-	// Specifically extract the size to be updated
 	newSize := petToBeUpdated.Size
 
 	usecase := usecase.NewUpdateUseCase(pc.repository)
-	err = usecase.Do(petID, userID, &entity.Pet{Size: newSize}) // Pass only the size for update
+	err = usecase.Do(petID, userID, &entity.Pet{Size: newSize})
 
 	if err != nil {
 		fmt.Printf("Error in usecase: %s", err.Error())
-		http.Error(w, "Failed to update pet size", http.StatusInternalServerError)
+
+		err := errors.ErrInvalidID{
+			Description: err.Error(),
+		}
+
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 

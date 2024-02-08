@@ -22,18 +22,18 @@ func (pr *PetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-//	func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
-//		var petToRecive entity.Pet
-//		err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
-//		if err != nil && err != sql.ErrNoRows {
-//			err = fmt.Errorf("error finding pet %d: %w", id, err)
-//			fmt.Println(err)
-//			return nil, err
-//		}
-//		pet = &petToRecive
-//		return
-//	}
-func (pr *PetRepository) Update(id string, updatePayload map[string]interface{}) error {
+func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
+	//var petToRecive entity.Pet
+	//err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
+	//if err != nil && err != sql.ErrNoRows {
+	//	err = fmt.Errorf("error finding pet %d: %w", id, err)
+	//	fmt.Println(err)
+	//	return nil, err
+	//}
+	//pet = &petToRecive
+	return
+}
+func (pr *PetRepository) Update(petID string, userID string, updatePayload map[string]interface{}) error {
 	query := "UPDATE pets SET "
 	values := []interface{}{}
 
@@ -43,13 +43,13 @@ func (pr *PetRepository) Update(id string, updatePayload map[string]interface{})
 	}
 
 	query = strings.TrimSuffix(query, ", ")
-	query += " WHERE id=?"
-	values = append(values, id)
+	query += " WHERE id=? AND userId=?"
+	values = append(values, petID)
+	values = append(values, userID)
 
 	_, err := pr.dbconnection.Exec(query, values...)
 	if err != nil {
-		fmt.Errorf("error updating pet %d: %w \\n", id, err)
-		return err
+		return fmt.Errorf("error updating pet: %w \\n", err)
 	}
 
 	return nil
