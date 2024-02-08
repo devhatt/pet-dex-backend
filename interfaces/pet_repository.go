@@ -1,7 +1,10 @@
 package interfaces
 
-import "pet-dex-backend/v2/entity"
+import (
+	"pet-dex-backend/v2/entity"
+)
 
 type PetRepository interface {
-	Save(entity.Pet) (error)
+	FindById(id int) (*entity.Pet, error)
+	Save(pet entity.Pet) error
 }
