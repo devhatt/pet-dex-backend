@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="60426b02-7543-4f80-b366-039b3aba7413" name="Changes" comment="feat:Criacao dos testes do updateSize" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/.asdf/installs/golang/1.21.5/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2bRnZU7fWLbOzqRbXyVtkFG7RPf" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Test.TestUpdateUseCaseDo in pet-dex-backend/v2/usecase.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestUpdateUseCaseDoPetNotFound in pet-dex-backend/v2/usecase.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestUpdateUseCaseDoPetNotFound in pet-dex-backend/v2/usecase/pet.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestUpdateUseCaseDoRepositoryError in pet-dex-backend/v2/usecase.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestUpdateUseCaseisValidSize in pet-dex-backend/v2/usecase.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestUseCaseDoInvalidSize in pet-dex-backend/v2/usecase/pet.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.go test pet-dex-backend/v2/usecase.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.go test pet-dex-backend/v2/usecase/pet.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;issue-43&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/iamsim&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;,
+      &quot;mariadb&quot;
+    ]
+  }
+}</component>
+  <component name="RunManager" selected="Go Test.go test pet-dex-backend/v2/usecase">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUpdateUseCaseDo in pet-dex-backend/v2/usecase" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$/usecase" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pet-dex-backend/v2/usecase" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUpdateUseCaseDo\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUpdateUseCaseDoPetNotFound in pet-dex-backend/v2/usecase" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$/usecase" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pet-dex-backend/v2/usecase" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUpdateUseCaseDoPetNotFound\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUpdateUseCaseDoRepositoryError in pet-dex-backend/v2/usecase" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$/usecase" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pet-dex-backend/v2/usecase" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUpdateUseCaseDoRepositoryError\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUpdateUseCaseisValidSize in pet-dex-backend/v2/usecase" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$/usecase" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pet-dex-backend/v2/usecase" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUpdateUseCaseisValidSize\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test pet-dex-backend/v2/usecase" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pet-dex-backend" />
+      <working_directory value="$PROJECT_DIR$/usecase" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="pet-dex-backend/v2/usecase" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.go test pet-dex-backend/v2/usecase" />
+        <item itemvalue="Go Test.TestUpdateUseCaseisValidSize in pet-dex-backend/v2/usecase" />
+        <item itemvalue="Go Test.TestUpdateUseCaseDoRepositoryError in pet-dex-backend/v2/usecase" />
+        <item itemvalue="Go Test.TestUpdateUseCaseDo in pet-dex-backend/v2/usecase" />
+        <item itemvalue="Go Test.TestUpdateUseCaseDoPetNotFound in pet-dex-backend/v2/usecase" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-e58f7cfedaf7-155fe4b6e3a0-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-233.14015.113" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat:Criacao do endpoint de atualizar size do pet" />
+    <MESSAGE value="fix:Correcao do endpoint de atualizar siza incluindo a mensagem de erro no retorno" />
+    <MESSAGE value="feat:Criacao dos testes do updateSize" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat:Criacao dos testes do updateSize" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>
