@@ -7,4 +7,5 @@ import (
 type PetRepository interface {
 	FindById(id int) (*entity.Pet, error)
 	Save(pet entity.Pet) error
+	Update(userID string, petID string, updatePayload map[string]interface{}) error
 }

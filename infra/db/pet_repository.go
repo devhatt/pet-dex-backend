@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
+	"strings"
 )
 
 type PetRepository struct {
@@ -22,8 +23,8 @@ func (pr *PetRepository) Save(entity.Pet) error {
 }
 
 func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
-	var petToRecive entity.Pet 
-	err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
+	var petToRecive entity.Pet
+	// err = pr.dbconnection.QueryRow("SELECT * FROM pets WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
 	if err != nil && err != sql.ErrNoRows {
 		err = fmt.Errorf("error finding pet %d: %w", id, err)
 		fmt.Println(err)
@@ -31,4 +32,33 @@ func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
 	}
 	pet = &petToRecive
 	return
+}
+
+func (pr *PetRepository) Update(userID string, petID string, updatePayload map[string]interface{}) error {
+	query := "UPDATE petdex.pets SET "
+	values := []interface{}{}
+
+	for key, value := range updatePayload {
+		query += key + " = ?, "
+		values = append(values, value)
+	}
+
+	query = strings.TrimSuffix(query, ", ")
+
+	query += " WHERE id = ? and userId = ?"
+	values = append(values, petID)
+	values = append(values, userID)
+
+	result, err := pr.dbconnection.Exec(query, values...)
+	if err != nil {
+		fmt.Printf("[err] Error updating pet %s: %v \n", petID, err)
+		return fmt.Errorf("Error updating pet %s: %w \n", petID, err)
+	}
+	_, err = result.RowsAffected()
+	if err != nil {
+		fmt.Printf("[err] Error get result of update %s: %v \n", petID, err)
+		return fmt.Errorf("Error get result of update %s: %w \n", petID, err)
+	}
+
+	return nil
 }
