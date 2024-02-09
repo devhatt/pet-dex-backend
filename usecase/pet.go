@@ -10,8 +10,8 @@ type PetUseCase struct {
 	repo interfaces.PetRepository
 }
 
-func NewPetUseCase(repo interfaces.PetRepository) (*PetUseCase) {
-	return &PetUseCase{repo : repo}
+func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
+	return &PetUseCase{repo: repo}
 }
 
 func (c *PetUseCase) FindById(id int) (*entity.Pet, error) {
@@ -21,4 +21,12 @@ func (c *PetUseCase) FindById(id int) (*entity.Pet, error) {
 		return nil, err
 	}
 	return pet, nil
+}
+
+func (c *PetUseCase) FindNoAuthPets() {
+	json, err := c.repo.FindNoAuthPets()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(json)
 }
