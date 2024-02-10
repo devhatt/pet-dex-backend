@@ -1,11 +1,11 @@
 package api
 
 type ApiError struct {
-	description string
+	Description string `json:"description"`
 }
 
 func NewApiError(aCode string, aDescription string) *ApiError {
 	return &ApiError{
-		description: aDescription,
+		Description: aDescription,
 	}
 }

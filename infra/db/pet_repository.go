@@ -54,10 +54,15 @@ func (pr *PetRepository) Update(userID string, petID string, updatePayload map[s
 		fmt.Printf("[err] Error updating pet %s: %v \n", petID, err)
 		return fmt.Errorf("Error updating pet %s: %w \n", petID, err)
 	}
-	_, err = result.RowsAffected()
+	affectedRows, err := result.RowsAffected()
 	if err != nil {
-		fmt.Printf("[err] Error get result of update %s: %v \n", petID, err)
-		return fmt.Errorf("Error get result of update %s: %w \n", petID, err)
+		fmt.Printf("Erro when try get rows affected %s: %v \n", petID, err)
+		return fmt.Errorf("Erro when try get rows affected %s: %w \n", petID, err)
+	}
+
+	if affectedRows == 0 {
+		fmt.Printf("No pets were updated %s: %v \n", petID, err)
+		return fmt.Errorf("No pets were updated %s: %w \n", petID, err)
 	}
 
 	return nil
