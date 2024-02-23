@@ -7,9 +7,9 @@ import (
 	"pet-dex-backend/v2/api/errors"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/usecase"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 type PetController struct {
@@ -62,17 +62,22 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "userID")
 
-	userID, erro := strconv.Atoi(idStr)
-	if erro != nil {
-		http.Error(w, "Error converting 'userID' to int", http.StatusBadRequest)
-		return
-	}
-	pets, err := cntrl.UseCase.ListUserPets(userID)
-
+	userID, err := uuid.Parse(idStr)
 	if err != nil {
-		w.WriteHeader(400)
+		http.Error(w, "Error converting 'userID' to UUID", http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode(&pets)
+
+	pets, err := cntrl.UseCase.ListUserPets(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&pets); err != nil {
+		http.Error(w, "Failed to encode pets", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }

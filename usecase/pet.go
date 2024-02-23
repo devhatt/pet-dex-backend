@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
+
+	"github.com/google/uuid"
 )
 
 type PetUseCase struct {
@@ -42,11 +44,10 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 		(petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
 
-func (c *PetUseCase) ListUserPets(userID int) ([]*entity.Pet, error) {
-	pets, err := c.repo.ListUserPets(userID)
+func (c *PetUseCase) ListUserPets(userID uuid.UUID) ([]*entity.Pet, error) {
+	pets, err := c.repo.ListPetsByUserID(userID)
 	if err != nil {
-		err = fmt.Errorf("Failed to retrieve all user pets with ID %d: %w", userID, err)
-		fmt.Println(err)
+		err = fmt.Errorf("failed to retrieve all user pets with ID %d: %w", userID, err)
 		return nil, err
 	}
 	return pets, nil
