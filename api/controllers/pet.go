@@ -64,7 +64,7 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 
 	userID, err := uuid.Parse(idStr)
 	if err != nil {
-		http.Error(w, "Error converting 'userID' to UUID", http.StatusBadRequest)
+		http.Error(w, "Bad Request: Invalid userID", http.StatusBadRequest)
 		return
 	}
 
