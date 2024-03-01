@@ -22,3 +22,16 @@ type Pet struct {
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
 }
+
+func NewPet(userId, breedId uniqueEntity.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
+	petId := uniqueEntity.NewID()
+
+	return &Pet{
+		ID:           petId,
+		UserID:       userId,
+		Name:         name,
+		Weight:       weight,
+		AdoptionDate: *adoptionDate,
+		Birthdate:    *birthdate,
+	}
+}

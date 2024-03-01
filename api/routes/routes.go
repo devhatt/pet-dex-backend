@@ -11,7 +11,6 @@ type Controllers struct {
 	PetController       *controllers.PetController
 	FindPetController   *petcontroller.FindPetController
 	UserController    *controllers.UserController
-	CreatePetController *petcontroller.CreatePetController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
@@ -20,7 +19,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Route("/pets", func(r chi.Router) {
 			r.Get("/{id}", controllers.FindPetController.FindPet)
 			r.Patch("/{petID}", controllers.PetController.Update)
-			r.Post("/", controllers.CreatePetController.CreatePet)
+			r.Post("/", controllers.PetController.CreatePet)
 		})
 
 		r.Route("/ong", func(r chi.Router) {
