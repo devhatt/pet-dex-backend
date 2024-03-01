@@ -7,11 +7,11 @@ import (
 	"net/http"
 	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/middlewares"
-	"pet-dex-backend/v2/infra/config"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/jwtauth/v5"
+	"github.com/golang-jwt/jwt"
 )
 
 type Controllers struct {
@@ -20,7 +20,6 @@ type Controllers struct {
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
-	tokenAuth := config.GetToken()
 
 	c.Route("/api", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
@@ -38,13 +37,21 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 		r.Route("/user", func(r chi.Router) {
 			r.Post("/token", func(w http.ResponseWriter, r *http.Request) {
-				token := config.GetToken()
-				_, tokenString, _ := token.Encode(map[string]interface{}{"user_id": 123})
-				w.Header().Add("authorization", tokenString)
+				user := &middlewares.UserClaims{}
+				json.NewDecoder(r.Body).Decode(&user)
+				token, _ := middlewares.NewAccessToken(middlewares.UserClaims{
+					Id:    user.Id,
+					Name:  user.Email,
+					Email: user.Email,
+					StandardClaims: jwt.StandardClaims{
+						ExpiresAt: time.Now().Add(time.Hour).Unix(),
+					},
+				})
+				w.Header().Add("Authorization", token)
 				json.NewEncoder(w).Encode(struct {
 					Token string `json:"token"`
 				}{
-					Token: tokenString,
+					Token: token,
 				})
 				w.WriteHeader(201)
 			})

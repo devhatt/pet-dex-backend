@@ -3,6 +3,8 @@ module pet-dex-backend/v2
 go 1.21.4
 
 require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.4.0
 	github.com/lestrrat-go/jwx/v2 v2.0.17
 	github.com/stretchr/testify v1.9.0
