@@ -23,6 +23,13 @@ func NewPetRepository(db *sql.DB) interfaces.PetRepository {
 }
 
 func (pr *PetRepository) Save(entity.Pet) error {
+	var petToSave entity.Pet
+	err := pr.dbconnection.QueryRow("INSERT INTO pet (name, image, localization_ong, pet_details, social_media_ong) VALUES (?, ?, ?, ?, ?) RETURNING id", petToSave.Name, petToSave.Image, petToSave.LocalizationOng, petToSave.PetDetails, petToSave.SocialMediaOng).Scan(&petToSave.Id)
+	if err != nil {
+		err = fmt.Errorf("error saving pet: %w", err)
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }
 
