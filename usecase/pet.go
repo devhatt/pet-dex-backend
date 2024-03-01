@@ -52,3 +52,12 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	}
 	return pets, nil
 }
+
+func (c *PetUseCase) Save(pet entity.Pet) error {
+	err := c.repo.Save(pet)
+	if err != nil {
+		fmt.Printf("failed")
+		return err
+	}
+	return nil
+}
