@@ -2,12 +2,15 @@ package usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-	"pet-dex-backend/v2/entity"
 	pkgEntity "pet-dex-backend/v2/pkg/entity"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
+	"pet-dex-backend/v2/entity"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 type MockPetRepository struct {
@@ -26,6 +29,11 @@ func (MockPetRepository) Save(entity.Pet) error {
 func (m MockPetRepository) Update(petID string, userID string, updateValues map[string]interface{}) error {
 	args := m.Called(petID, userID, updateValues)
 	return args.Error(0)
+}
+
+func (m *MockPetRepository) ListPetsByUserID(userID uuid.UUID) ([]*entity.Pet, error) {
+	args := m.Called(userID)
+	return args.Get(0).([]*entity.Pet), args.Error(1)
 }
 
 func TestUpdateUseCaseDo(t *testing.T) {
@@ -81,4 +89,54 @@ func TestUpdateUseCaseisValidSize(t *testing.T) {
 	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "giant"}))
 	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: "Invalid Size"}))
 	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: ""}))
+}
+
+func TestListUserPets(t *testing.T) {
+	userID := uuid.New()
+	expectedPets := []*entity.Pet{
+		{ID: uuid.New(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
+		{ID: uuid.New(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+	}
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListPetsByUserID", userID).Return(expectedPets, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(userID)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 2)
+}
+
+func TestListUserPetsNoPetsFound(t *testing.T) {
+	userID := uuid.New()
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListPetsByUserID", userID).Return([]*entity.Pet{}, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(userID)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 0)
+}
+
+func TestListUserPetsInvalidUserID(t *testing.T) {
+	invalidUserID := uuid.Nil
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListPetsByUserID", invalidUserID).Return([]*entity.Pet{}, errors.New("invalid userID"))
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(invalidUserID)
+
+	assert.Error(t, err)
+	assert.Nil(t, pets)
+	assert.EqualError(t, err, "failed to retrieve all user pets: invalid userID")
 }
