@@ -6,19 +6,18 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/api/errors"
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/usecase"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type PetController struct {
-	repository interfaces.PetRepository
+	Usecase *usecase.PetUseCase
 }
 
-func NewPetController(db interfaces.PetRepository) *PetController {
+func NewPetController(usecase *usecase.PetUseCase) *PetController {
 	return &PetController{
-		repository: db,
+		Usecase: usecase,
 	}
 }
 
@@ -28,21 +27,23 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 
 	var petToBeUpdated entity.Pet
 	err := json.NewDecoder(r.Body).Decode(&petToBeUpdated)
+	defer r.Body.Close()
 
 	if err != nil {
 		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
-		err := errors.InvalidBody{
+		err := errors.ErrInvalidBody{
 			Description: "The body is invalid",
 		}
-		w.WriteHeader(400)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
 	}
 
 	newSize := petToBeUpdated.Size
 
-	usecase := usecase.NewUpdateUseCase(pc.repository)
-	err = usecase.Do(petID, userID, &entity.Pet{Size: newSize})
+	err = pc.Usecase.Update(petID, userID, &entity.Pet{Size: newSize})
 
 	if err != nil {
 		fmt.Printf("Error in usecase: %s", err.Error())
@@ -50,8 +51,8 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		err := errors.ErrInvalidID{
 			Description: err.Error(),
 		}
-
-		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
 	}

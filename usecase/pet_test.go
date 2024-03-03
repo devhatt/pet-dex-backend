@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"pet-dex-backend/v2/entity"
+	pkgEntity "pet-dex-backend/v2/pkg/entity"
 
 	"testing"
 )
@@ -44,30 +45,33 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
-	userID := "321"
-	petToUpdate := &entity.Pet{Size: "medium", UserID: "321"}
+	userID := pkgEntity.NewID()
+	petToUpdate := &entity.Pet{Size: "medium", UserID: userID}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
-	mockRepo.On("Update", id, userID, map[string]interface{}{"size": &petToUpdate.Size}).Return(nil)
-	usecase := NewUpdateUseCase(mockRepo)
+	mockRepo.On("Update", id, userID.String(), map[string]interface{}{"size": &petToUpdate.Size}).Return(nil)
+	usecase := NewPetUseCase(mockRepo)
 
-	err := usecase.Do(id, userID, petToUpdate)
+	err := usecase.Update(id, userID.String(), petToUpdate)
 
 	assert.NoError(t, err)
 	mockRepo.AssertExpectations(t)
 }
 
-//	func TestUseCaseDoInvalidSize(t *testing.T) {
-//		id := "123"
-//		petToUpdate := &entity.Pet{Size: "Invalid Size"}
-//		mockRepo := new(MockPetRepository)
-//		usecase := usecase.NewUpdateUseCase(mockRepo)
-//
-//		err := usecase(id, petToUpdate)
-//
-//		assert.EqualError(t,err, "failed to update size for pet with ID 123: Size is invalid")
-//		mockRepo.AssertNotCalled(t, "Update")
-//	}
+func TestUseCaseDoInvalidSize(t *testing.T) {
+	id := "123"
+	userID := pkgEntity.NewID()
+	petToUpdate := &entity.Pet{Size: "Invalid Size"}
+	mockRepo := new(MockPetRepository)
+	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
+	mockRepo.On("Update", id, userID.String(), map[string]interface{}{"size": &petToUpdate.Size}).Return(nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	err := usecase.Update(id, userID.String(), petToUpdate)
+
+	assert.EqualError(t, err, "The animal size is invalid")
+	mockRepo.AssertNotCalled(t, "Update")
+}
 
 func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
 	id := "123"
@@ -76,19 +80,20 @@ func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
 	repoError := errors.New("error updating pet")
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, mock.Anything).Return(repoError)
-	usecase := NewUpdateUseCase(mockRepo)
+	usecase := NewPetUseCase(mockRepo)
 
-	err := usecase.Do(id, userID, petToUpdate)
+	err := usecase.Update(id, userID, petToUpdate)
 
 	assert.EqualError(t, err, "failed to update size for pet with ID 123: error updating pet")
 	mockRepo.AssertExpectations(t)
 }
 func TestUpdateUseCaseisValidSize(t *testing.T) {
-	usecase := UpdateUseCase{}
+	usecase := PetUseCase{}
 
-	assert.True(t, usecase.IsValidSize("small"))
-	assert.True(t, usecase.IsValidSize("medium"))
-	assert.True(t, usecase.IsValidSize("large"))
-	assert.True(t, usecase.IsValidSize("giant"))
-	assert.False(t, usecase.IsValidSize("Invalid Size"))
+	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "small"}))
+	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "medium"}))
+	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "large"}))
+	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "giant"}))
+	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: "Invalid Size"}))
+	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: ""}))
 }
