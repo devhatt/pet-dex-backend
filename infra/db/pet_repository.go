@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"strings"
 	"time"
@@ -112,10 +113,10 @@ func (pr *PetRepository) ListByUser(userID uniqueEntity.ID) (pets []*entity.Pet,
 			return nil, fmt.Errorf("error scanning pet row: %w", err)
 		}
 
-		if pet.AdoptionDate, err = time.Parse("2006-01-02", adoptionDateStr); err != nil {
+		if pet.AdoptionDate, err = time.Parse(config.StandardDateLayout, adoptionDateStr); err != nil {
 			return nil, fmt.Errorf("error parsing adoptionDate: %w", err)
 		}
-		if pet.Birthdate, err = time.Parse("2006-01-02", birthdateStr); err != nil {
+		if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
 			return nil, fmt.Errorf("error parsing birthdate: %w", err)
 		}
 
