@@ -45,7 +45,7 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 }
 
 func (c *PetUseCase) ListUserPets(userID uniqueEntity.ID) ([]*entity.Pet, error) {
-	pets, err := c.repo.ListPetsByUserID(userID)
+	pets, err := c.repo.ListByUser(userID)
 	if err != nil {
 		err = fmt.Errorf("failed to retrieve all user pets: %w", err)
 		return nil, err

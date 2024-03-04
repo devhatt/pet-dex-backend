@@ -30,7 +30,7 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 	return args.Error(0)
 }
 
-func (m *MockPetRepository) ListPetsByUserID(userID uniqueEntity.ID) ([]*entity.Pet, error) {
+func (m *MockPetRepository) ListByUser(userID uniqueEntity.ID) ([]*entity.Pet, error) {
 	args := m.Called(userID)
 	return args.Get(0).([]*entity.Pet), args.Error(1)
 }
@@ -100,7 +100,7 @@ func TestListUserPets(t *testing.T) {
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListPetsByUserID", userID).Return(expectedPets, nil)
+	mockRepo.On("ListByUser", userID).Return(expectedPets, nil)
 	usecase := NewPetUseCase(mockRepo)
 
 	pets, err := usecase.ListUserPets(userID)
@@ -115,7 +115,7 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListPetsByUserID", userID).Return([]*entity.Pet{}, nil)
+	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, nil)
 	usecase := NewPetUseCase(mockRepo)
 
 	pets, err := usecase.ListUserPets(userID)
@@ -124,13 +124,13 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 	assert.Len(t, pets, 0)
 }
 
-func TestListUserPetsInvalidUserID(t *testing.T) {
+func TestListUserPetsErrorOnRepo(t *testing.T) {
 	invalidUserID := uniqueEntity.NilID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListPetsByUserID", invalidUserID).Return([]*entity.Pet{}, errors.New("invalid userID"))
+	mockRepo.On("ListByUser", invalidUserID).Return([]*entity.Pet{}, errors.New("invalid userID"))
 	usecase := NewPetUseCase(mockRepo)
 
 	pets, err := usecase.ListUserPets(invalidUserID)
