@@ -58,7 +58,7 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 	return nil
 }
 
-func (pr *PetRepository) ListPetsByUserID(userID uniqueEntity.ID) (pets []*entity.Pet, err error) {
+func (pr *PetRepository) ListByUser(userID uniqueEntity.ID) (pets []*entity.Pet, err error) {
 	rows, err := pr.dbconnection.Query(`
 		SELECT
 		p.id,
