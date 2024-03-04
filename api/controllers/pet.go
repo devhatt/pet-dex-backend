@@ -61,7 +61,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "userID")
+	IDStr := chi.URLParam(r, "id")
 
 	userID, err := uniqueEntity.ParseID(IDStr)
 	if err != nil {
