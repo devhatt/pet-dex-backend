@@ -28,21 +28,6 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 	return args.Error(0)
 }
 
-//func TestUpdateUseCaseDoPetNotFound(t *testing.T) {
-//	id := "123"
-//	userID := "321"
-//	petToUpdate := &entity.Pet{Size: "medium"}
-//	mockRepo := new(MockPetRepository)
-//	mockRepo.On("FindById", id).Return(entity.Pet{}, errors.New("pet with ID 123 not found"))
-//	usecase := NewUpdateUseCase(mockRepo)
-//
-//	err := usecase.Do(id, userID, petToUpdate)
-//
-//	assert.EqualError(t, err, "pet with ID 123 not found")
-//	mockRepo.AssertExpectations(t)
-//	mockRepo.AssertNotCalled(t, "Update")
-//}
-
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
 	userID := pkgEntity.NewID()

@@ -16,22 +16,10 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 }
 
 func (c *PetUseCase) FindById(id int) (*entity.Pet, error) {
-	//pet, err := c.repo.FindById(id)
-	//if err != nil {
-	//	fmt.Printf("failed")
-	//	return nil, err
-	//}
 	return nil, nil
 }
 
 func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet) (err error) {
-	//petIsFound, err := c.repo.FindById(petIDid)
-	//if err != nil {
-	//	return fmt.Errorf("falha ao recuperar o animal de estimação com o ID %s: %w", petIDid, err)
-	//}
-	//if petIsFound.UserID != userID {
-	//	return fmt.Errorf("não autorizado para atualizar o animal de estimação com o ID %s", petIDid)
-	//}
 
 	updateValues := map[string]interface{}{}
 
