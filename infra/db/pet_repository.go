@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 )
 
 type PetRepository struct {
@@ -58,7 +58,7 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 	return nil
 }
 
-func (pr *PetRepository) ListPetsByUserID(userID uuid.UUID) (pets []*entity.Pet, err error) {
+func (pr *PetRepository) ListPetsByUserID(userID uniqueEntity.ID) (pets []*entity.Pet, err error) {
 	rows, err := pr.dbconnection.Query(`
 		SELECT
 		p.id,

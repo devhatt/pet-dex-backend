@@ -8,8 +8,9 @@ import (
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/usecase"
 
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 )
 
 type PetController struct {
@@ -60,9 +61,9 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
-	idStr := chi.URLParam(r, "userID")
+	IDStr := chi.URLParam(r, "userID")
 
-	userID, err := uuid.Parse(idStr)
+	userID, err := uniqueEntity.ParseID(IDStr)
 	if err != nil {
 		http.Error(w, "Bad Request: Invalid userID", http.StatusBadRequest)
 		return

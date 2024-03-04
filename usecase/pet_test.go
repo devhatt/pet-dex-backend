@@ -8,9 +8,8 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 	"testing"
-
-	"github.com/google/uuid"
 )
 
 type MockPetRepository struct {
@@ -31,7 +30,7 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 	return args.Error(0)
 }
 
-func (m *MockPetRepository) ListPetsByUserID(userID uuid.UUID) ([]*entity.Pet, error) {
+func (m *MockPetRepository) ListPetsByUserID(userID uniqueEntity.ID) ([]*entity.Pet, error) {
 	args := m.Called(userID)
 	return args.Get(0).([]*entity.Pet), args.Error(1)
 }
@@ -92,10 +91,10 @@ func TestUpdateUseCaseisValidSize(t *testing.T) {
 }
 
 func TestListUserPets(t *testing.T) {
-	userID := uuid.New()
+	userID := uniqueEntity.NewID()
 	expectedPets := []*entity.Pet{
-		{ID: uuid.New(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
-		{ID: uuid.New(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
+		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
 	}
 
 	mockRepo := new(MockPetRepository)
@@ -111,7 +110,7 @@ func TestListUserPets(t *testing.T) {
 }
 
 func TestListUserPetsNoPetsFound(t *testing.T) {
-	userID := uuid.New()
+	userID := uniqueEntity.NewID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
@@ -126,7 +125,7 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 }
 
 func TestListUserPetsInvalidUserID(t *testing.T) {
-	invalidUserID := uuid.Nil
+	invalidUserID := uniqueEntity.NilID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)

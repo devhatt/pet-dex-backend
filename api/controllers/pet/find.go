@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/usecase"
 
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 )
 
 type FindPetController struct {
@@ -22,9 +23,9 @@ func NewFindPetController(usecase *usecase.PetUseCase) *FindPetController {
 func (cntrl *FindPetController) FindPet(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
-	id, err := uuid.Parse(idStr)
+	id, err := uniqueEntity.ParseID(idStr)
 	if err != nil {
-		http.Error(w, "Error converting 'userID' to UUID", http.StatusBadRequest)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
 		return
 	}
 	pet, err := cntrl.UseCase.FindById(id)
