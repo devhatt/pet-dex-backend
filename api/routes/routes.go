@@ -14,10 +14,9 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 	c.Route("/api/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
-		})
-
-		r.Route("/users/{userID}/pets", func(r chi.Router) {
-			r.Patch("/{petID}", controllers.PetController.Update)
+			r.Route("/{userID}/pets", func(r chi.Router) {
+				r.Patch("/{petID}", controllers.PetController.Update)
+			})
 		})
 
 		r.Route("/ong", func(r chi.Router) {
