@@ -125,17 +125,17 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 }
 
 func TestListUserPetsErrorOnRepo(t *testing.T) {
-	invalidUserID := uniqueEntity.NilID()
+	userID := uniqueEntity.NewID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListByUser", invalidUserID).Return([]*entity.Pet{}, errors.New("invalid userID"))
+	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, errors.New("this is a repository error"))
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListUserPets(invalidUserID)
+	pets, err := usecase.ListUserPets(userID)
 
 	assert.Error(t, err)
 	assert.Nil(t, pets)
-	assert.EqualError(t, err, "failed to retrieve all user pets: invalid userID")
+	assert.EqualError(t, err, "failed to retrieve all user pets: this is a repository error")
 }
