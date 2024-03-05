@@ -2,12 +2,15 @@ package middlewares
 
 import (
 	"net/http"
+	"pet-dex-backend/v2/infra/config"
 	"strings"
 	"time"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		encoder := NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
+
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			w.WriteHeader(401)
@@ -23,7 +26,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			w.WriteHeader(401)
 			return
 		}
-		userclaims := ParseAccessToken(bearerToken)
+		userclaims := encoder.ParseAccessToken(bearerToken)
 		if userclaims.ExpiresAt != 0 && userclaims.ExpiresAt < time.Now().Unix() {
 			w.WriteHeader(401)
 			return
