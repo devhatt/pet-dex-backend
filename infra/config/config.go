@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	db  *sql.DB
-	err error
+	db                 *sql.DB
+	err                error
+	StandardDateLayout = "2006-01-02"
 )
 
 func InitConfigs() *sql.DB {
