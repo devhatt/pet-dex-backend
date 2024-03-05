@@ -4,8 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"strings"
+	"time"
+
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 )
 
 type PetRepository struct {
@@ -53,4 +57,75 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 	}
 
 	return nil
+}
+
+func (pr *PetRepository) ListByUser(userID uniqueEntity.ID) (pets []*entity.Pet, err error) {
+	rows, err := pr.dbconnection.Query(`
+		SELECT
+		p.id,
+		p.name,
+		p.breedId,
+		p.size,
+		p.weight,
+		p.adoptionDate,
+		p.birthdate,
+		p.comorbidity,
+		p.tags,
+		p.castrated,
+		p.availableToAdoption,
+		p.userId,
+		b.name AS breed_name,
+		pi.url AS pet_image_url
+	FROM
+		pets p
+		JOIN breeds b ON p.breedId = b.id
+		LEFT JOIN pets_image pi ON p.id = pi.petId
+	WHERE
+		p.userId = ?`,
+		userID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving pets for user %d: %w", userID, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var pet entity.Pet
+		var adoptionDateStr string
+		var birthdateStr string
+
+		if err = rows.Scan(
+			&pet.ID,
+			&pet.Name,
+			&pet.BreedID,
+			&pet.Size,
+			&pet.Weight,
+			&adoptionDateStr,
+			&birthdateStr,
+			&pet.Comorbidity,
+			&pet.Tags,
+			&pet.Castrated,
+			&pet.AvailableToAdoption,
+			&pet.UserID,
+			&pet.BreedName,
+			&pet.ImageUrl,
+		); err != nil {
+			return nil, fmt.Errorf("error scanning pet row: %w", err)
+		}
+
+		if pet.AdoptionDate, err = time.Parse(config.StandardDateLayout, adoptionDateStr); err != nil {
+			return nil, fmt.Errorf("error parsing adoptionDate: %w", err)
+		}
+		if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+			return nil, fmt.Errorf("error parsing birthdate: %w", err)
+		}
+
+		pets = append(pets, &pet)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over pet rows: %w", err)
+	}
+
+	return pets, nil
 }

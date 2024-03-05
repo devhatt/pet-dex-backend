@@ -2,21 +2,17 @@ package usecase
 
 import (
 	"errors"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"pet-dex-backend/v2/entity"
-	pkgEntity "pet-dex-backend/v2/pkg/entity"
 
+	"pet-dex-backend/v2/entity"
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 	"testing"
 )
 
 type MockPetRepository struct {
 	mock.Mock
-}
-
-func (m MockPetRepository) FindById(petID string) (entity.Pet, error) {
-	args := m.Called(petID)
-	return args.Get(0).(entity.Pet), args.Error(1)
 }
 
 func (MockPetRepository) Save(entity.Pet) error {
@@ -28,9 +24,14 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 	return args.Error(0)
 }
 
+func (m *MockPetRepository) ListByUser(userID uniqueEntity.ID) ([]*entity.Pet, error) {
+	args := m.Called(userID)
+	return args.Get(0).([]*entity.Pet), args.Error(1)
+}
+
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
-	userID := pkgEntity.NewID()
+	userID := uniqueEntity.NewID()
 	petToUpdate := &entity.Pet{Size: "medium", UserID: userID}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
@@ -45,7 +46,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 
 func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
-	userID := pkgEntity.NewID()
+	userID := uniqueEntity.NewID()
 	petToUpdate := &entity.Pet{Size: "Invalid Size"}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
@@ -81,4 +82,54 @@ func TestUpdateUseCaseisValidSize(t *testing.T) {
 	assert.True(t, usecase.isValidPetSize(&entity.Pet{Size: "giant"}))
 	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: "Invalid Size"}))
 	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: ""}))
+}
+
+func TestListUserPets(t *testing.T) {
+	userID := uniqueEntity.NewID()
+	expectedPets := []*entity.Pet{
+		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
+		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+	}
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListByUser", userID).Return(expectedPets, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(userID)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 2)
+}
+
+func TestListUserPetsNoPetsFound(t *testing.T) {
+	userID := uniqueEntity.NewID()
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(userID)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 0)
+}
+
+func TestListUserPetsErrorOnRepo(t *testing.T) {
+	userID := uniqueEntity.NewID()
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, errors.New("this is a repository error"))
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListUserPets(userID)
+
+	assert.Error(t, err)
+	assert.Nil(t, pets)
+	assert.EqualError(t, err, "failed to retrieve all user pets: this is a repository error")
 }

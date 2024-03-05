@@ -8,6 +8,8 @@ import (
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/usecase"
 
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -54,6 +56,27 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
+		return
+	}
+}
+
+func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	userID, err := uniqueEntity.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid userID", http.StatusBadRequest)
+		return
+	}
+
+	pets, err := cntrl.Usecase.ListUserPets(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&pets); err != nil {
+		http.Error(w, "Failed to encode pets", http.StatusInternalServerError)
 		return
 	}
 
