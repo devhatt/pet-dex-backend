@@ -69,7 +69,7 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	pets, err := cntrl.UseCase.ListUserPets(userID)
+	pets, err := cntrl.Usecase.ListUserPets(userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

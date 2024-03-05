@@ -17,7 +17,7 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 	return &PetUseCase{repo: repo}
 }
 
-func (c *PetUseCase) FindById(id int) (*entity.Pet, error) {
+func (c *PetUseCase) FindById(userID uniqueEntity.ID) (*entity.Pet, error) {
 	return nil, nil
 }
 
@@ -28,7 +28,7 @@ func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet
 	if c.isValidPetSize(petToUpdate) {
 		updateValues["size"] = &petToUpdate.Size
 	} else {
-		return errors.New("The animal size is invalid")
+		return errors.New("the animal size is invalid")
 	}
 
 	err = c.repo.Update(petID, userID, updateValues)

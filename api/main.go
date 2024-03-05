@@ -22,20 +22,14 @@ func main() {
 	config.RunMigrations(database)
 	dbPetRepo := db.NewPetRepository(database)
 
-	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
-	petUseCase := usecase.NewPetUseCase(dbPetRepo)
-
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
+
 	petController := controllers.NewPetController(petUsecase)
-	exampleController := petcontroller.NewExampleController(exampleUseCase)
-	findPetController := petcontroller.NewFindPetController(petUseCase)
-	petController := controllers.NewPetController(petUseCase)
+	findPetController := petcontroller.NewFindPetController(petUsecase)
 
 	contrllers := routes.Controllers{
-		FindPetController:      findPetController,
-		ListUserPetsController: listUserPetsController,
-		ExampleController:      exampleController,
-		PetController:          petController,
+		FindPetController: findPetController,
+		PetController:     petController,
 	}
 	router := routes.InitializeRouter(contrllers)
 

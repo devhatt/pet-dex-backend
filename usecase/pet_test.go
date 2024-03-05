@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	pkgEntity "pet-dex-backend/v2/pkg/entity"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -14,11 +13,6 @@ import (
 
 type MockPetRepository struct {
 	mock.Mock
-}
-
-func (m MockPetRepository) FindById(petID string) (entity.Pet, error) {
-	args := m.Called(petID)
-	return args.Get(0).(entity.Pet), args.Error(1)
 }
 
 func (MockPetRepository) Save(entity.Pet) error {
@@ -37,7 +31,7 @@ func (m *MockPetRepository) ListByUser(userID uniqueEntity.ID) ([]*entity.Pet, e
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
-	userID := pkgEntity.NewID()
+	userID := uniqueEntity.NewID()
 	petToUpdate := &entity.Pet{Size: "medium", UserID: userID}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
@@ -52,7 +46,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 
 func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
-	userID := pkgEntity.NewID()
+	userID := uniqueEntity.NewID()
 	petToUpdate := &entity.Pet{Size: "Invalid Size"}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
