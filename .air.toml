@@ -12,7 +12,6 @@ log = "build-errors.log"
 stop_on_error = false
 
 [color]
-app = ""
 build = "yellow"
 main = "magenta"
 runner = "green"
