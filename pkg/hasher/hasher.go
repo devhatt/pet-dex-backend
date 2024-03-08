@@ -17,6 +17,7 @@ func NewHasher() interfaces.Hasher {
 }
 
 func (h *Hasher) Hash(key string) (string, error) {
+	//TODO: needs test
 	bytes, err := bcrypt.GenerateFromPassword([]byte(key), saltRound)
 	if err != nil {
 		fmt.Println("#Hasher.Hash error: %w", err)
