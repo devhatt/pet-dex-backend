@@ -9,6 +9,7 @@ import (
 	"pet-dex-backend/v2/api/middlewares"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/encoder"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -39,7 +40,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 		r.Route("/user", func(r chi.Router) {
 			r.Post("/token", func(w http.ResponseWriter, r *http.Request) {
-				encoder := middlewares.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
+				encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
 				user := &interfaces.UserClaims{}
 				json.NewDecoder(r.Body).Decode(&user)
 				token, _ := encoder.NewAccessToken(interfaces.UserClaims{

@@ -22,3 +22,8 @@ type Pet struct {
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
 }
+type PetDetails struct {
+	Breed string
+	Age int
+	Size string
+}
