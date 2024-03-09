@@ -18,7 +18,8 @@ func main() {
 		panic(err)
 	}
 
-	database := config.InitConfigs()
+	config.InitConfigs()
+	database := config.GetDB()
 	config.RunMigrations(database)
 	dbPetRepo := db.NewPetRepository(database)
 
