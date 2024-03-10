@@ -23,7 +23,7 @@ func (ur *UserRepository) Delete(id uniqueEntityId.ID) error {
 	return nil
 }
 
-func (ur *UserRepository) Save(user entity.User) error {
+func (ur *UserRepository) Save(user *entity.User) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO users (id, name, type, document, avatarUrl, email, phone, pass) VALUES (:id, :name, :type, :document, :avatarUrl, :email, :phone, :pass)", &user)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (ur *UserRepository) Save(user entity.User) error {
 	return nil
 }
 
-func (ur *UserRepository) SaveAddress(user entity.User) error {
+func (ur *UserRepository) SaveAddress(user *entity.User) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitute) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitute)", &user.Adresses)
 
 	if err != nil {
