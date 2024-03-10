@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 )
 
@@ -17,27 +19,25 @@ func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher) *U
 	}
 }
 
-func (uc *UserUsecase) Save(user entity.User) error {
-	//TODO: mandar o create de User para o controller recebendo dele um DTO
-	//TODO: talvez melhorar os tratamentos de erros aqui
+func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 	//TODO: Fazer testes
-	hashedPass, err := uc.hasher.Hash(user.Pass)
 
-	if err != nil {
-		return err
-	}
+	user := entity.NewUser(userDto.Name, userDto.Type, userDto.Document, userDto.AvatarURL, userDto.Email, userDto.Phone, userDto.Pass, userDto.City, userDto.State, userDto.BirthDate)
+	hashedPass, err := uc.hasher.Hash(user.Pass)
 
 	user.Pass = hashedPass
 
 	err = uc.repo.Save(user)
 
 	if err != nil {
+		fmt.Println("#UserUsecase.Save error: %w", err)
 		return err
 	}
 
 	err = uc.repo.SaveAddress(user)
 
 	if err != nil {
+		fmt.Println("#UserUsecase.SaveAddress error: %w", err)
 		return err
 	}
 
