@@ -22,7 +22,8 @@ type User struct {
 
 func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *User {
 	userId := uniqueEntityId.NewID()
-	
+
+	address := NewAddress(userId, city, state)
 
 	return &User{
 		ID:        userId,
@@ -34,26 +35,26 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 		Phone:     phone,
 		Pass:      pass,
 		BirthDate: birthdate,
-		Adresses:  addresses{},
+		Adresses:  address,
 	}
 }
 
 func NewAddress(userId uniqueEntityId.ID, city, state string) addresses {
-	return  addresses{
-		ID:        uniqueEntityId.NewID(),
-		UserId: userId,
-		Address:   "",
-		City:      city,
-		State:     state,
+	return addresses{
+		ID:      uniqueEntityId.NewID(),
+		UserId:  userId,
+		Address: "",
+		City:    city,
+		State:   state,
 	}
 }
 
 type addresses struct {
 	ID        uniqueEntityId.ID `json:"id" db:"id"`
-	UserId uniqueEntityId.ID `json:"userId" db:"userId"`
-	Address   string            `json:"addresses" db:"addresses"`
+	UserId    uniqueEntityId.ID `json:"userId" db:"userId"`
+	Address   string            `json:"address" db:"address"`
 	City      string            `json:"city" db:"city"`
 	State     string            `json:"state" db:"state"`
 	Latitude  float64           `json:"latitude" db:"latitude"`
-	Logintude float64           `json:"longitude" db:"longitude"`
+	Logintute float64           `json:"longitute" db:"longitute"`
 }
