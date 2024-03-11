@@ -9,6 +9,10 @@ run-api:
 	go run api/main.go
 test:
 	go test ./...
+compose-dev:
+	docker compose --profile development --env-file .env up --build
+compose-prod:
+	docker compose --profile production up --build
 
 create-migrations:
 	touch migrations/$(timestamp)_$(title).up.sql

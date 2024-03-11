@@ -33,17 +33,20 @@ func main() {
 	hash := hasher.NewHasher()
 
 	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
-	findPetUseCase := usecase.NewPetUseCase(dbPetRepo)
+  petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash)
 
 	exampleController := petcontroller.NewExampleController(exampleUseCase)
+  petController := controllers.NewPetController(petUsecase)
 	findPetController := petcontroller.NewFindPetController(findPetUseCase)
 	userController := controllers.NewUserController(uusercase)
 
 	contrllers := routes.Controllers{
 		FindPetController: findPetController,
+    PetController:     petController,
 		ExampleController: exampleController,
 		UserController: userController,
+
 	}
 	router := routes.InitializeRouter(contrllers)
 

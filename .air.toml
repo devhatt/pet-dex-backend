@@ -1,0 +1,28 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/main ./api/main.go"
+bin = "./tmp/main"
+exclude_dir = ["tmp", ".husky", ".github"]
+exclude_regex = ["_test\\.go"]
+exclude_unchanged = true
+include_ext = ["go", "tpl", "tmpl", "html"]
+log = "build-errors.log"
+stop_on_error = false
+
+[color]
+build = "yellow"
+main = "magenta"
+runner = "green"
+watcher = "cyan"
+
+[log]
+time = true
+main_only = false
+
+[misc]
+clean_on_exit = true
+
+[screen]
+clear_on_rebuild = false

@@ -12,7 +12,7 @@ Bem-vindo à PetDex! Agradecemos pelo seu interesse em contribuir para este proj
    cd pet-dex-backend
    ```
 
-3. **Pegue uma Issue:** 
+3. **Pegue uma Issue:**
 
    Navegue pelas "Issues" e de preferência por uma Issue marcada como "Good First Issue". As "Issues" dessa forma são especialmente indicadas para novos colaboradores e são pontos de partida acessíveis no projeto. Mas, caso não haja nenhuma assim ou você se considere apto a pegar outra sem essa marcação, você possui total liberdade para pegá-la.
 
@@ -22,9 +22,7 @@ Bem-vindo à PetDex! Agradecemos pelo seu interesse em contribuir para este proj
    Tarefas com fotos ao lado direito já foram selecionadas por outros colaboradores.
    Geralmente, você terá uma semana para concluir a tarefa, mas isso pode variar dependendo das políticas do projeto.
 
-
 4. **Crie uma Branch:** Crie uma branch para trabalhar nas suas alterações.
-
 
 5. **Faça Alterações:** Faça as alterações desejadas no código, documentação, ou outros recursos.
 6. **Testes:** Certifique-se de que todas as mudanças são testadas e não introduzem erros.
@@ -59,16 +57,46 @@ Agradecemos por ajudar a melhorar a PetDex! Sua dedicação à qualidade e inova
 
 Se você tiver alguma dúvida ou precisar de ajuda em qualquer etapa do processo de contribuição, sinta-se à vontade para criar um problema (issue) ou entrar em contato com a equipe de mantenedores.[Discord](discord.gg/3gsMAEumEd)
 
+## Executando o projeto com Docker Compose
+
+O projeto possui um arquivo `docker-compose.yml` que irá subir containers com todas as dependências do projeto e executará o programa com live reload ativado. Com um simples comando você vai ter um ambiente de desenvolvimento completamente configurado onde só vai se preocupar em codificar e salvar o código.
+
+Executar o projeto com Docker Compose proporciona muitas vantagens, facilitando a colaboratividade e também executando o programa em um ambiente o mais parecido possível com o ambiente de produção.
+
+Antes de iniciar certifique-se de ter o Docker instalado e configurado corretamente em sua máquina.
+
+Na raiz do projeto, copie o `.env.example` e nomeie o novo arquivo com `.env`:
+
+```bash
+$ cp .env.example .env
+```
+
+Por fim, execute o projeto com:
+
+```bash
+$ make compose-dev
+
+# ou
+
+$ docker compose --profile development --env-file .env up --build
+```
+
+_Subir todos os containers pode demorar um tempo dependendo do seu setup ou internet._
 
 ## Banco de dados
-Usamos MariaDB como Banco de Dados Relacional da aplicação. 
+
+Usamos MariaDB como Banco de Dados Relacional da aplicação.
+
 #### Migration
+
 Uma migration é um script que é usado para alterar o esquema de um banco de dados, como a adição de novas tabelas, colunas ou índices.
 Para criar uma migration, você deve criar um novo arquivo com a extensão .sql. O conteúdo do arquivo deve conter as alterações que você deseja fazer no esquema do banco de dados.
 Os arquivos .sql deverão ser criados com o comando abaixo:
+
 ```bash
    make create-migrations title=titulo_da_migration
 ```
+
 Ao executar o comando, serão criados dois arquivos na pasta /migrations com sufixos `.up` e `.down`. Os arquivos `.up` representam as alterações desejadas que serão aplicados no banco de dados, enquantos os arquivos `.down`, representa a ação de rollback referente ao que foi executado no arquivos `.up` de mesma versão.
 
 Obs.: crie os script SQL de forma idempotente e caso o seu script tenha vários comando ou consultas, considere colocar isso em uma transação.
