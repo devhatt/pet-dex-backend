@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"pet-dex-backend/v2/api/controllers"
-	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/routes"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/infra/db"
@@ -32,21 +31,14 @@ func main() {
 	dbUserRepo := db.NewUserRepository(sqlxDb)
 	hash := hasher.NewHasher()
 
-	exampleUseCase := usecase.NewExampleUseCase(dbPetRepo)
-  petUsecase := usecase.NewPetUseCase(dbPetRepo)
+	petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash)
-
-	exampleController := petcontroller.NewExampleController(exampleUseCase)
-  petController := controllers.NewPetController(petUsecase)
-	findPetController := petcontroller.NewFindPetController(findPetUseCase)
+	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
 
 	contrllers := routes.Controllers{
-		FindPetController: findPetController,
-    PetController:     petController,
-		ExampleController: exampleController,
+		PetController:  petController,
 		UserController: userController,
-
 	}
 	router := routes.InitializeRouter(contrllers)
 

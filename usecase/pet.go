@@ -6,7 +6,7 @@ import (
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
 
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type PetUseCase struct {
@@ -17,7 +17,7 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 	return &PetUseCase{repo: repo}
 }
 
-func (c *PetUseCase) FindById(userID uniqueEntity.ID) (*entity.Pet, error) {
+func (c *PetUseCase) FindById(userID uniqueEntityId.ID) (*entity.Pet, error) {
 	return nil, nil
 }
 
@@ -44,7 +44,7 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 		(petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
 
-func (c *PetUseCase) ListUserPets(userID uniqueEntity.ID) ([]*entity.Pet, error) {
+func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
 	pets, err := c.repo.ListByUser(userID)
 	if err != nil {
 		err = fmt.Errorf("failed to retrieve all user pets: %w", err)

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/usecase"
-	"regexp"
 )
 
 type UserController struct {
@@ -29,11 +28,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(userDto.Pass)
-	regex := regexp.MustCompile(`^[A-Za-z\d\W]{6,}$`)
-	passMatch := regex.MatchString(userDto.Pass)
-
-	if !passMatch {
+	if !userDto.Validate() {
 		http.Error(w, "senha nao atende aos requisitos", http.StatusBadRequest)
 		return
 	}
