@@ -15,11 +15,16 @@ type MockPetRepository struct {
 	mock.Mock
 }
 
-func (MockPetRepository) Save(entity.Pet) error {
+func (m *MockPetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-func (m MockPetRepository) Update(petID string, userID string, updateValues map[string]interface{}) error {
+func (m *MockPetRepository) FindByID(ID uniqueEntity.ID) (*entity.Pet, error) {
+	args := m.Called(ID)
+	return args.Get(0).(*entity.Pet), args.Error(1)
+}
+
+func (m *MockPetRepository) Update(petID string, userID string, updateValues map[string]interface{}) error {
 	args := m.Called(petID, userID, updateValues)
 	return args.Error(0)
 }
@@ -55,7 +60,7 @@ func TestUseCaseDoInvalidSize(t *testing.T) {
 
 	err := usecase.Update(id, userID.String(), petToUpdate)
 
-	assert.EqualError(t, err, "The animal size is invalid")
+	assert.EqualError(t, err, "the animal size is invalid")
 	mockRepo.AssertNotCalled(t, "Update")
 }
 
@@ -132,4 +137,52 @@ func TestListUserPetsErrorOnRepo(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, pets)
 	assert.EqualError(t, err, "failed to retrieve all user pets: this is a repository error")
+}
+
+func TestFindByID(t *testing.T) {
+	ID := uniqueEntity.NewID()
+	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntity.NewID(), Name: "Rex", AvailableToAdoption: true}
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("FindByID", ID).Return(expectedPet, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	resultPet, err := usecase.FindByID(ID)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, resultPet)
+	assert.Equal(t, expectedPet, resultPet)
+}
+
+func TestFindByIDNilResult(t *testing.T) {
+	petID := uniqueEntity.NewID()
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("FindByID", petID).Return(nil, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	resultPet, err := usecase.FindByID(petID)
+
+	assert.NoError(t, err)
+	assert.Nil(t, resultPet)
+}
+
+func TestFindByIDErrorOnRepo(t *testing.T) {
+	petID := uniqueEntity.NewID()
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("FindByID", petID).Return(nil, errors.New("this is a repository error"))
+	usecase := NewPetUseCase(mockRepo)
+
+	resultPet, err := usecase.FindByID(petID)
+
+	assert.Error(t, err)
+	assert.Nil(t, resultPet)
+	assert.EqualError(t, err, "failed to retrieve pet: this is a repository error")
 }
