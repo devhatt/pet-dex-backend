@@ -21,15 +21,19 @@ func main() {
 	database := config.InitConfigs()
 	config.RunMigrations(database)
 	dbPetRepo := db.NewPetRepository(database)
+	bdBreedRepo := db.NewBreedRepository(database)
 
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
+	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
 
 	petController := controllers.NewPetController(petUsecase)
+	breedController := controllers.NewBreedController(breedUsecase)
 	findPetController := petcontroller.NewFindPetController(petUsecase)
 
 	contrllers := routes.Controllers{
 		FindPetController: findPetController,
 		PetController:     petController,
+		BreedController:   breedController,
 	}
 	router := routes.InitializeRouter(contrllers)
 
