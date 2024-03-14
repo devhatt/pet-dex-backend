@@ -1,20 +1,19 @@
 package routes
 
 import (
+<<<<<<< HEAD
 	"pet-dex-backend/v2/api/controllers"
 	"fmt"
 	"encoding/json"
+=======
+>>>>>>> 07b8768 (abstração da logica de geração de token para um usecase)
 	"net/http"
+	"pet-dex-backend/v2/api/controllers"
 	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/middlewares"
-	"pet-dex-backend/v2/infra/config"
-	"pet-dex-backend/v2/interfaces"
-	"pet-dex-backend/v2/pkg/encoder"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/golang-jwt/jwt"
 )
 
 type Controllers struct {
@@ -39,26 +38,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/user", func(r chi.Router) {
-			r.Post("/token", func(w http.ResponseWriter, r *http.Request) {
-				encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
-				user := &interfaces.UserClaims{}
-				json.NewDecoder(r.Body).Decode(&user)
-				token, _ := encoder.NewAccessToken(interfaces.UserClaims{
-					Id:    user.Id,
-					Name:  user.Email,
-					Email: user.Email,
-					StandardClaims: jwt.StandardClaims{
-						ExpiresAt: time.Now().Add(time.Hour).Unix(),
-					},
-				})
-				w.Header().Add("Authorization", token)
-				json.NewEncoder(w).Encode(struct {
-					Token string `json:"token"`
-				}{
-					Token: token,
-				})
-				w.WriteHeader(201)
-			})
+			r.Post("/token", controllers.UserController.GenerateToken)
 		})
 	})
 }

@@ -3,9 +3,10 @@ module pet-dex-backend/v2
 go 1.21.4
 
 require (
+	github.com/go-chi/jwtauth/v5 v5.3.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.4.0
-	github.com/lestrrat-go/jwx/v2 v2.0.17
+	github.com/lestrrat-go/jwx/v2 v2.0.20
 	github.com/stretchr/testify v1.9.0
 )
 
@@ -24,8 +25,6 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/stretchr/objx v0.5.2 // indirect
 	golang.org/x/crypto v0.21.0
-	github.com/lestrrat-go/jwx/v2 v2.0.17
-	github.com/stretchr/testify v1.8.4
 )
 
 require (
