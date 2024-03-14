@@ -84,6 +84,15 @@ func TestUpdateUseCaseisValidSize(t *testing.T) {
 	assert.False(t, usecase.isValidPetSize(&entity.Pet{Size: ""}))
 }
 
+func TestUpdateUseCaseValidWeight(t *testing.T) {
+	usecase := PetUseCase{}
+
+	assert.True(t, usecase.isValidWeight(&entity.Pet{Weight: 1, WeightMeasure: "kg"}))
+	assert.True(t, usecase.isValidWeight(&entity.Pet{Weight: 1, WeightMeasure: "lb"}))
+	assert.False(t, usecase.isValidWeight(&entity.Pet{Weight: 0, WeightMeasure: "kg"}))
+	assert.False(t, usecase.isValidWeight(&entity.Pet{Weight: 1, WeightMeasure: "invalid"}))
+}
+
 func TestListUserPets(t *testing.T) {
 	userID := uniqueEntity.NewID()
 	expectedPets := []*entity.Pet{
