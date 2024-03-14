@@ -21,10 +21,10 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			r.Patch("/{petID}", controllers.PetController.Update)
 		})
 
-		r.Route("/breeds", func(r chi.Router) {
+		r.Route("/racas", func(r chi.Router) {
 			r.Get("/", controllers.BreedController.List)
-			r.Get("/filter", controllers.BreedController.FilteredList)
-			r.Options("/filter", controllers.BreedController.FilterOptions)
+			r.Get("/filtro", controllers.BreedController.FilteredList)
+			r.Options("/filtro", controllers.BreedController.FilterOptions)
 		})
 
 		r.Route("/ong", func(r chi.Router) {

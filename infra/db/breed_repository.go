@@ -4,8 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 	"strings"
+
+	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 )
 
 type BreedRepository struct {
@@ -18,34 +21,21 @@ func NewBreedRepository(db *sql.DB) interfaces.BreedRepository {
 	}
 }
 
-func (br *BreedRepository) Save(entity.Breed) error {
+func (breedRepository *BreedRepository) Save(entity.Breed) error {
 	return nil
 }
 
-func (br *BreedRepository) FindById(id int) (breed *entity.Breed, err error) {
+func (breedRepository *BreedRepository) FindById(uniqueEntity.ID) (breed *entity.Breed, err error) {
 
 	return nil, nil
 }
 
-func (br *BreedRepository) List() (breeds []*entity.Breed, err error) {
-	rows, err := br.dbconnection.Query(`
+func (breedRepository *BreedRepository) List() (breeds []*dto.BreedList, err error) {
+	rows, err := breedRepository.dbconnection.Query(`
 		SELECT 
 			id, 						
-			name, 					
-			specie, 				
-			size,					
-			description, 	
-			height,		
-			weight,		
-			physicalChar,	
-			disposition,	
-			idealFor,		
-			fur,			
-			imgUrl,		
-			weather,		
-			dressage,		
-			orgId,	 		
-			lifeExpectancy
+			name, 			
+			imgUrl
 		FROM breeds`)
 	if err != nil {
 		return nil, fmt.Errorf("error listing breeds: %w", err)
@@ -53,24 +43,11 @@ func (br *BreedRepository) List() (breeds []*entity.Breed, err error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var breed entity.Breed
+		var breed dto.BreedList
 		err := rows.Scan(
 			&breed.ID,
 			&breed.Name,
-			&breed.Specie,
-			&breed.Size,
-			&breed.Description,
-			&breed.Height,
-			&breed.Weight,
-			&breed.PhysicalChar,
-			&breed.Disposition,
-			&breed.IdealFor,
-			&breed.Fur,
 			&breed.ImgUrl,
-			&breed.Weather,
-			&breed.Dressage,
-			&breed.OrgID,
-			&breed.LifeExpectancy,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning breeds: %w", err)
@@ -81,7 +58,7 @@ func (br *BreedRepository) List() (breeds []*entity.Breed, err error) {
 	return breeds, nil
 }
 
-func (br *BreedRepository) Update(breedID string, updatePayload map[string]interface{}) error {
+func (breedRepository *BreedRepository) Update(breedID string, updatePayload map[string]interface{}) error {
 	query := "UPDATE breeds SET "
 	values := []interface{}{}
 
@@ -94,7 +71,7 @@ func (br *BreedRepository) Update(breedID string, updatePayload map[string]inter
 	query += " WHERE id=?"
 	values = append(values, breedID)
 
-	_, err := br.dbconnection.Exec(query, values...)
+	_, err := breedRepository.dbconnection.Exec(query, values...)
 	if err != nil {
 		return fmt.Errorf("error updating breed: %w \\n", err)
 	}
