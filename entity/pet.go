@@ -14,6 +14,7 @@ type Pet struct {
 	Name                string            `json:"name"`
 	Size                string            `json:"size"`
 	Weight              float64           `json:"weight"`
+	WeightMeasure       string            `json:"weight_measure"`
 	AdoptionDate        time.Time         `json:"adoption_date"`
 	Birthdate           time.Time         `json:"birthdate"`
 	Comorbidity         string            `json:"comorbidity"`
@@ -76,6 +77,7 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 		Name:                dto.Name,
 		Size:                dto.Size,
 		Weight:              dto.Weight,
+		WeightMeasure:       dto.WeightMeasure,
 		AdoptionDate:        dto.AdoptionDate,
 		Birthdate:           dto.Birthdate,
 		Comorbidity:         dto.Comorbidity,

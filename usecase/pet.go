@@ -32,13 +32,16 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
 	petToUpdate := entity.ToEntity(&petUpdateDto)
 
-	fmt.Println(petToUpdate.Size + "")
 	if !c.isValidPetSize(petToUpdate) {
 		return errors.New("the animal size is invalid")
 	}
 
 	if !c.isValideSpecialCare(petToUpdate) {
 		return errors.New("failed to update special care")
+	}
+
+	if !c.isValidWeight(petToUpdate) {
+		return errors.New("the animal weight is invalid")
 	}
 
 	err = c.repo.Update(petID, userID, petToUpdate)
@@ -52,6 +55,11 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 
 func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 	return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
+}
+
+func (c *PetUseCase) isValidWeight(petToUpdate *entity.Pet) bool {
+	return (petToUpdate.Weight > 0 &&
+		(petToUpdate.WeightMeasure == "kg" || petToUpdate.WeightMeasure == "lb"))
 }
 
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
