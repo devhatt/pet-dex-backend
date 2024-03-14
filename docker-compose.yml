@@ -3,8 +3,6 @@ version: "3.8"
 volumes:
   cache:
     driver: local
-  db:
-    driver: local
 
 networks:
   pet-dex-network:
@@ -13,8 +11,8 @@ networks:
 services:
   api-dev:
     image: cosmtrek/air
-    # profiles:
-    #   - development
+    profiles:
+      - development
     working_dir: /app
     environment:
       - DATABASE_URL=${DATABASE_URL}
