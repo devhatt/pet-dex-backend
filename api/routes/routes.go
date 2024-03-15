@@ -13,7 +13,6 @@ type Controllers struct {
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
-
 	c.Route("/api", func(r chi.Router) {
 		r.Route("/pets", func(r chi.Router) {
 			r.Get("/{id}", controllers.FindPetController.FindPet)
@@ -22,7 +21,6 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/ong", func(r chi.Router) {
-
 		})
 
 		r.Route("/user", func(r chi.Router) {
