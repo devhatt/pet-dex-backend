@@ -18,6 +18,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Route("/pets", func(r chi.Router) {
 			r.Get("/{id}", controllers.FindPetController.FindPet)
 			r.Patch("/{petID}", controllers.PetController.Update)
+			r.Get("/user-no-auth", controllers.PetController.ListByUserNoAuth)
 		})
 
 		r.Route("/ong", func(r chi.Router) {

@@ -11,4 +11,5 @@ type PetRepository interface {
 	ListByUser(userID uniqueEntity.ID) ([]*entity.Pet, error)
 	Save(pet entity.Pet) error
 	Update(petID string, userID string, updatePayload map[string]interface{}) error
+	ListByUserNoAuth()([]*entity.Pet, error)
 }

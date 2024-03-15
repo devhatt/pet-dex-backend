@@ -129,3 +129,50 @@ func (pr *PetRepository) ListByUser(userID uniqueEntity.ID) (pets []*entity.Pet,
 
 	return pets, nil
 }
+
+func (pr *PetRepository) ListByUserNoAuth() (pets []*entity.Pet, err error){
+	rows, err := pr.dbconnection.Query(`
+        SELECT
+            p.name,
+            b.name AS breed_name,
+            p.birthdate,
+            pi.url AS image_url
+        FROM
+            pets p
+            JOIN breeds b ON p.breedId = b.id
+            LEFT JOIN pets_image pi ON p.id = pi.petId
+        LIMIT 8`,
+    )
+	if err != nil {
+        return nil, fmt.Errorf("error retrieving limited pets: %w", err)
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var pet entity.Pet
+        var birthdateStr string
+
+        if err := rows.Scan(
+            &pet.ID,
+            &pet.Name,
+            &pet.BreedID,
+            &birthdateStr,
+            &pet.BreedName,
+            &pet.ImageUrl,
+        ); err != nil {
+            return nil, fmt.Errorf("error scanning limited pet row: %w", err)
+        }
+
+        if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+            return nil, fmt.Errorf("error parsing limited birthdate: %w", err)
+        }
+
+        pets = append(pets, &pet)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("error iterating over limited pet rows: %w", err)
+    }
+
+    return pets, nil
+}

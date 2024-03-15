@@ -82,3 +82,23 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func (cntrl *PetController) ListByUserNoAuth(w http.ResponseWriter, r *http.Request) {
+    pets, err := cntrl.Usecase.ListByUserNoAuth()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+	if len(pets) == 0 {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(pets); err != nil {
+        http.Error(w, "Failed to encode limited pets", http.StatusInternalServerError)
+        return
+    }
+
+	w.WriteHeader(http.StatusOK)
+}
