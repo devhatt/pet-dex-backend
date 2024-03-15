@@ -52,21 +52,3 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntity.ID) ([]*entity.Pet, error)
 	}
 	return pets, nil
 }
-
-func (c *PetUseCase) ListUserPets(userID uniqueEntity.ID) ([]*entity.Pet, error) {
-	pets, err := c.repo.ListByUser(userID)
-	if err != nil {
-		err = fmt.Errorf("failed to retrieve all user pets: %w", err)
-		return nil, err
-	}
-	return pets, nil
-}
-
-func (c *PetUseCase) ListByUserNoAuth() ([]*entity.Pet, error) {
-    pets, err := c.repo.ListByUserNoAuth()
-    if err != nil {
-        err = fmt.Errorf("failed to retrieve limited pets: %w", err)
-        return nil, err
-    }
-    return pets, nil
-}

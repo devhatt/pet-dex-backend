@@ -134,6 +134,41 @@ func TestListUserPetsErrorOnRepo(t *testing.T) {
 	assert.EqualError(t, err, "failed to retrieve all user pets: this is a repository error")
 }
 
+func TestListByUserNoAuthFail(t *testing.T) {
+    mockRepo := new(MockPetRepository)
+    defer mockRepo.AssertExpectations(t)
+
+    mockRepo.On("ListByUserNoAuth").Return([]*entity.Pet{}, expectedError)
+    usecase := NewPetUseCase(mockRepo)
+
+    pets, err := usecase.ListByUserNoAuth()
+
+    assert.Error(t, err)
+    assert.Nil(t, pets)
+    assert.EqualError(t, err, "failed to retrieve user pets: this is a repository error")
+}
+
+func TestListByUserNoAuthSuccess(t *testing.T) {
+	breedID := uniqueEntity.NewID()
+	expectedPets := []*entity.Pet{
+		{ID: uniqueEntity.NewID(), Name: "Rex", BreedID: breedID},
+		{ID: uniqueEntity.NewID(), Name: "Thor", BreedID: breedID},
+	}
+
+    mockRepo := new(MockPetRepository)
+    defer mockRepo.AssertExpectations(t)
+
+    
+    mockRepo.On("ListByUserNoAuth").Return(expectedPets, nil)
+    usecase := NewPetUseCase(mockRepo)
+
+
+    pets, err := usecase.ListByUserNoAuth()
+
+    assert.NoError(t, err)
+    assert.Equal(t, expectedPets, pets)
+}
+
 func TestListUserPets(t *testing.T) {
 	userID := uniqueEntity.NewID()
 	expectedPets := []*entity.Pet{
