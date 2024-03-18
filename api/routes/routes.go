@@ -9,6 +9,7 @@ import (
 
 type Controllers struct {
 	PetController     *controllers.PetController
+	BreedController   *controllers.BreedController
 	FindPetController *petcontroller.FindPetController
 }
 
@@ -18,6 +19,12 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Route("/pets", func(r chi.Router) {
 			r.Get("/{id}", controllers.FindPetController.FindPet)
 			r.Patch("/{petID}", controllers.PetController.Update)
+		})
+
+		r.Route("/racas", func(r chi.Router) {
+			r.Get("/", controllers.BreedController.List)
+			r.Get("/filtro", controllers.BreedController.FilteredList)
+			r.Options("/filtro", controllers.BreedController.FilterOptions)
 		})
 
 		r.Route("/ong", func(r chi.Router) {
