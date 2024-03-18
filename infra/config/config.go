@@ -8,11 +8,12 @@ import (
 
 var (
 	db                 *sql.DB
-	err                error
+	logger             *Logger
 	StandardDateLayout = "2006-01-02"
 )
 
-func InitConfigs() *sql.DB {
+func InitConfigs() error {
+	var err error
 	env := GetEnvConfig()
 
 	db, err = sql.Open("mysql", env.DBUrl)
@@ -20,9 +21,14 @@ func InitConfigs() *sql.DB {
 		panic(err)
 	}
 
-	return db
+	return nil
 }
 
 func GetDB() *sql.DB {
 	return db
+}
+
+func GetLogger(p string) *Logger {
+	logger = NewLogger(p)
+	return logger
 }
