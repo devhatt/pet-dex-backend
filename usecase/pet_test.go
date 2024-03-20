@@ -158,26 +158,29 @@ func TestFindByID(t *testing.T) {
 
 func TestFindByIDNilResult(t *testing.T) {
 	petID := uniqueEntity.NewID()
+	var pet *entity.Pet
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("FindByID", petID).Return(nil, nil)
+	mockRepo.On("FindByID", petID).Return(pet, errors.New("sql: no rows in result set"))
 	usecase := NewPetUseCase(mockRepo)
 
 	resultPet, err := usecase.FindByID(petID)
 
-	assert.NoError(t, err)
+	assert.Error(t, err)
 	assert.Nil(t, resultPet)
+	assert.EqualError(t, err, "failed to retrieve pet: sql: no rows in result set")
 }
 
 func TestFindByIDErrorOnRepo(t *testing.T) {
 	petID := uniqueEntity.NewID()
+	var pet *entity.Pet
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("FindByID", petID).Return(nil, errors.New("this is a repository error"))
+	mockRepo.On("FindByID", petID).Return(pet, errors.New("this is a repository error"))
 	usecase := NewPetUseCase(mockRepo)
 
 	resultPet, err := usecase.FindByID(petID)
