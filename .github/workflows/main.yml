@@ -17,6 +17,12 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: Install dependencies
+        run: |
+          go get .
+          go get example.com/octo-examplemodule
+          go get example.com/octo-examplemodule@v1.3.4
+
       - name: Build
         run: go build -v ./...
 
