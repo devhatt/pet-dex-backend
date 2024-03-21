@@ -55,7 +55,7 @@ func TestUseCaseDoInvalidSize(t *testing.T) {
 
 	err := usecase.Update(id, userID.String(), petToUpdate)
 
-	assert.EqualError(t, err, "The animal size is invalid")
+	assert.EqualError(t, err, "the animal size is invalid")
 	mockRepo.AssertNotCalled(t, "Update")
 }
 
