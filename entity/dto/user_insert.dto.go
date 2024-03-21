@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"fmt"
+	"net/mail"
 	"regexp"
 	"time"
 )
@@ -20,6 +22,19 @@ type UserInsertDto struct {
 	State     string     `json:"state"`
 }
 
-func (u *UserInsertDto) Validate() bool {
-	return regex.MatchString(u.Pass)
+func (u *UserInsertDto) Validate() error {
+	if u.Name == "" {
+		return fmt.Errorf("invalid name")
+	}
+
+	_, err := mail.ParseAddress(u.Email)
+
+	if err != nil {
+		return fmt.Errorf("invalid email")
+	}
+
+	if !regex.MatchString(u.Pass) {
+		return fmt.Errorf("invalid password format")
+	}
+	return nil
 }

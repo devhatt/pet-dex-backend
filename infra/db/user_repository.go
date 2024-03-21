@@ -35,8 +35,8 @@ func (ur *UserRepository) Save(user *entity.User) error {
 	return nil
 }
 
-func (ur *UserRepository) SaveAddress(user *entity.User) error {
-	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitute) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitute)", &user.Adresses)
+func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
+	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitute) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitute)", &addr)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#UserRepository.SaveAddress error: %w", err))
@@ -47,7 +47,7 @@ func (ur *UserRepository) SaveAddress(user *entity.User) error {
 	return nil
 }
 
-func (ur *UserRepository) Update(userId uniqueEntityId.ID, user entity.User) error {
+func (ur *UserRepository) Update(userID uniqueEntityId.ID, user entity.User) error {
 	return nil
 }
 

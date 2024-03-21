@@ -28,8 +28,10 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !userDto.Validate() {
-		http.Error(w, "senha nao atende aos requisitos", http.StatusBadRequest)
+	err = userDto.Validate()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

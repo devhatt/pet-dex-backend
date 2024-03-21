@@ -268,17 +268,17 @@ func (_c *MockUserRepository_Save_Call) RunAndReturn(run func(*entity.User) erro
 	return _c
 }
 
-// SaveAddress provides a mock function with given fields: user
-func (_m *MockUserRepository) SaveAddress(user *entity.User) error {
-	ret := _m.Called(user)
+// SaveAddress provides a mock function with given fields: addr
+func (_m *MockUserRepository) SaveAddress(addr *entity.Address) error {
+	ret := _m.Called(addr)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SaveAddress")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.User) error); ok {
-		r0 = rf(user)
+	if rf, ok := ret.Get(0).(func(*entity.Address) error); ok {
+		r0 = rf(addr)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -292,14 +292,14 @@ type MockUserRepository_SaveAddress_Call struct {
 }
 
 // SaveAddress is a helper method to define mock.On call
-//   - user *entity.User
-func (_e *MockUserRepository_Expecter) SaveAddress(user interface{}) *MockUserRepository_SaveAddress_Call {
-	return &MockUserRepository_SaveAddress_Call{Call: _e.mock.On("SaveAddress", user)}
+//   - addr *entity.Address
+func (_e *MockUserRepository_Expecter) SaveAddress(addr interface{}) *MockUserRepository_SaveAddress_Call {
+	return &MockUserRepository_SaveAddress_Call{Call: _e.mock.On("SaveAddress", addr)}
 }
 
-func (_c *MockUserRepository_SaveAddress_Call) Run(run func(user *entity.User)) *MockUserRepository_SaveAddress_Call {
+func (_c *MockUserRepository_SaveAddress_Call) Run(run func(addr *entity.Address)) *MockUserRepository_SaveAddress_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*entity.User))
+		run(args[0].(*entity.Address))
 	})
 	return _c
 }
@@ -309,14 +309,14 @@ func (_c *MockUserRepository_SaveAddress_Call) Return(_a0 error) *MockUserReposi
 	return _c
 }
 
-func (_c *MockUserRepository_SaveAddress_Call) RunAndReturn(run func(*entity.User) error) *MockUserRepository_SaveAddress_Call {
+func (_c *MockUserRepository_SaveAddress_Call) RunAndReturn(run func(*entity.Address) error) *MockUserRepository_SaveAddress_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Update provides a mock function with given fields: userId, user
-func (_m *MockUserRepository) Update(userId uuid.UUID, user entity.User) error {
-	ret := _m.Called(userId, user)
+// Update provides a mock function with given fields: userID, user
+func (_m *MockUserRepository) Update(userID uuid.UUID, user entity.User) error {
+	ret := _m.Called(userID, user)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -324,7 +324,7 @@ func (_m *MockUserRepository) Update(userId uuid.UUID, user entity.User) error {
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(uuid.UUID, entity.User) error); ok {
-		r0 = rf(userId, user)
+		r0 = rf(userID, user)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -338,13 +338,13 @@ type MockUserRepository_Update_Call struct {
 }
 
 // Update is a helper method to define mock.On call
-//   - userId uuid.UUID
+//   - userID uuid.UUID
 //   - user entity.User
-func (_e *MockUserRepository_Expecter) Update(userId interface{}, user interface{}) *MockUserRepository_Update_Call {
-	return &MockUserRepository_Update_Call{Call: _e.mock.On("Update", userId, user)}
+func (_e *MockUserRepository_Expecter) Update(userID interface{}, user interface{}) *MockUserRepository_Update_Call {
+	return &MockUserRepository_Update_Call{Call: _e.mock.On("Update", userID, user)}
 }
 
-func (_c *MockUserRepository_Update_Call) Run(run func(userId uuid.UUID, user entity.User)) *MockUserRepository_Update_Call {
+func (_c *MockUserRepository_Update_Call) Run(run func(userID uuid.UUID, user entity.User)) *MockUserRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(uuid.UUID), args[1].(entity.User))
 	})

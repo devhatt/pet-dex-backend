@@ -17,7 +17,7 @@ type User struct {
 	BirthDate *time.Time        `json:"birthdate"`
 	CreatedAt *time.Time        `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time        `json:"updatedAt" db:"updated_at"`
-	Adresses  addresses         `json:"addresses"`
+	Adresses  Address         `json:"addresses"`
 }
 
 func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *User {
@@ -39,8 +39,8 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 	}
 }
 
-func NewAddress(userId uniqueEntityId.ID, city, state string) addresses {
-	return addresses{
+func NewAddress(userId uniqueEntityId.ID, city, state string) Address {
+	return Address{
 		ID:      uniqueEntityId.NewID(),
 		UserId:  userId,
 		Address: "",
@@ -49,7 +49,7 @@ func NewAddress(userId uniqueEntityId.ID, city, state string) addresses {
 	}
 }
 
-type addresses struct {
+type Address struct {
 	ID        uniqueEntityId.ID `json:"id" db:"id"`
 	UserId    uniqueEntityId.ID `json:"userId" db:"userId"`
 	Address   string            `json:"address" db:"address"`
