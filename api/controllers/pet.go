@@ -60,6 +60,29 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	ID, err := uniqueEntity.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	pet, err := cntrl.Usecase.FindByID(ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&pet); err != nil {
+		http.Error(w, "Failed to encode pet", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 
