@@ -17,13 +17,8 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 	return &PetUseCase{repo: repo}
 }
 
-func (c *PetUseCase) FindByID(ID uniqueEntity.ID) (*entity.Pet, error) {
-	pet, err := c.repo.FindByID(ID)
-	if err != nil {
-		err = fmt.Errorf("failed to retrieve pet: %w", err)
-		return nil, err
-	}
-	return pet, nil
+func (c *PetUseCase) FindById(userID uniqueEntity.ID) (*entity.Pet, error) {
+	return nil, nil
 }
 
 func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet) (err error) {
