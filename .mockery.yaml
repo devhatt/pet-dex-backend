@@ -1,0 +1,9 @@
+with-expecter: true
+packages:
+    pet-dex-backend/v2/interfaces:
+        all: true
+        interfaces:
+          Hasher:
+          PetRepository:
+          UserRepository:
+          AdressRepo:

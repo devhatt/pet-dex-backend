@@ -18,6 +18,7 @@ func RunMigrations(dbconnection *sql.DB) {
 		driver,
 	)
 	fmt.Println("Executing migrations(UP)")
+	fmt.Println(env.MIGRATIONS_PATH)
 	error := m.Up()
 
 	if error != nil && error != migrate.ErrNoChange {

@@ -5,11 +5,13 @@ import (
 	"log"
 	"net/http"
 	"pet-dex-backend/v2/api/controllers"
-	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 	"pet-dex-backend/v2/api/routes"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/infra/db"
+	"pet-dex-backend/v2/pkg/hasher"
 	"pet-dex-backend/v2/usecase"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
@@ -21,16 +23,23 @@ func main() {
 	config.InitConfigs()
 	database := config.GetDB()
 	config.RunMigrations(database)
+	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
+
+	if err != nil {
+		panic(err)
+	}
 	dbPetRepo := db.NewPetRepository(database)
+	dbUserRepo := db.NewUserRepository(sqlxDb)
+	hash := hasher.NewHasher()
 
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
-
+	uusercase := usecase.NewUserUsecase(dbUserRepo, hash)
 	petController := controllers.NewPetController(petUsecase)
-	findPetController := petcontroller.NewFindPetController(petUsecase)
+	userController := controllers.NewUserController(uusercase)
 
 	contrllers := routes.Controllers{
-		FindPetController: findPetController,
-		PetController:     petController,
+		PetController:  petController,
+		UserController: userController,
 	}
 	router := routes.InitializeRouter(contrllers)
 
