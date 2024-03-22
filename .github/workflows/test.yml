@@ -21,3 +21,6 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Teste 2
+        run: go test -v ./...
