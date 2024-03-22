@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/api/errors"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/usecase"
 
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -81,4 +82,48 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
+	var petToSave dto.PetInsertDto
+
+	err := json.NewDecoder(r.Body).Decode(&petToSave)
+	defer r.Body.Close()
+
+	if petToSave.Validate() != nil{
+		fmt.Printf("Invalid request: could not validate pet data from request body %s", err.Error())
+		err := petToSave.Validate()
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if err != nil {
+		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
+		err := errors.ErrInvalidBody{
+			Description: "The body is invalid",
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	err = cntrl.Usecase.Save(petToSave)
+
+	if err != nil {
+		fmt.Printf("Error in usecase: %s", err.Error())
+
+		err := err.Error()
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
