@@ -31,8 +31,8 @@ jobs:
       #   run: make run-api
       # - name: Compose-Dev
       #   run: make compose-dev
-      - name: Compose-Prod
-        run: make compose-prod
+      # - name: Compose-Prod
+      #   run: make compose-prod
 
       - name: Create Migrations
         run: make create-migrations
