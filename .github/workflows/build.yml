@@ -26,6 +26,8 @@ jobs:
         run: go build -v ./...
       - name: Run
         run: make run
+      - name: Create .env
+        run: cp .env.example .env
       # Falta .env
       # - name: Run-Api
       #   run: make run-api
