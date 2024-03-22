@@ -26,15 +26,16 @@ jobs:
         run: go build -v ./...
       - name: Run
         run: make run
+
       - name: Create .env
         run: cp .env.example .env
-      # Falta .env
-      # - name: Run-Api
-      #   run: make run-api
-      # - name: Compose-Dev
-      #   run: make compose-dev
-      # - name: Compose-Prod
-      #   run: make compose-prod
+      - name: Run-Api
+        run: make run-api
+
+      - name: Compose-Dev
+        run: make compose-dev
+      - name: Compose-Prod
+        run: make compose-prod
 
       - name: Create Migrations
         run: make create-migrations
