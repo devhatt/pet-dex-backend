@@ -1,4 +1,4 @@
-name: Go
+name: Go CI
 
 on:
   push:
@@ -36,3 +36,6 @@ jobs:
 
       - name: Create Migrations
         run: make create-migrations
+
+      - name: Teste 2
+        run: go test -v ./...
