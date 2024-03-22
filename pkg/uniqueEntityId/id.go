@@ -1,4 +1,4 @@
-package entity
+package uniqueEntityId
 
 import "github.com/google/uuid"
 

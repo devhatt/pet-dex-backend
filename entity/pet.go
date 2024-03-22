@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type Pet struct {

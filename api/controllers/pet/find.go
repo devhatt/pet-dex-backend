@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/usecase"
 
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	uniqueEntity "pet-dex-backend/v2/pkg/uniqueEntityId"
 
 	"github.com/go-chi/chi/v5"
 )

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 )
 
@@ -24,14 +24,14 @@ func (m MockPetRepository) Update(petID string, userID string, updateValues map[
 	return args.Error(0)
 }
 
-func (m *MockPetRepository) ListByUser(userID uniqueEntity.ID) ([]*entity.Pet, error) {
+func (m *MockPetRepository) ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
 	args := m.Called(userID)
 	return args.Get(0).([]*entity.Pet), args.Error(1)
 }
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
-	userID := uniqueEntity.NewID()
+	userID := uniqueEntityId.NewID()
 	petToUpdate := &entity.Pet{Size: "medium", UserID: userID}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
@@ -46,7 +46,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 
 func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
-	userID := uniqueEntity.NewID()
+	userID := uniqueEntityId.NewID()
 	petToUpdate := &entity.Pet{Size: "Invalid Size"}
 	mockRepo := new(MockPetRepository)
 	//mockRepo.On("FindById", id).Return(&entity.Pet{ID: "123", UserID: "321"}, nil)
@@ -55,7 +55,7 @@ func TestUseCaseDoInvalidSize(t *testing.T) {
 
 	err := usecase.Update(id, userID.String(), petToUpdate)
 
-	assert.EqualError(t, err, "The animal size is invalid")
+	assert.EqualError(t, err, "the animal size is invalid")
 	mockRepo.AssertNotCalled(t, "Update")
 }
 
@@ -94,10 +94,10 @@ func TestUpdateUseCaseValidWeight(t *testing.T) {
 }
 
 func TestListUserPets(t *testing.T) {
-	userID := uniqueEntity.NewID()
+	userID := uniqueEntityId.NewID()
 	expectedPets := []*entity.Pet{
-		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
-		{ID: uniqueEntity.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
 	}
 
 	mockRepo := new(MockPetRepository)
@@ -113,7 +113,7 @@ func TestListUserPets(t *testing.T) {
 }
 
 func TestListUserPetsNoPetsFound(t *testing.T) {
-	userID := uniqueEntity.NewID()
+	userID := uniqueEntityId.NewID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
@@ -128,7 +128,7 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 }
 
 func TestListUserPetsErrorOnRepo(t *testing.T) {
-	userID := uniqueEntity.NewID()
+	userID := uniqueEntityId.NewID()
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)

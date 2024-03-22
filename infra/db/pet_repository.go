@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type PetRepository struct {
@@ -59,7 +59,7 @@ func (pr *PetRepository) Update(petID string, userID string, updatePayload map[s
 	return nil
 }
 
-func (pr *PetRepository) ListByUser(userID uniqueEntity.ID) (pets []*entity.Pet, err error) {
+func (pr *PetRepository) ListByUser(userID uniqueEntityId.ID) (pets []*entity.Pet, err error) {
 	rows, err := pr.dbconnection.Query(`
 		SELECT
 		p.id,
