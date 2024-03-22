@@ -2,7 +2,7 @@ package dto
 
 import (
 	"errors"
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"regexp"
 	"time"
 )
@@ -15,8 +15,8 @@ var sizeRegex = regexp.MustCompile(`^(small|medium|large|giant)$`)
 
 type PetInsertDto struct {
 	Name         string          `json:"name"`
-	UserID       uniqueEntity.ID `json:"user_id"`
-	BreedID      uniqueEntity.ID `json:"breed_id"`
+	UserID       uniqueEntityId.ID `json:"user_id"`
+	BreedID      uniqueEntityId.ID `json:"breed_id"`
 	AdoptionDate *time.Time      `json:"adoption_date"`
 	Birthdate    *time.Time      `json:"birthdate"`
 	Weight       float64         `json:"weight"`
