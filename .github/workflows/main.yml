@@ -26,8 +26,9 @@ jobs:
         run: go build -v ./...
       - name: Run
         run: make run
-      - name: Run-Api
-        run: make run-api
+      # Falta .env
+      # - name: Run-Api
+      #   run: make run-api
 
       - name: Compose-Dev
         run: make compose-dev
