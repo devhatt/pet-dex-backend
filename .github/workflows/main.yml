@@ -29,9 +29,8 @@ jobs:
       # Falta .env
       # - name: Run-Api
       #   run: make run-api
-
-      - name: Compose-Dev
-        run: make compose-dev
+      # - name: Compose-Dev
+      #   run: make compose-dev
       - name: Compose-Prod
         run: make compose-prod
 
