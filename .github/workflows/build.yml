@@ -31,8 +31,8 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
 
-      - name: Compose-Dev
-        run: make compose-dev
+      # - name: Compose-Dev
+      #   run: make compose-dev
 
       - name: Compose-Prod
         run: make compose-prod
