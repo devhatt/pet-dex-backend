@@ -10,5 +10,5 @@ type PetRepository interface {
 	ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet, error)
 	FindByID(ID uniqueEntityId.ID) (*entity.Pet, error)
 	Save(pet entity.Pet) error
-	Update(petID string, userID string, updatePayload map[string]interface{}) error
+	Update(petID string, userID string, petToUpdate *entity.Pet) error
 }

@@ -6,7 +6,6 @@ import (
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
-	"strings"
 	"time"
 
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -96,26 +95,30 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 
 	return &pet, nil
 }
+func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity.Pet) error {
 
-func (pr *PetRepository) Update(petID string, userID string, updatePayload map[string]interface{}) error {
-	query := "UPDATE pets SET "
-	values := []interface{}{}
-
-	for key, value := range updatePayload {
-		query += key + "=?, "
-		values = append(values, value)
-	}
-
-	query = strings.TrimSuffix(query, ", ")
-	query += " WHERE id=? AND userId=?"
-	values = append(values, petID)
-	values = append(values, userID)
+	query := "UPDATE pets SET name=?, size=?, weight=?, adoptionDate=?, birthdate=?, comorbidity=?, tags=?, castrated=?, availableToAdoption=?, breedId=? WHERE id=?"
+	values := []interface{}{petToUpdate.Name, petToUpdate.Size, petToUpdate.Weight, petToUpdate.AdoptionDate, petToUpdate.Birthdate, petToUpdate.Comorbidity, petToUpdate.Tags, petToUpdate.Castrated, petToUpdate.AvailableToAdoption, petToUpdate.BreedID, petID}
 
 	_, err := pr.dbconnection.Exec(query, values...)
 	if err != nil {
 		return fmt.Errorf("error updating pet: %w \\n", err)
 	}
 
+	_, errDel := pr.dbconnection.Exec("DELETE FROM vaccines WHERE petId = ?", petID)
+	if err != nil {
+		return fmt.Errorf("error removing existing vaccines: %w", errDel)
+	}
+
+	for _, vaccine := range petToUpdate.Vaccines {
+		_, err := pr.dbconnection.Exec(
+			"INSERT INTO vaccines (id, petId, name, date, doctorCRM) VALUES (?, ?, ?, ?, ?)",
+			vaccine.ID, petID, vaccine.Name, vaccine.Date, vaccine.DoctorCRM,
+		)
+		if err != nil {
+			return fmt.Errorf("error adding new vaccine: %w", err)
+		}
+	}
 	return nil
 }
 

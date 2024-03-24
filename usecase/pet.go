@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -26,17 +27,14 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	return pet, nil
 }
 
-func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet) (err error) {
+func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
+	petToUpdate := petUpdateDto.ToEntity()
 
-	updateValues := map[string]interface{}{}
-
-	if c.isValidPetSize(petToUpdate) {
-		updateValues["size"] = &petToUpdate.Size
-	} else {
+	if !c.isValidPetSize(petToUpdate) {
 		return errors.New("the animal size is invalid")
 	}
 
-	err = c.repo.Update(petID, userID, updateValues)
+	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
 		return fmt.Errorf("failed to update size for pet with ID %s: %w", petID, err)
 	}

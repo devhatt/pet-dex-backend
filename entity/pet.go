@@ -21,4 +21,13 @@ type Pet struct {
 	AvailableToAdoption bool              `json:"available_to_adoption"`
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
+	Vaccines            []Vaccines        `json:"vaccines"`
+}
+
+type Vaccines struct {
+	ID        uniqueEntityId.ID `json:"id"`
+	PetID     uniqueEntityId.ID `json:"pet_id"`
+	Name      string            `json:"name"`
+	Date      time.Time         `json:"date"`
+	DoctorCRM string            `json:"doctor_crm"`
 }
