@@ -17,7 +17,7 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 	return &PetUseCase{repo: repo}
 }
 
-func (c *PetUseCase) FindByID(ID uniqueEntity.ID) (*entity.Pet, error) {
+func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	pet, err := c.repo.FindByID(ID)
 	if err != nil {
 		err = fmt.Errorf("failed to retrieve pet: %w", err)

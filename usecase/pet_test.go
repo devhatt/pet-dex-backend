@@ -19,7 +19,7 @@ func (m *MockPetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-func (m *MockPetRepository) FindByID(ID uniqueEntity.ID) (*entity.Pet, error) {
+func (m *MockPetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	args := m.Called(ID)
 	return args.Get(0).(*entity.Pet), args.Error(1)
 }
@@ -140,8 +140,8 @@ func TestListUserPetsErrorOnRepo(t *testing.T) {
 }
 
 func TestFindByID(t *testing.T) {
-	ID := uniqueEntity.NewID()
-	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntity.NewID(), Name: "Rex", AvailableToAdoption: true}
+	ID := uniqueEntityId.NewID()
+	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: true}
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
@@ -157,7 +157,7 @@ func TestFindByID(t *testing.T) {
 }
 
 func TestFindByIDNilResult(t *testing.T) {
-	petID := uniqueEntity.NewID()
+	petID := uniqueEntityId.NewID()
 	var pet *entity.Pet
 
 	mockRepo := new(MockPetRepository)
@@ -174,7 +174,7 @@ func TestFindByIDNilResult(t *testing.T) {
 }
 
 func TestFindByIDErrorOnRepo(t *testing.T) {
-	petID := uniqueEntity.NewID()
+	petID := uniqueEntityId.NewID()
 	var pet *entity.Pet
 
 	mockRepo := new(MockPetRepository)

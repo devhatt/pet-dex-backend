@@ -63,7 +63,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 
-	ID, err := uniqueEntity.ParseID(IDStr)
+	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
 		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
 		return

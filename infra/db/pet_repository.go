@@ -26,7 +26,7 @@ func (pr *PetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-func (pr *PetRepository) FindByID(ID uniqueEntity.ID) (*entity.Pet, error) {
+func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	row, err := pr.dbconnection.Query(`
         SELECT
         p.id,
