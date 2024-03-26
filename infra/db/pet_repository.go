@@ -26,17 +26,77 @@ func (pr *PetRepository) Save(entity.Pet) error {
 	return nil
 }
 
-func (pr *PetRepository) FindById(id int) (pet *entity.Pet, err error) {
-	//var petToRecive entity.Pet
-	//err = pr.dbconnection.QueryRow("SELECT id, name, localization_ong, pet_details, social_media_ong FROM pet WHERE id = ?", id).Scan(&petToRecive.Id, &petToRecive.Name, &petToRecive.LocalizationOng, &petToRecive.PetDetails, &petToRecive.SocialMediaOng)
-	//if err != nil && err != sql.ErrNoRows {
-	//	err = fmt.Errorf("error finding pet %d: %w", id, err)
-	//	fmt.Println(err)
-	//	return nil, err
-	//}
-	//pet = &petToRecive
-	return
+func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
+	row, err := pr.dbconnection.Query(`
+        SELECT
+        p.id,
+        p.name,
+        p.breedId,
+        p.size,
+        p.weight,
+        p.adoptionDate,
+        p.birthdate,
+        p.comorbidity,
+        p.tags,
+        p.castrated,
+        p.availableToAdoption,
+        p.userId,
+        b.name AS breed_name,
+        pi.url AS pet_image_url
+    FROM
+        pets p
+        JOIN breeds b ON p.breedId = b.id
+        LEFT JOIN pets_image pi ON p.id = pi.petId
+    WHERE
+        p.id = ?`,
+		ID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving pet %d: %w", ID, err)
+	}
+	defer row.Close()
+
+	if !row.Next() {
+		return nil, sql.ErrNoRows
+	}
+
+	var pet entity.Pet
+	var adoptionDateStr string
+	var birthdateStr string
+
+	if err := row.Scan(
+		&pet.ID,
+		&pet.Name,
+		&pet.BreedID,
+		&pet.Size,
+		&pet.Weight,
+		&adoptionDateStr,
+		&birthdateStr,
+		&pet.Comorbidity,
+		&pet.Tags,
+		&pet.Castrated,
+		&pet.AvailableToAdoption,
+		&pet.UserID,
+		&pet.BreedName,
+		&pet.ImageUrl,
+	); err != nil {
+		return nil, fmt.Errorf("error scanning pet: %w", err)
+	}
+
+	if pet.AdoptionDate, err = time.Parse(config.StandardDateLayout, adoptionDateStr); err != nil {
+		return nil, fmt.Errorf("error parsing adoptionDate: %w", err)
+	}
+	if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+		return nil, fmt.Errorf("error parsing birthdate: %w", err)
+	}
+
+	if err := row.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over pet rows: %w", err)
+	}
+
+	return &pet, nil
 }
+
 func (pr *PetRepository) Update(petID string, userID string, updatePayload map[string]interface{}) error {
 	query := "UPDATE pets SET "
 	values := []interface{}{}
