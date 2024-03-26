@@ -17,6 +17,7 @@ func TestNewUserUseCase(t *testing.T) {
 		repo         interfaces.UserRepository
 		hasher       interfaces.Hasher
 		expectOutput *UserUsecase
+		encoder      interfaces.Encoder
 	}{
 		"success": {
 			repo:         mockInterfaces.NewMockUserRepository(t),
@@ -27,7 +28,7 @@ func TestNewUserUseCase(t *testing.T) {
 
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 
 			assert.IsTypef(t, tcase.expectOutput, usecase, "error: New Hasher not returns a *Hasher{} struct", nil)
 		})
@@ -39,6 +40,7 @@ func TestSave(t *testing.T) {
 		repo         *mockInterfaces.MockUserRepository
 		hasher       *mockInterfaces.MockHasher
 		input        dto.UserInsertDto
+		encoder      interfaces.Encoder
 		expectOutput error
 	}{
 		"success": {
@@ -66,7 +68,7 @@ func TestSave(t *testing.T) {
 			tcase.repo.On("Save", mock.Anything).Return(tcase.expectOutput)
 			tcase.repo.On("SaveAddress", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -79,6 +81,7 @@ func TestErrorSave(t *testing.T) {
 		repo         *mockInterfaces.MockUserRepository
 		hasher       *mockInterfaces.MockHasher
 		input        dto.UserInsertDto
+		encoder      interfaces.Encoder
 		expectOutput error
 	}{
 		"errorSave": {
@@ -105,7 +108,7 @@ func TestErrorSave(t *testing.T) {
 			tcase.hasher.On("Hash", tcase.input.Pass).Return("hashedPass", nil)
 			tcase.repo.On("Save", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -113,12 +116,12 @@ func TestErrorSave(t *testing.T) {
 	}
 }
 
-
 func TestErrorHash(t *testing.T) {
 	tcases := map[string]struct {
 		repo         *mockInterfaces.MockUserRepository
 		hasher       *mockInterfaces.MockHasher
 		input        dto.UserInsertDto
+		encoder      interfaces.Encoder
 		expectOutput error
 	}{
 		"errorHash": {
@@ -138,14 +141,13 @@ func TestErrorHash(t *testing.T) {
 			},
 			expectOutput: fmt.Errorf("error on hash"),
 		},
-
 	}
 
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
 			tcase.hasher.On("Hash", tcase.input.Pass).Return("hashedPass", tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -153,12 +155,12 @@ func TestErrorHash(t *testing.T) {
 	}
 }
 
-
 func TestErrorSaveAddress(t *testing.T) {
 	tcases := map[string]struct {
 		repo         *mockInterfaces.MockUserRepository
 		hasher       *mockInterfaces.MockHasher
 		input        dto.UserInsertDto
+		encoder      interfaces.Encoder
 		expectOutput error
 	}{
 		"errorSaveAddress": {
@@ -186,7 +188,7 @@ func TestErrorSaveAddress(t *testing.T) {
 			tcase.repo.On("Save", mock.Anything).Return(nil)
 			tcase.repo.On("SaveAddress", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
