@@ -39,13 +39,8 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 	}
 }
 
-<<<<<<< HEAD
 func NewAddress(userId uniqueEntityId.ID, city, state string) Address {
 	return Address{
-=======
-func NewAddress(userId uniqueEntityId.ID, city, state string) addresses {
-	return addresses{
->>>>>>> fb44530 (fix(89): fixes on user infra)
 		ID:      uniqueEntityId.NewID(),
 		UserId:  userId,
 		Address: "",

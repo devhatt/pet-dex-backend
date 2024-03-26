@@ -2,11 +2,8 @@ package config
 
 import (
 	"database/sql"
-	"time"
 
-	"github.com/go-chi/jwtauth/v5"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/lestrrat-go/jwx/v2/jwt"
 )
 
 var (
