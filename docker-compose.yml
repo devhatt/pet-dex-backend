@@ -1,15 +1,14 @@
-version: "3.8"
-
 volumes:
   cache:
     driver: local
-
 networks:
-  pet-dex-network:
+  pet-dex-dev:
+    driver: bridge
+  pet-dex-integration-tests:
     driver: bridge
 
 services:
-  api-dev:
+  api: &api
     image: cosmtrek/air
     profiles:
       - development
@@ -31,10 +30,10 @@ services:
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
 
-  api-prod:
-    image: pet-dex-api
+  db: &db
+    image: mariadb:11.4.1-rc-jammy
     profiles:
       - production
     build:
@@ -60,7 +59,6 @@ services:
   db:
     image: mariadb
     restart: always
-    hostname: db
     ports:
       - "3306:3306"
     environment:
@@ -75,15 +73,17 @@ services:
       start_period: 1m
      
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
 
-  cache:
-    image: redis:latest
+  cache: &cache
+    image: redis:7.2.4-alpine
+    profiles:
+      - development
     restart: always
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -91,15 +91,55 @@ services:
       - "6379:6379"
     command: redis-server --save "" --requirepass ${REDIS_PASSWORD}
     volumes:
-      - cache:/data
+      - ./cache:/data
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       start_period: 1m
       
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
+
+  api-test:
+    build:
+      context: .
+      dockerfile: ./docker/integration-tests/Dockerfile
+    profiles:
+      - integration-tests
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: ${PORT}
+      ENVIROMENT: ${ENVIROMENT}
+      MIGRATIONS_PATH: ${MIGRATIONS_PATH}
+      INTEGRATION: true
+    depends_on:
+      cache-test:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
+
+  cache-test:
+    <<: *cache
+    profiles:
+      - integration-tests
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
+
+  db-test:
+    <<: *db
+    profiles:
+      - integration-tests
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
