@@ -28,7 +28,6 @@ Bem-vindo ao PetDex, o aplicativo que transforma a experiência de ser tutor de 
 - Descubra novas raças de animais que você ainda não tem.
 - Explore informações detalhadas sobre cada raça, como características físicas, temperamento e cuidados específicos.
 
-
 ## Como Contribuir
 
 Se você é um entusiasta de pets, desenvolvedor em ascensão ou simplesmente quer fazer parte da comunidade PetDex, aqui estão algumas maneiras de contribuir:
@@ -40,6 +39,55 @@ Se você é um entusiasta de pets, desenvolvedor em ascensão ou simplesmente qu
    - Aprimore a documentação existente ou crie tutoriais para ajudar outros desenvolvedores.
 3. **Testes:**
    - Ajude a garantir a estabilidade do aplicativo testando as novas funcionalidades e relatar problemas.
+
+## Executando o projeto
+
+### Manualmente
+
+Requisitos:
+
+- Go `1.21.4`
+
+Todos os comandos devem ser executados na raiz do projeto. Não esqueça de adaptar as variáveis de ambiente e configurar as conexões com os serviços que a aplicação depende.
+
+```bash
+make run
+
+# ou
+
+go run ./api/main.go
+```
+
+### Com docker compose
+
+Requisitos:
+
+- Go `1.21.4`
+- Docker
+
+O projeto possui um arquivo `docker-compose.yml` que irá subir containers com todas as dependências do projeto e executará o programa com live reload ativado. Com um simples comando você vai ter um ambiente de desenvolvimento completamente configurado onde só vai se preocupar em codificar e salvar o código.
+
+Executar o projeto com Docker Compose proporciona muitas vantagens, facilitando a colaboratividade e também executando o programa em um ambiente o mais parecido possível com o ambiente de produção.
+
+Antes de iniciar, certifique-se de ter o [Docker](https://docs.docker.com/get-docker/) instalado e configurado corretamente em sua máquina.
+
+Na raiz do projeto, copie o `.env.example` e nomeie o novo arquivo com `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Por fim, execute o projeto com:
+
+```bash
+make dev
+
+# ou
+
+docker compose --profile development --env-file .env up # use -d para executar os containers em background
+```
+
+_Subir todos os containers pode demorar um tempo dependendo do seu setup ou internet._
 
 ## Contato
 
