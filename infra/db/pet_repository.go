@@ -113,7 +113,7 @@ func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity
 	for _, vaccine := range petToUpdate.Vaccines {
 		_, err := pr.dbconnection.Exec(
 			"INSERT INTO vaccines (id, petId, name, date, doctorCRM) VALUES (?, ?, ?, ?, ?)",
-			vaccine.ID, petID, vaccine.Name, vaccine.Date, vaccine.DoctorCRM,
+			uniqueEntityId.NewID(), petID, vaccine.Name, vaccine.Date, vaccine.DoctorCRM,
 		)
 		if err != nil {
 			return fmt.Errorf("error adding new vaccine: %w", err)
