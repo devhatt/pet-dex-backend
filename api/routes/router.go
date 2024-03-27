@@ -11,7 +11,7 @@ func InitializeRouter(contrllers Controllers) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.AllowContentType("application/json"))
-	if os.Getenv("ENVIROMENT") != "DEVELOPMENT" {
+	if os.Getenv("ENVIRONMENT") != "DEVELOPMENT" {
 		router.Use(middleware.Logger)
 	}
 
