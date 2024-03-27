@@ -5,7 +5,7 @@ dev:
 	docker compose --profile development --env-file .env up
 
 integration-tests:
-	docker compose --profile integration-tests up 
+	docker compose --profile integration-tests up
 
 run:
 	go run ./api/main.go
