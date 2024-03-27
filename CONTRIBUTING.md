@@ -57,32 +57,6 @@ Agradecemos por ajudar a melhorar a PetDex! Sua dedicação à qualidade e inova
 
 Se você tiver alguma dúvida ou precisar de ajuda em qualquer etapa do processo de contribuição, sinta-se à vontade para criar um problema (issue) ou entrar em contato com a equipe de mantenedores.[Discord](discord.gg/3gsMAEumEd)
 
-## Executando o projeto com Docker Compose
-
-O projeto possui um arquivo `docker-compose.yml` que irá subir containers com todas as dependências do projeto e executará o programa com live reload ativado. Com um simples comando você vai ter um ambiente de desenvolvimento completamente configurado onde só vai se preocupar em codificar e salvar o código.
-
-Executar o projeto com Docker Compose proporciona muitas vantagens, facilitando a colaboratividade e também executando o programa em um ambiente o mais parecido possível com o ambiente de produção.
-
-Antes de iniciar certifique-se de ter o Docker instalado e configurado corretamente em sua máquina.
-
-Na raiz do projeto, copie o `.env.example` e nomeie o novo arquivo com `.env`:
-
-```bash
-$ cp .env.example .env
-```
-
-Por fim, execute o projeto com:
-
-```bash
-$ make compose-dev
-
-# ou
-
-$ docker compose --profile development --env-file .env up --build
-```
-
-_Subir todos os containers pode demorar um tempo dependendo do seu setup ou internet._
-
 ## Banco de dados
 
 Usamos MariaDB como Banco de Dados Relacional da aplicação.
