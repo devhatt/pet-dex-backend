@@ -44,9 +44,12 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newSize := petToBeUpdated.Size
+	var updateSpecialCare entity.SpecialCare
 
-	err = pc.Usecase.Update(petID, userID, &entity.Pet{Size: newSize})
+	updateSpecialCare.Description = petToBeUpdated.NeedSpecialCare.Description
+	updateSpecialCare.Needed = petToBeUpdated.NeedSpecialCare.Needed
 
+	err = pc.Usecase.Update(petID, userID, &entity.Pet{Size: newSize, NeedSpecialCare: updateSpecialCare})
 	if err != nil {
 		fmt.Printf("Error in usecase: %s", err.Error())
 

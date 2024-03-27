@@ -6,6 +6,11 @@ import (
 	uniqueEntity "pet-dex-backend/v2/pkg/entity"
 )
 
+type SpecialCare struct {
+	Needed      bool   `json:"necessario"`
+	Description string `json:"descricao"`
+}
+
 type Pet struct {
 	ID                  uniqueEntity.ID `json:"id"`
 	UserID              uniqueEntity.ID `json:"user_id"`
@@ -21,4 +26,5 @@ type Pet struct {
 	AvailableToAdoption bool            `json:"available_to_adoption"`
 	BreedName           string          `json:"breed_name"`
 	ImageUrl            string          `json:"image_url"`
+	NeedSpecialCare     SpecialCare     `json:"cuidados_especiais"`
 }
