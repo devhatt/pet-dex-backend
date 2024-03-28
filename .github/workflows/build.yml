@@ -33,9 +33,6 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: DockerFile
         uses: ./actions/dockerfile.yml
 
