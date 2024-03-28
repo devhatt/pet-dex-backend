@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
@@ -12,12 +13,12 @@ import (
 )
 
 type PetRepository struct {
-	dbconnection *sql.DB
+	dbconnection *sqlx.DB
 }
 
-func NewPetRepository(db *sql.DB) interfaces.PetRepository {
+func NewPetRepository(dbconn *sqlx.DB) interfaces.PetRepository {
 	return &PetRepository{
-		dbconnection: db,
+		dbconnection: dbconn,
 	}
 }
 
