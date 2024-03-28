@@ -25,7 +25,7 @@ func NewPetController(usecase *usecase.PetUseCase) *PetController {
 
 func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
-	petID := chi.URLParam(r, "petID")
+	petID := chi.URLParam(r, "petIB")
 
 	var petToBeUpdated entity.Pet
 	err := json.NewDecoder(r.Body).Decode(&petToBeUpdated)

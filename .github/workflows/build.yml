@@ -21,15 +21,6 @@ jobs:
         with:
           go-version: "1.21"
 
-      # - name: Install dependencies
-      #   run: go mod tidy
-
-      # - name: Build
-      #   run: go build -v ./...
-
-      # - name: Run
-      #   run: make run
-
       - name: Create .env
         run: cp .env.example .env
 
@@ -47,12 +38,3 @@ jobs:
       - name: Run Docker image
         run: |
           docker run -d -p 3000:3000 pet-dex-api:latest
-
-      # - name: Compose-Dev
-      #   run: make compose-dev
-
-      # # - name: Compose-Prod
-      # #   run: make compose-prod
-
-      # - name: Run-Api
-      #   run: make run-api

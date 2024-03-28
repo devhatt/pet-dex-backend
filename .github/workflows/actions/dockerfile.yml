@@ -1,5 +1,0 @@
-name: "DockerFile Image"
-description: "Action que faz a build do docker file"
-runs:
-  using: "docker"
-  image: dockerfile:"../../../../Dockerfile"
