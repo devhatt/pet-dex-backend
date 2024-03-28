@@ -21,23 +21,26 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Install dependencies
-        run: go mod tidy
+      # - name: Install dependencies
+      #   run: go mod tidy
 
-      - name: Build
-        run: go build -v ./...
+      # - name: Build
+      #   run: go build -v ./...
 
-      - name: Run
-        run: make run
+      # - name: Run
+      #   run: make run
 
       - name: Create .env
         run: cp .env.example .env
 
-      - name: Compose-Dev
-        run: make compose-dev
+      - name: DockerFile
+        uses: ./actions/dockerfile.yml
 
-      # - name: Compose-Prod
-      #   run: make compose-prod
+      # - name: Compose-Dev
+      #   run: make compose-dev
 
-      - name: Run-Api
-        run: make run-api
+      # # - name: Compose-Prod
+      # #   run: make compose-prod
+
+      # - name: Run-Api
+      #   run: make run-api
