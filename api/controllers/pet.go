@@ -27,7 +27,9 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	petID := chi.URLParam(r, "petID")
 
-
+	var petToBeUpdated entity.Pet
+	err := json.NewDecoder(r.Body).Decode(&petToBeUpdated)
+	defer r.Body.Close()
 
 	if err != nil {
 		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
