@@ -34,7 +34,7 @@ func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet
 	if c.isValideSpecialCare(petToUpdate) {
 		updateValues["cuidados_especiais"] = &petToUpdate.NeedSpecialCare
 	} else {
-		return errors.New("Failled to update special care")
+		return errors.New("Failed to update special care")
 	}
 
 	err = c.repo.Update(petID, userID, updateValues)
