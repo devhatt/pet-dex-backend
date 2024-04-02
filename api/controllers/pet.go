@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"pet-dex-backend/v2/api/errors"
-	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/usecase"
 
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -27,8 +27,8 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	petID := chi.URLParam(r, "petID")
 
-	var petToBeUpdated entity.Pet
-	err := json.NewDecoder(r.Body).Decode(&petToBeUpdated)
+	var petUpdateDto dto.PetUpdatetDto
+	err := json.NewDecoder(r.Body).Decode(&petUpdateDto)
 	defer r.Body.Close()
 
 	if err != nil {
@@ -43,9 +43,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newSize := petToBeUpdated.Size
-
-	err = pc.Usecase.Update(petID, userID, &entity.Pet{Size: newSize})
+	err = pc.Usecase.Update(petID, userID, petUpdateDto)
 
 	if err != nil {
 		fmt.Printf("Error in usecase: %s", err.Error())
