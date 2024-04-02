@@ -3,10 +3,16 @@ CREATE TABLE IF NOT EXISTS users
     id         uuid primary key default UUID(),
     name       varchar(120),
     type       varchar(20) check(type IN ('fisica', 'juridica')),
-    documentId varchar(14),
+    birthdate  date,
+    document VARCHAR(14),
     avatarUrl  varchar(255),
     email      varchar(128) not null,
-    phone      varchar(12)  not null
+    pass VARCHAR(100) NOT NULL,
+    phone      varchar(12)  not null,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMP,
+    UNIQUE INDEX idx_email (email)
 );
 
 CREATE TABLE IF NOT EXISTS legal_persons
@@ -17,13 +23,6 @@ CREATE TABLE IF NOT EXISTS legal_persons
     links          varchar(255),
     openingHours   varchar(120)        not null,
     adoptionPolicy longtext    not null
-);
-
-CREATE TABLE IF NOT EXISTS persons
-(
-    id        uuid primary key default UUID(),
-    userId    uuid REFERENCES users (id),
-    birthdate date not null
 );
 
 CREATE TABLE IF NOT EXISTS addresses

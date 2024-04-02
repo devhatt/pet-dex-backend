@@ -2,21 +2,20 @@ package routes
 
 import (
 	"pet-dex-backend/v2/api/controllers"
-	petcontroller "pet-dex-backend/v2/api/controllers/pet"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type Controllers struct {
 	PetController     *controllers.PetController
-	FindPetController *petcontroller.FindPetController
+	UserController    *controllers.UserController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 	c.Route("/api", func(r chi.Router) {
 		r.Route("/pets", func(r chi.Router) {
-			r.Get("/{id}", controllers.FindPetController.FindPet)
+			r.Get("/{id}", controllers.PetController.FindPet)
 			r.Patch("/{petID}", controllers.PetController.Update)
 		})
 
@@ -25,6 +24,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/user", func(r chi.Router) {
+			r.Post("/", controllers.UserController.Insert)
 			r.Get("/{id}/my-pets", controllers.PetController.ListUserPets)
 		})
 	})
