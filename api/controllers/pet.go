@@ -96,9 +96,11 @@ func (cntrl *PetController) ListByUserNoAuth(w http.ResponseWriter, r *http.Requ
 	}
 
 	if err := json.NewEncoder(w).Encode(pets); err != nil {
-        http.Error(w, "Failed to encode limited pets", http.StatusInternalServerError)
+        fmt.Println(w, "Failed to encode limited pets", http.StatusInternalServerError)
         return
     }
+
+	
 
 	w.WriteHeader(http.StatusOK)
 }

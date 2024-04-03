@@ -145,6 +145,7 @@ func (pr *PetRepository) ListByUserNoAuth() (pets []*entity.Pet, err error){
         LIMIT 8`,
     )
 	if err != nil {
+		fmt.Println(err)
         return nil, fmt.Errorf("error retrieving limited pets: %w", err)
     }
     defer rows.Close()
@@ -161,10 +162,12 @@ func (pr *PetRepository) ListByUserNoAuth() (pets []*entity.Pet, err error){
             &pet.BreedName,
             &pet.ImageUrl,
         ); err != nil {
+			fmt.Println(err)
             return nil, fmt.Errorf("error scanning limited pet row: %w", err)
         }
 
         if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+			fmt.Println(err)
             return nil, fmt.Errorf("error parsing limited birthdate: %w", err)
         }
 
@@ -172,6 +175,7 @@ func (pr *PetRepository) ListByUserNoAuth() (pets []*entity.Pet, err error){
     }
 
     if err := rows.Err(); err != nil {
+		fmt.Println(err)
         return nil, fmt.Errorf("error iterating over limited pet rows: %w", err)
     }
 
