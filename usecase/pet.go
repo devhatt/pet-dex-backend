@@ -34,6 +34,10 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 		return errors.New("the animal size is invalid")
 	}
 
+	if !c.isValideSpecialCare(petToUpdate) {
+		return errors.New("failed to update special care")
+	}
+
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
 		return fmt.Errorf("failed to update for pet with ID %s: %w", petID, err)

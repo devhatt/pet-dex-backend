@@ -6,11 +6,6 @@ import (
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
-type SpecialCare struct {
-	Needed      bool   `json:"necessario"`
-	Description string `json:"descricao"`
-}
-
 type Pet struct {
 	ID                  uniqueEntityId.ID `json:"id"`
 	UserID              uniqueEntityId.ID `json:"user_id"`
@@ -36,4 +31,9 @@ type Vaccines struct {
 	Name      string            `json:"name"`
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
+}
+
+type SpecialCare struct {
+	Needed      bool   `json:"necessario"`
+	Description string `json:"descricao"`
 }
