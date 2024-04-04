@@ -22,7 +22,7 @@ func main() {
 
 	config.InitConfigs()
 	database := config.GetDB()
-	config.RunMigrations(database)
+	config.RunUpMigrations(database)
 	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
 
 	if err != nil {
