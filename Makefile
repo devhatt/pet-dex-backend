@@ -20,8 +20,7 @@ create-migrations:
 	touch migrations/$(timestamp)_$(title).down.sql
 
 run-migrations-up:
-	migrate -path ./migrations/ -database "file://${DATABASE_URL}" -verbose up
+	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL2}" -verbose up
 
 run-migrations-down:
-	#sqlx migrate revert --database-url ${DATABASE_URL}
-	migrate -path ./migrations/ -database ${DATABASE_URL} -verbose down
+	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL2}" -verbose down

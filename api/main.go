@@ -22,7 +22,6 @@ func main() {
 
 	config.InitConfigs()
 	database := config.GetDB()
-	config.RunUpMigrations(database)
 	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
 
 	if err != nil {
@@ -37,11 +36,11 @@ func main() {
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
 
-	contrllers := routes.Controllers{
+	controllers := routes.Controllers{
 		PetController:  petController,
 		UserController: userController,
 	}
-	router := routes.InitializeRouter(contrllers)
+	router := routes.InitializeRouter(controllers)
 
 	fmt.Printf("running on port %v \n", env.PORT)
 	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
