@@ -1,0 +1,2 @@
+ALTER TABLE pets DROP COLUMN needed;
+ALTER TABLE pets DROP COLUMN description;

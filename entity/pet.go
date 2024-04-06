@@ -22,6 +22,7 @@ type Pet struct {
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
 	Vaccines            []Vaccines        `json:"vaccines"`
+	NeedSpecialCare     SpecialCare       `json:"cuidados_especiais"`
 }
 
 type Vaccines struct {
@@ -30,4 +31,9 @@ type Vaccines struct {
 	Name      string            `json:"name"`
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
+}
+
+type SpecialCare struct {
+	Needed      bool   `json:"necessario"`
+	Description string `json:"descricao"`
 }

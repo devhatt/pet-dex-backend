@@ -34,9 +34,13 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 		return errors.New("the animal size is invalid")
 	}
 
+	if !c.isValideSpecialCare(petToUpdate) {
+		return errors.New("failed to update special care")
+	}
+
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
-		return fmt.Errorf("failed to update size for pet with ID %s: %w", petID, err)
+		return fmt.Errorf("failed to update for pet with ID %s: %w", petID, err)
 	}
 
 	return nil
@@ -54,4 +58,21 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 		return nil, err
 	}
 	return pets, nil
+}
+
+func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
+	var needed = petToUpdate.NeedSpecialCare.Needed
+	var description = petToUpdate.NeedSpecialCare.Description
+
+	if needed == true {
+		if &description != nil || description != "" {
+			return true
+		}
+	}
+	if needed == false {
+		if &description == nil || description == "" {
+			return true
+		}
+	}
+	return false
 }
