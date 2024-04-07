@@ -8,6 +8,7 @@ import (
 	"pet-dex-backend/v2/api/routes"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/infra/db"
+	"pet-dex-backend/v2/pkg/encoder"
 	"pet-dex-backend/v2/pkg/hasher"
 	"pet-dex-backend/v2/usecase"
 
@@ -31,9 +32,9 @@ func main() {
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
 	hash := hasher.NewHasher()
-
+	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
-	uusercase := usecase.NewUserUsecase(dbUserRepo, hash)
+	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
 

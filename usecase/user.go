@@ -1,21 +1,27 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
+	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 type UserUsecase struct {
-	repo   interfaces.UserRepository
-	hasher interfaces.Hasher
+	repo    interfaces.UserRepository
+	hasher  interfaces.Hasher
+	encoder interfaces.Encoder
 }
 
-func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher) *UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
 	return &UserUsecase{
-		repo:   repo,
-		hasher: hasher,
+		repo:    repo,
+		hasher:  hasher,
+		encoder: encoder,
 	}
 }
 
@@ -46,4 +52,23 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 
 	return nil
 
+}
+
+func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
+	user := uc.repo.FindByEmail(loginDto.Email)
+	if user.Name == "" {
+		return "", errors.New("invalid credentials")
+	}
+	if !uc.hasher.Compare(loginDto.Password, user.Pass) {
+		return "", errors.New("invalid credentials")
+	}
+	token, _ := uc.encoder.NewAccessToken(interfaces.UserClaims{
+		Id:    user.ID.String(),
+		Name:  user.Email,
+		Email: user.Email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		},
+	})
+	return token, nil
 }

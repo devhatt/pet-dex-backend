@@ -9,6 +9,7 @@ type envconfig struct {
 	PORT            string `mapstructure:"PORT"`
 	ENV             string `mapstructure:"ENVIROMENT"`
 	MIGRATIONS_PATH string `mapstructure:"MIGRATIONS_PATH"`
+	JWT_SECRET string `mapstructure:"JWT_SECRET"`
 }
 
 func GetEnvConfig() *envconfig {
