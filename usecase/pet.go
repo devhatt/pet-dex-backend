@@ -64,15 +64,11 @@ func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
 	var needed = petToUpdate.NeedSpecialCare.Needed
 	var description = petToUpdate.NeedSpecialCare.Description
 
-	if needed == true {
-		if &description != nil || description != "" {
-			return true
-		}
+	if needed {
+		return description != ""
 	}
-	if needed == false {
-		if &description == nil || description == "" {
-			return true
-		}
+	if !needed {
+		return description == ""
 	}
 	return false
 }
