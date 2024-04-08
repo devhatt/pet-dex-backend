@@ -30,7 +30,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
-		logger.Error("error on ong usecase: ", err)
+		o.logger.Error("error on ong usecase: ", err)
 		return err
 	}
 
@@ -53,7 +53,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.repo.Save(ong)
 
 	if err != nil {
-		logger.Error("error on ong Save: ", err)
+		o.logger.Error("error on ong Save: ", err)
 		return err
 	}
 
@@ -61,10 +61,12 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
-func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
-	ong, err := c.repo.FindByID(ID)
+func (o *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+	// Buscar a ONG pelo ID no repositório.
+	ong, err := o.repo.FindByID(ID)
 	if err != nil {
-		err = fmt.Errorf("Failed to retrieve ONG: %w ", err)
+		o.logger.Error("Erro ao buscar ONG por ID: ", err)
+		return nil, fmt.Errorf("erro ao buscar ONG por ID: %w", err)
 	}
 	return ong, nil
 }
