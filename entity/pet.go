@@ -32,7 +32,6 @@ type Vaccines struct {
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
 }
-
 type SpecialCare struct {
 	Needed      bool   `json:"needed"`
 	Description string `json:"description"`

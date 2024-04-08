@@ -17,7 +17,7 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
-      - ENVIROMENT=${ENVIROMENT}
+      - ENVIRONMENT=${ENVIRONMENT}
       - MIGRATIONS_PATH=${MIGRATIONS_PATH}
     ports:
       - "3000:3000"
@@ -43,7 +43,7 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
-      - ENVIROMENT=${ENVIROMENT}
+      - ENVIRONMENT=${ENVIRONMENT}
       - MIGRATIONS_PATH=${MIGRATIONS_PATH}
     ports:
       - "3000:3000"
