@@ -24,7 +24,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/ong", func(r chi.Router) {
-
+			r.Get("/{id}", controllers.OngController.FindOng)
 		})
 
 		r.Route("/user", func(r chi.Router) {
