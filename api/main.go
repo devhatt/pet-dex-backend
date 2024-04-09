@@ -22,24 +22,31 @@ func main() {
 	}
 
 	config.InitConfigs()
-	database := config.GetDB()
 	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
 
 	if err != nil {
 		panic(err)
 	}
+
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
+	bdBreedRepo := db.NewBreedRepository(sqlxDb)
+
 	hash := hasher.NewHasher()
 	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
-	petUsecase := usecase.NewPetUseCase(dbPetRepo)
+
+	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
+	petUsecase := usecase.NewPetUseCase(dbPetRepo)
+
+	breedController := controllers.NewBreedController(breedUsecase)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
 
 	controllers := routes.Controllers{
-		PetController:  petController,
-		UserController: userController,
+		PetController:   petController,
+		BreedController: breedController,
+		UserController:  userController,
 	}
 	router := routes.InitializeRouter(controllers)
 

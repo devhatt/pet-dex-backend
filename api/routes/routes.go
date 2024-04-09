@@ -8,8 +8,9 @@ import (
 )
 
 type Controllers struct {
-	PetController  *controllers.PetController
-	UserController *controllers.UserController
+	PetController   *controllers.PetController
+	UserController  *controllers.UserController
+	BreedController *controllers.BreedController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
@@ -18,8 +19,11 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Use(middleware.AllowContentType("application/json"))
 
 		r.Route("/pets", func(r chi.Router) {
-			r.Get("/{id}", controllers.PetController.FindPet)
+			r.Route("/breeds", func(r chi.Router) {
+				r.Get("/", controllers.BreedController.List)
+			})
 
+			r.Get("/breeds", controllers.BreedController.List)
 			r.Patch("/{petID}", controllers.PetController.Update)
 		})
 
