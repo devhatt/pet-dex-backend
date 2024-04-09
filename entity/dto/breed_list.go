@@ -1,13 +1,11 @@
 package dto
 
-import (
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
-)
+import "pet-dex-backend/v2/pkg/uniqueEntityId"
 
 type BreedList struct {
-	ID     uniqueEntity.ID `json:"id"`
-	Name   string          `json:"name"`
-	ImgUrl string          `json:"img_url"`
+	ID     uniqueEntityId.ID `json:"id"`
+	Name   string            `json:"name"`
+	ImgUrl string            `json:"img_url"`
 }
 
 func (breed *BreedList) Validate() bool {

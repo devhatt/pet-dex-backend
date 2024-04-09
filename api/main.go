@@ -22,7 +22,6 @@ func main() {
 	}
 
 	config.InitConfigs()
-	database := config.GetDB()
 	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
 
 	if err != nil {
@@ -31,7 +30,7 @@ func main() {
 
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
-	bdBreedRepo := db.NewBreedRepository(database)
+	bdBreedRepo := db.NewBreedRepository(sqlxDb)
 
 	hash := hasher.NewHasher()
 	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)

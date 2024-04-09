@@ -12,9 +12,9 @@ type BreedRepository struct {
 	dbconnection *sqlx.DB
 }
 
-func NewBreedRepository(db *sqlx.DB) interfaces.BreedRepository {
+func NewBreedRepository(dbconn *sqlx.DB) interfaces.BreedRepository {
 	return &BreedRepository{
-		dbconnection: db,
+		dbconnection: dbconn,
 	}
 }
 
