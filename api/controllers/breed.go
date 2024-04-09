@@ -29,10 +29,3 @@ func (breedControllerc *BreedController) List(responseWriter http.ResponseWriter
 	json.NewEncoder(responseWriter).Encode(breeds)
 }
 
-func (breedController *BreedController) FilteredList(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.WriteHeader(http.StatusNotImplemented)
-}
-
-func (breedController *BreedController) FilterOptions(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.WriteHeader(http.StatusNotImplemented)
-}

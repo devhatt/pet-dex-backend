@@ -11,15 +11,16 @@ type BreedUseCase struct {
 }
 
 func NewBreedUseCase(repo interfaces.BreedRepository) *BreedUseCase {
-	return &BreedUseCase{repo: repo}
+	return &BreedUseCase{
+		repo: repo,
+	}
 }
 
 func (useCase *BreedUseCase) List() ([]*dto.BreedList, error) {
 	breed, err := useCase.repo.List()
 	if err != nil {
-		fmt.Errorf("error listing breeds: %w", err)
+		err = fmt.Errorf("error listing breeds: %w", err)
 		return nil, err
 	}
 	return breed, nil
-
 }
