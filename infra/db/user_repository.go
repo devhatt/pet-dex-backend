@@ -3,11 +3,14 @@ package db
 import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 
 	"github.com/jmoiron/sqlx"
 )
+
+var logger = config.GetLogger("user-repository")
 
 type UserRepository struct {
 	dbconnection *sqlx.DB
@@ -48,6 +51,13 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 }
 
 func (ur *UserRepository) Update(userID uniqueEntityId.ID, user entity.User) error {
+	_, err := ur.dbconnection.NamedExec("UPDATE users SET name=:name, document=:document, avatarURL=:avatarURL, email=:email, phone=:phone WHERE id=:id", &user)
+
+	if err != nil {
+		logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
+		return fmt.Errorf("error on update user, %w", err)
+	}
+
 	return nil
 }
 

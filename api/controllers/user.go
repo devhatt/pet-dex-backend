@@ -5,8 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
+
+	"github.com/go-chi/chi/v5"
 )
+
+var logger = config.GetLogger("user-controller")
 
 type UserController struct {
 	uusecase *usecase.UserUsecase
@@ -70,4 +76,33 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		Token: token,
 	})
 	w.WriteHeader(201)
+}
+
+func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+	ID, err := uniqueEntityId.ParseID(IDStr)
+
+	if err != nil {
+		logger.Errorf("[#UserController.Update] ID Inválido -> Erro: %v", err)
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+
+	var userUpdateDto dto.UserUpdateDto
+	err = json.NewDecoder(r.Body).Decode(&userUpdateDto)
+
+	if err != nil {
+		logger.Errorf("[#UserController.Update] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
+		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		return
+	}
+
+	err = uc.uusecase.Update(ID, userUpdateDto)
+
+	if err != nil {
+		logger.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
+		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		return
+	}
+
 }
