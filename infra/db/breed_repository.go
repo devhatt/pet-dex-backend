@@ -3,10 +3,13 @@ package db
 import (
 	"fmt"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 
 	"github.com/jmoiron/sqlx"
 )
+
+var logger = config.GetLogger("breed-repository")
 
 type BreedRepository struct {
 	dbconnection *sqlx.DB
@@ -26,6 +29,7 @@ func (breedRepository *BreedRepository) List() (breeds []*dto.BreedList, err err
 			imgUrl
 		FROM breeds`)
 	if err != nil {
+		logger.Error("error listing breeds", err)
 		return nil, fmt.Errorf("error listing breeds: %w", err)
 	}
 	defer rows.Close()
@@ -38,6 +42,7 @@ func (breedRepository *BreedRepository) List() (breeds []*dto.BreedList, err err
 			&breed.ImgUrl,
 		)
 		if err != nil {
+			logger.Error("error scanning breeds", err)
 			return nil, fmt.Errorf("error scanning breeds: %w", err)
 		}
 		breeds = append(breeds, &breed)
