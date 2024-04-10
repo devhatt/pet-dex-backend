@@ -14,7 +14,7 @@ type OngUseCase struct {
 func (c *OngUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	ong, err := c.repo.FindByID(ID)
 	if err != nil {
-		err = fmt.Errorf("Failed to retrieve ONG: %w", err)
+		err = fmt.Errorf("Failed to retrieve ONG: %w ", err)
 	}
 	return ong, nil
 }
