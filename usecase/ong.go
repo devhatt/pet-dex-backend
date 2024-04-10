@@ -65,8 +65,8 @@ func (o *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	// Buscar a ONG pelo ID no repositório.
 	ong, err := o.repo.FindByID(ID)
 	if err != nil {
-		o.logger.Error("Erro ao buscar ONG por ID: ", err)
-		return nil, fmt.Errorf("erro ao buscar ONG por ID: %w", err)
+		o.logger.Error("Error find Ong by ID: ", err)
+		return nil, fmt.Errorf("Error find Ong by ID: %w", err)
 	}
 	return ong, nil
 }
