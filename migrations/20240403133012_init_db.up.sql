@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS addresses
     city      varchar(50),
     state     varchar(20),
     latitude  float,
-    longitute float
+    longitude float
 );
 
 CREATE TABLE IF NOT EXISTS breeds
@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS breeds
     imgUrl          varchar(255),
     weather         varchar(255),
     dressage        varchar(255),
-    orgId           varchar(25),
     lifeExpectancy  varchar(30)
 );
 
