@@ -1,14 +1,105 @@
-version: '3.9'
+version: "3.8"
+
+volumes:
+  cache:
+    driver: local
+
+networks:
+  pet-dex-network:
+    driver: bridge
+
 services:
+  api-dev:
+    image: cosmtrek/air
+    profiles:
+      - development
+    working_dir: /app
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - MIGRATIONS_PATH=${MIGRATIONS_PATH}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    depends_on:
+      cache:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - pet-dex-network
+
+  api-prod:
+    image: pet-dex-api
+    profiles:
+      - production
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - MIGRATIONS_PATH=${MIGRATIONS_PATH}
+    ports:
+      - "3000:3000"
+    depends_on:
+      cache:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - pet-dex-network
+
   db:
     image: mariadb
     restart: always
+    hostname: db
     ports:
-      - '3306:3306'
+      - "3306:3306"
     environment:
-      MARIADB_USER: maria
-      MARIADB_PASSWORD: 123
-      MARIADB_ROOT_PASSWORD: 123
-      MARIADB_DATABASE: petdex
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
     volumes:
       - ./data:/var/lib/mysql/data
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    env_file:
+      - .env
+    networks:
+      - pet-dex-network
+
+  cache:
+    image: redis:latest
+    restart: always
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    command: redis-server --save "" --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    env_file:
+      - .env
+    networks:
+      - pet-dex-network

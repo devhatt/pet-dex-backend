@@ -7,8 +7,9 @@ var env *envconfig
 type envconfig struct {
 	DBUrl           string `mapstructure:"DATABASE_URL"`
 	PORT            string `mapstructure:"PORT"`
-	ENV             string `mapstructure:"ENVIROMENT"`
+	ENV             string `mapstructure:"ENVIRONMENT"`
 	MIGRATIONS_PATH string `mapstructure:"MIGRATIONS_PATH"`
+	JWT_SECRET string `mapstructure:"JWT_SECRET"`
 }
 
 func GetEnvConfig() *envconfig {

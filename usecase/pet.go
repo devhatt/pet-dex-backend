@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 
-	uniqueEntity "pet-dex-backend/v2/pkg/entity"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type PetUseCase struct {
@@ -17,21 +18,23 @@ func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
 	return &PetUseCase{repo: repo}
 }
 
-func (c *PetUseCase) FindById(userID uniqueEntity.ID) (*entity.Pet, error) {
-	return nil, nil
+func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
+	pet, err := c.repo.FindByID(ID)
+	if err != nil {
+		err = fmt.Errorf("failed to retrieve pet: %w", err)
+		return nil, err
+	}
+	return pet, nil
 }
 
-func (c *PetUseCase) Update(petID string, userID string, petToUpdate *entity.Pet) (err error) {
+func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
+	petToUpdate := petUpdateDto.ToEntity()
 
-	updateValues := map[string]interface{}{}
-
-	if c.isValidPetSize(petToUpdate) {
-		updateValues["size"] = &petToUpdate.Size
-	} else {
+	if !c.isValidPetSize(petToUpdate) {
 		return errors.New("the animal size is invalid")
 	}
 
-	err = c.repo.Update(petID, userID, updateValues)
+	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
 		return fmt.Errorf("failed to update size for pet with ID %s: %w", petID, err)
 	}
@@ -44,7 +47,7 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 		(petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
 
-func (c *PetUseCase) ListUserPets(userID uniqueEntity.ID) ([]*entity.Pet, error) {
+func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
 	pets, err := c.repo.ListByUser(userID)
 	if err != nil {
 		err = fmt.Errorf("failed to retrieve all user pets: %w", err)
