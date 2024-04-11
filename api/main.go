@@ -30,16 +30,19 @@ func main() {
 	}
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
+	dbOnRepo := db.NewOngRepository(sqlxDb)
 	hash := hasher.NewHasher()
 
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash)
+	ongUsecase := usecase.NewOngUseCase(dbOnRepo)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
-
+	ongController := controllers.NewOngcontroller(ongUsecase)
 	contrllers := routes.Controllers{
 		PetController:  petController,
 		UserController: userController,
+		OngController:  ongController,
 	}
 	router := routes.InitializeRouter(contrllers)
 

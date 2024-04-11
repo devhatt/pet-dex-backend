@@ -7,8 +7,9 @@ import (
 )
 
 type Controllers struct {
-	PetController     *controllers.PetController
-	UserController    *controllers.UserController
+	PetController  *controllers.PetController
+	UserController *controllers.UserController
+	OngController  *controllers.OngController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
@@ -20,7 +21,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Route("/ong", func(r chi.Router) {
-
+			r.Post("/", controllers.OngController.CreateOng)
 		})
 
 		r.Route("/user", func(r chi.Router) {
