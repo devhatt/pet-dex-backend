@@ -31,3 +31,8 @@ type Vaccines struct {
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
 }
+type PetDetails struct {
+	Breed string
+	Age int
+	Size string
+}
