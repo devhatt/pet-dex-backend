@@ -1,15 +1,15 @@
 package main
 
 import (
-	"database/sql"
 	"pet-dex-backend/v2/infra/db"
 	"pet-dex-backend/v2/usecase"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
-	dbc, err := sql.Open("mysql", "dellis:@/shud")
+	dbc, err := sqlx.Connect("mysql", "dellis:@/shud")
 	if err != nil {
 		panic(err)
 	}
