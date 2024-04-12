@@ -43,3 +43,16 @@ type PetDetails struct {
 	Age   int
 	Size  string
 }
+
+func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
+	petId := uniqueEntityId.NewID()
+
+	return &Pet{
+		ID:           petId,
+		UserID:       userId,
+		Name:         name,
+		Weight:       weight,
+		AdoptionDate: *adoptionDate,
+		Birthdate:    *birthdate,
+	}
+}

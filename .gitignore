@@ -129,7 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+#Environment config
 .vscode/*
+.idea
 
 # temporary dir
 tmp

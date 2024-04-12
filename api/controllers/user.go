@@ -45,3 +45,29 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
+func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) {
+	var userLoginDto dto.UserLoginDto
+	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("#UserController.GenerateToken error: %w", err))
+		http.Error(w, "Erro ao converter requisição ", http.StatusBadRequest)
+		return
+	}
+	err = userLoginDto.Validate()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	token, err := uc.uusecase.GenerateToken(&userLoginDto)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	w.Header().Add("Authorization", token)
+	json.NewEncoder(w).Encode(struct {
+		Token string `json:"token"`
+	}{
+		Token: token,
+	})
+	w.WriteHeader(201)
+}
