@@ -9,9 +9,9 @@ run-api:
 test:
 	go test ./...
 compose-dev:
-	docker compose --profile development --env-file .env up --build
+	docker compose --profile development --env-file .env up --build -d
 compose-prod:
-	docker compose --profile production up --build
+	docker compose --profile production up --build -d
 
 create-migrations:
 	migrate create -ext sql -dir migrations ${title}

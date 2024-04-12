@@ -37,7 +37,6 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 			Description: "The body is invalid",
 		}
 
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -51,7 +50,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		err := errors.ErrInvalidID{
 			Description: err.Error(),
 		}
-		w.Header().Set("Content-Type", "application/json")
+		
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -104,6 +103,47 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
+func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
+	var petToSave dto.PetInsertDto
+
+	err := json.NewDecoder(r.Body).Decode(&petToSave)
+	defer r.Body.Close()
+
+	if err != nil {
+		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errors.ErrInvalidBody{
+			Description: "The body is invalid",
+		})
+		return
+	}
+
+	err = petToSave.Validate()
+	if err != nil{
+		fmt.Printf("Invalid request: could not validate pet data from request body %s", err.Error())
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+
+	err = cntrl.Usecase.Save(petToSave)
+
+	if err != nil {
+		fmt.Printf("Error in usecase: %s", err.Error())
+
+		err := err.Error()
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
 func (cntrl *PetController) ListByUserNoAuth(w http.ResponseWriter, r *http.Request) {
     pets, err := cntrl.Usecase.ListByUserNoAuth()
     if err != nil {
@@ -125,3 +165,4 @@ func (cntrl *PetController) ListByUserNoAuth(w http.ResponseWriter, r *http.Requ
 
 	w.WriteHeader(http.StatusOK)
 }
+

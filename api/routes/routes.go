@@ -14,6 +14,7 @@ type Controllers struct {
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
+
 	c.Route("/api", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
 
@@ -24,10 +25,12 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 			r.Get("/breeds", controllers.BreedController.List)
 			r.Patch("/{petID}", controllers.PetController.Update)
-			r.Get("/", controllers.PetController.ListByUserNoAuth)
+      r.Get("/", controllers.PetController.ListByUserNoAuth)
+			r.Post("/", controllers.PetController.CreatePet)
 		})
 
 		r.Route("/ong", func(r chi.Router) {
+
 		})
 
 		r.Route("/user", func(r chi.Router) {
@@ -36,3 +39,6 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 	})
 }
+			
+
+
