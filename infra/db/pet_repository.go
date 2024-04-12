@@ -25,6 +25,13 @@ func NewPetRepository(dbconn *sqlx.DB) interfaces.PetRepository {
 }
 
 func (pr *PetRepository) Save(entity.Pet) error {
+	var petToSave entity.Pet
+	err := pr.dbconnection.QueryRow("INSERT INTO pets (name, weight, size, adoptionDate, birthdate, breedId, userId) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id", petToSave.Name, petToSave.Weight, petToSave.Size, petToSave.AdoptionDate, petToSave.Birthdate, petToSave.BreedID, petToSave.UserID).Scan(&petToSave.ID, &petToSave.Name, &petToSave.Weight, &petToSave.AdoptionDate, &petToSave.Birthdate, &petToSave.BreedID, &petToSave.UserID)
+	if err != nil {
+		err = fmt.Errorf("error saving pet: %w", err)
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }
 

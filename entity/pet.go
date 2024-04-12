@@ -32,6 +32,7 @@ type Vaccines struct {
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
 }
+
 type SpecialCare struct {
 	Needed      *bool  `json:"needed"`
 	Description string `json:"description"`
@@ -41,4 +42,17 @@ type PetDetails struct {
 	Breed string
 	Age   int
 	Size  string
+}
+
+func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
+	petId := uniqueEntityId.NewID()
+
+	return &Pet{
+		ID:           petId,
+		UserID:       userId,
+		Name:         name,
+		Weight:       weight,
+		AdoptionDate: *adoptionDate,
+		Birthdate:    *birthdate,
+	}
 }
