@@ -17,8 +17,8 @@ type Pet struct {
 	Birthdate           time.Time         `json:"birthdate"`
 	Comorbidity         string            `json:"comorbidity"`
 	Tags                string            `json:"tags"`
-	Castrated           bool              `json:"castrated"`
-	AvailableToAdoption bool              `json:"available_to_adoption"`
+	Castrated           *bool             `json:"castrated"`
+	AvailableToAdoption *bool             `json:"available_to_adoption"`
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
 	Vaccines            []Vaccines        `json:"vaccines"`
@@ -34,7 +34,7 @@ type Vaccines struct {
 }
 
 type SpecialCare struct {
-	Needed      bool   `json:"needed"`
+	Needed      *bool  `json:"needed"`
 	Description string `json:"description"`
 }
 
