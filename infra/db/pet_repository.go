@@ -8,6 +8,7 @@ import (
 	"pet-dex-backend/v2/interfaces"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -101,8 +102,74 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 }
 func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity.Pet) error {
 
-	query := "UPDATE pets SET size=?, description=?, needed=? WHERE id=?"
-	values := []interface{}{petToUpdate.Size, petToUpdate.NeedSpecialCare.Description, petToUpdate.NeedSpecialCare.Needed, petID}
+	query := "UPDATE pets SET"
+	values := []interface{}{}
+
+	if petToUpdate.Name != "" {
+		query = query + " name =?,"
+		values = append(values, petToUpdate.Name)
+	}
+
+	if petToUpdate.BreedID != uuid.Nil {
+		query = query + " breedId =?,"
+		values = append(values, petToUpdate.BreedID)
+	}
+
+	if petToUpdate.Size != "" {
+		query = query + " size =?,"
+		values = append(values, petToUpdate.Size)
+	}
+
+	if petToUpdate.Weight != 0 {
+		query = query + " weight =?,"
+		values = append(values, petToUpdate.Weight)
+	}
+
+	if !petToUpdate.AdoptionDate.IsZero() {
+		query = query + " adoptionDate = ?,"
+		values = append(values, petToUpdate.AdoptionDate)
+	}
+
+	if !petToUpdate.Birthdate.IsZero() {
+		query = query + " birthdate = ?,"
+		values = append(values, petToUpdate.Birthdate)
+	}
+
+	if petToUpdate.Comorbidity != "" {
+		query = query + " comorbidity = ?,"
+		values = append(values, petToUpdate.Comorbidity)
+	}
+
+	if petToUpdate.Tags != "" {
+		query = query + " tags = ?,"
+		values = append(values, petToUpdate.Tags)
+	}
+
+	if petToUpdate.Castrated != nil {
+		query = query + " castrated = ?,"
+		values = append(values, petToUpdate.Castrated)
+	}
+
+	if petToUpdate.AvailableToAdoption != nil {
+		query = query + " availableToAdoption = ?,"
+		values = append(values, petToUpdate.AvailableToAdoption)
+	}
+
+	if petToUpdate.UserID != uuid.Nil {
+		query = query + " userId = ?,"
+		values = append(values, petToUpdate.UserID)
+	}
+
+	if petToUpdate.NeedSpecialCare.Needed != nil {
+		query = query + " needed = ?,"
+		values = append(values, petToUpdate.NeedSpecialCare.Needed)
+		query = query + " description = ?,"
+		values = append(values, petToUpdate.NeedSpecialCare.Description)
+	}
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, petID)
 
 	_, err := pr.dbconnection.Exec(query, values...)
 	if err != nil {
@@ -193,7 +260,7 @@ func (pr *PetRepository) ListByUser(userID uniqueEntityId.ID) (pets []*entity.Pe
 			return nil, fmt.Errorf("error parsing birthdate: %w", err)
 		}
 		pet.NeedSpecialCare = entity.SpecialCare{
-			Needed:      needed,
+			Needed:      &needed,
 			Description: description,
 		}
 

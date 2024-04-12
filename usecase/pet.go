@@ -47,8 +47,12 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 }
 
 func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
-	return &petToUpdate.Size != nil && petToUpdate.Size != "" &&
-		(petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
+	var size = petToUpdate.Size
+
+	if size != "" {
+		return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
+	}
+	return true
 }
 
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
@@ -64,11 +68,13 @@ func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
 	var needed = petToUpdate.NeedSpecialCare.Needed
 	var description = petToUpdate.NeedSpecialCare.Description
 
-	if needed {
-		return description != ""
+	if needed != nil {
+		if *needed {
+			return description != ""
+		}
+		if !*needed {
+			return description == ""
+		}
 	}
-	if !needed {
-		return description == ""
-	}
-	return false
+	return true
 }
