@@ -11,6 +11,10 @@ type OngUseCase struct {
 	repo interfaces.OngRepository
 }
 
+func NewOngUseCase(repo interfaces.OngRepository) *OngUseCase {
+	return &OngUseCase{repo: repo}
+}
+
 func (c *OngUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	ong, err := c.repo.FindByID(ID)
 	if err != nil {
