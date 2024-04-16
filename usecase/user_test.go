@@ -5,6 +5,7 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 	"time"
 
@@ -190,6 +191,69 @@ func TestErrorSaveAddress(t *testing.T) {
 
 			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
 			err := usecase.Save(tcase.input)
+
+			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	tcases := map[string]struct {
+		repo         *mockInterfaces.MockUserRepository
+		hasher       *mockInterfaces.MockHasher
+		inputID      uniqueEntityId.ID
+		inputDto     dto.UserUpdateDto
+		encoder      interfaces.Encoder
+		expectOutput error
+	}{
+		"success": {
+			repo:    mockInterfaces.NewMockUserRepository(t),
+			hasher:  mockInterfaces.NewMockHasher(t),
+			inputID: uniqueEntityId.NewID(),
+			inputDto: dto.UserUpdateDto{
+				Name: "teste",
+			},
+			expectOutput: nil,
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Update", mock.Anything, mock.Anything).Return(tcase.expectOutput)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			err := usecase.Update(tcase.inputID, tcase.inputDto)
+
+			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
+
+func TestErrorUpdate(t *testing.T) {
+	tcases := map[string]struct {
+		repo         *mockInterfaces.MockUserRepository
+		hasher       *mockInterfaces.MockHasher
+		inputID      uniqueEntityId.ID
+		inputDto     dto.UserUpdateDto
+		encoder      interfaces.Encoder
+		expectOutput error
+	}{
+		"errorSave": {
+			repo:    mockInterfaces.NewMockUserRepository(t),
+			hasher:  mockInterfaces.NewMockHasher(t),
+			inputID: uniqueEntityId.NewID(),
+			inputDto: dto.UserUpdateDto{
+				Name: "teste",
+			},
+			expectOutput: fmt.Errorf("error on update user"),
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Update", mock.Anything, mock.Anything).Return(tcase.expectOutput)
+
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			err := usecase.Update(tcase.inputID, tcase.inputDto)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
 		})

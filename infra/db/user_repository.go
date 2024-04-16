@@ -69,7 +69,7 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 
 	if err != nil {
 		logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
-		return fmt.Errorf("error on update user, %w", err)
+		return fmt.Errorf("error on update user")
 	}
 
 	return nil
