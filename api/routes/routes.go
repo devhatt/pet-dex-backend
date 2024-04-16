@@ -26,6 +26,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 			r.Get("/breeds", controllers.BreedController.List)
 			r.Patch("/{petID}", controllers.PetController.Update)
+			r.Post("/", controllers.PetController.CreatePet)
 		})
 
 		r.Route("/ongs", func(r chi.Router) {

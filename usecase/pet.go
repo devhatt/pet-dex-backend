@@ -55,3 +55,14 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	}
 	return pets, nil
 }
+
+func (c *PetUseCase) Save(petDto dto.PetInsertDto) error {
+	pet := entity.NewPet(petDto.UserID, petDto.BreedID, petDto.Size, petDto.Name, petDto.Weight, petDto.AdoptionDate, petDto.Birthdate)
+
+	err := c.repo.Save(*pet)
+	if err != nil {
+		err = fmt.Errorf("failed to save pet: %w", err)
+		return err
+	}
+	return nil
+}
