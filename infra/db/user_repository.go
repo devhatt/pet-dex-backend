@@ -6,6 +6,7 @@ import (
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -51,13 +52,42 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 }
 
 func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.User) error {
-	query := "UPDATE petdex.users SET"
+
+	query := "UPDATE users SET"
 	values := []interface{}{}
 
 	if userToUpdate.Name != "" {
 		query = query + " name =?,"
 		values = append(values, userToUpdate.Name)
 	}
+
+	if userToUpdate.Document != "" {
+		query = query + " document =?,"
+		values = append(values, userToUpdate.Document)
+	}
+
+	if userToUpdate.AvatarURL != "" {
+		query = query + " avatarUrl =?,"
+		values = append(values, userToUpdate.AvatarURL)
+	}
+
+	if userToUpdate.Email != "" {
+		query = query + " email =?,"
+		values = append(values, userToUpdate.Email)
+	}
+
+	if userToUpdate.Phone != "" {
+		query = query + " phone =?,"
+		values = append(values, userToUpdate.Phone)
+	}
+
+	if userToUpdate.BirthDate != nil {
+		query = query + " birthdate =?,"
+		values = append(values, userToUpdate.BirthDate)
+	}
+
+	query = query + " updated_at =?,"
+	values = append(values, time.Now())
 
 	n := len(query)
 	query = query[:n-1] + " WHERE id =?"
