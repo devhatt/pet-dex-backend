@@ -22,7 +22,6 @@ func main() {
 	}
 
 	config.InitConfigs()
-	database := config.GetDB()
 	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
 
 	if err != nil {
