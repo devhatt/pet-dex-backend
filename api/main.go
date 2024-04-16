@@ -39,7 +39,7 @@ func main() {
 	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
-	ongUsecase := usecase.NewOngUseCase(dbOnRepo)
+	ongUsecase := usecase.NewOngUseCase(dbOnRepo, hash)
 	breedController := controllers.NewBreedController(breedUsecase)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)

@@ -28,8 +28,8 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			r.Patch("/{petID}", controllers.PetController.Update)
 		})
 
-		r.Route("/ong", func(r chi.Router) {
-			r.Post("/", controllers.OngController.CreateOng)
+		r.Route("/ongs", func(r chi.Router) {
+			r.Post("/", controllers.OngController.Insert)
 		})
 
 		r.Route("/user", func(r chi.Router) {

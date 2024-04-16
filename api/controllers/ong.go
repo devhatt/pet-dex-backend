@@ -9,31 +9,31 @@ import (
 )
 
 type OngController struct {
-	Usecase *usecase.OngUsecase
+	ongUsecase *usecase.OngUsecase
 }
 
-func NewOngcontroller(usecase *usecase.OngUsecase) *OngController {
+func NewOngcontroller(ongUsecase *usecase.OngUsecase) *OngController {
 	return &OngController{
-		Usecase: usecase,
+		ongUsecase: ongUsecase,
 	}
 }
 
-func (cntrl *OngController) CreateOng(w http.ResponseWriter, r *http.Request) {
+func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	var ong entity.Ong
-
 	err := json.NewDecoder(r.Body).Decode(&ong)
+
 	if err != nil {
 		fmt.Println(fmt.Errorf("error on ong decode: %w", err))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = cntrl.Usecase.Save(&ong)
+	err = oc.ongUsecase.Save(&ong)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error saving ong: %w", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(201)
+	w.WriteHeader(http.StatusCreated)
 }
