@@ -19,14 +19,36 @@ func NewOngRepository(db *sqlx.DB) interfaces.OngRepository {
 	}
 }
 
-func (or *OngRepository) Save(ong *entity.Ong) error {
-	ongId := uniqueEntityId.NewID()
-
-	_, err := or.dbconnection.Query("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (?,?,?,?,?,?)", ongId, user.Id, user.phone, ong.links, ong.openingHours, ong.adoptionPolicy)
+func (or *OngRepository) Save(ong *entity.Ong, userId uniqueEntityId.ID) error {
+	_, err := or.dbconnection.Query("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (?,?,?,?,?,?)", ong.ID, userId, ong.Phone, ong.SocialMedia, ong.OpeningHours, ong.AdoptionPolicy)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngRepository.Save error: %w", err))
 		err = fmt.Errorf("error on saving ong")
+		return err
+	}
+
+	return nil
+}
+
+func (or *OngRepository) SaveUser(user *entity.User) error {
+	_, err := or.dbconnection.NamedExec("INSERT INTO users (id, name, type, document, avatarUrl, email, phone, pass) VALUES (:id, :name, :type, :document, :avatarUrl, :email, :phone, :pass)", &user)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("#OngRepository.SaveUser error: %w", err))
+		err = fmt.Errorf("error on saving user")
+		return err
+	}
+
+	return nil
+}
+
+func (or *OngRepository) SaveAddress(addr *entity.Address) error {
+	_, err := or.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitute) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitute)", &addr)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("#OngRepository.SaveAddress error: %w", err))
+		err = fmt.Errorf("error on saving address")
 		return err
 	}
 
