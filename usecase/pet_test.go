@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"pet-dex-backend/v2/entity/dto"
 	"time"
 
 	"github.com/stretchr/testify/assert"

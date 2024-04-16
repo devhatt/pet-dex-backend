@@ -13,7 +13,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var logger = config.GetLogger("user-usercase")
+var loggerUser = config.GetLogger("user-usercase")
 
 type UserUsecase struct {
 	repo    interfaces.UserRepository
@@ -83,7 +83,7 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 	err := uc.repo.Update(userID, user)
 
 	if err != nil {
-		logger.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
+		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
 		return err
 	}
 

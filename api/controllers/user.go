@@ -12,7 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var logger = config.GetLogger("user-controller")
+var loggerUserController = config.GetLogger("user-controller")
 
 type UserController struct {
 	uusecase *usecase.UserUsecase
@@ -83,7 +83,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
-		logger.Errorf("[#UserController.Update] ID Inválido -> Erro: %v", err)
+		loggerUserController.Errorf("[#UserController.Update] ID Inválido -> Erro: %v", err)
 		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
@@ -92,7 +92,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&userUpdateDto)
 
 	if err != nil {
-		logger.Errorf("[#UserController.Update] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
+		loggerUserController.Errorf("[#UserController.Update] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
@@ -100,7 +100,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	err = uc.uusecase.Update(ID, userUpdateDto)
 
 	if err != nil {
-		logger.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
+		loggerUserController.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
 		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
 		return
 	}

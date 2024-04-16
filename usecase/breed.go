@@ -7,7 +7,7 @@ import (
 	"pet-dex-backend/v2/interfaces"
 )
 
-var logger = config.GetLogger("breed-usecase")
+var loggerBreed = config.GetLogger("breed-usecase")
 
 type BreedUseCase struct {
 	repo interfaces.BreedRepository
@@ -22,7 +22,7 @@ func NewBreedUseCase(repo interfaces.BreedRepository) *BreedUseCase {
 func (useCase *BreedUseCase) List() ([]*dto.BreedList, error) {
 	breed, err := useCase.repo.List()
 	if err != nil {
-		logger.Error("error listing breeds", err)
+		loggerBreed.Error("error listing breeds", err)
 		err = fmt.Errorf("error listing breeds: %w", err)
 		return nil, err
 	}

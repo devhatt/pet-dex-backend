@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var logger = config.GetLogger("user-repository")
+var loggerUserRepository = config.GetLogger("user-repository")
 
 type UserRepository struct {
 	dbconnection *sqlx.DB
@@ -98,7 +98,7 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 	_, err := ur.dbconnection.Exec(query, values...)
 
 	if err != nil {
-		logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
+		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
 		return fmt.Errorf("error on update user")
 	}
 
