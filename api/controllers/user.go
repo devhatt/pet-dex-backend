@@ -101,7 +101,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logger.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
-		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
 		return
 	}
 
