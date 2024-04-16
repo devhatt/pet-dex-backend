@@ -50,8 +50,22 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 	return nil
 }
 
-func (ur *UserRepository) Update(userID uniqueEntityId.ID, user entity.User) error {
-	_, err := ur.dbconnection.NamedExec("UPDATE users SET name=:name, document=:document, avatarURL=:avatarURL, email=:email, phone=:phone WHERE id=:id", &user)
+func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.User) error {
+	query := "UPDATE petdex.users SET"
+	values := []interface{}{}
+
+	if userToUpdate.Name != "" {
+		query = query + " name =?,"
+		values = append(values, userToUpdate.Name)
+	}
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, userID)
+
+	fmt.Printf("Query to update: %s", query)
+
+	_, err := ur.dbconnection.Exec(query, values...)
 
 	if err != nil {
 		logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
