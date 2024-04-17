@@ -31,6 +31,7 @@ func main() {
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
 	bdBreedRepo := db.NewBreedRepository(sqlxDb)
+	bdOngRepo := db.NewOngRepository(sqlxDb)
 
 	hash := hasher.NewHasher()
 	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
@@ -38,15 +39,18 @@ func main() {
 	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
+	OngUseCase := usecase.NewOngUseCase(bdOngRepo)
 
 	breedController := controllers.NewBreedController(breedUsecase)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
+	OngController := controllers.NewOngController(OngUseCase)
 
 	controllers := routes.Controllers{
 		PetController:   petController,
 		BreedController: breedController,
 		UserController:  userController,
+		OngController:   OngController,
 	}
 	router := routes.InitializeRouter(controllers)
 

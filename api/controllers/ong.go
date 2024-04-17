@@ -13,6 +13,12 @@ type OngController struct {
 	Usecase *usecase.OngUseCase
 }
 
+func NewOngController(usecase *usecase.OngUseCase) *OngController {
+	return &OngController{
+		Usecase: usecase,
+	}
+}
+
 func (cntrl *OngController) FindOng(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 
@@ -29,7 +35,7 @@ func (cntrl *OngController) FindOng(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(&ong); err != nil {
-		http.Error(w, "Failed to encode pet", http.StatusInternalServerError)
+		http.Error(w, "Failed to encode Ong", http.StatusInternalServerError)
 	}
 
 	w.WriteHeader(http.StatusOK)

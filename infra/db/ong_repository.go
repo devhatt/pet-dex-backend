@@ -1,6 +1,8 @@
 package db
 
 import (
+	"database/sql"
+	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
 
@@ -12,42 +14,46 @@ type OngRepository struct {
 	dbconnection *sqlx.DB
 }
 
-// Delete implements interfaces.UserRepository.
-func (o *OngRepository) Delete(id uuid.UUID) error {
-	panic("unimplemented")
+// FindByID implements interfaces.OngRepository.
+func (pr *OngRepository) FindByID(ID uuid.UUID) (*entity.Ong, error) {
+	row, err := pr.dbconnection.Query(`
+        SELECT
+            p.id,
+            p.name,
+            p.address,
+            p.phone
+        FROM
+            ongs
+        WHERE
+            id = ?`,
+		ID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving ONG %d: %w", ID, err)
+	}
+	defer row.Close()
+
+	if !row.Next() {
+		return nil, sql.ErrNoRows
+	}
+
+	var ong entity.Ong
+
+	if err := row.Scan(
+		&ong.ID,
+		&ong.Name,
+	); err != nil {
+		return nil, fmt.Errorf("error scanning ONG: %w", err)
+	}
+
+	if err := row.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over ONG rows: %w", err)
+	}
+
+	return &ong, nil
 }
 
-// FindByEmail implements interfaces.UserRepository.
-func (o *OngRepository) FindByEmail(email string) *entity.User {
-	panic("unimplemented")
-}
-
-// FindById implements interfaces.UserRepository.
-func (o *OngRepository) FindById(id uuid.UUID) *entity.User {
-	panic("unimplemented")
-}
-
-// List implements interfaces.UserRepository.
-func (o *OngRepository) List() ([]entity.User, error) {
-	panic("unimplemented")
-}
-
-// Save implements interfaces.UserRepository.
-func (o *OngRepository) Save(user *entity.User) error {
-	panic("unimplemented")
-}
-
-// SaveAddress implements interfaces.UserRepository.
-func (o *OngRepository) SaveAddress(addr *entity.Address) error {
-	panic("unimplemented")
-}
-
-// Update implements interfaces.UserRepository.
-func (o *OngRepository) Update(userID uuid.UUID, user entity.User) error {
-	panic("unimplemented")
-}
-
-func NewOngRepository(dbconn *sqlx.DB) interfaces.UserRepository {
+func NewOngRepository(dbconn *sqlx.DB) interfaces.OngRepository {
 	return &OngRepository{
 		dbconnection: dbconn,
 	}
