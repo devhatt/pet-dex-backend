@@ -6,8 +6,8 @@ import (
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 
-	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,9 +16,9 @@ type OngRepository struct {
 	logger       config.Logger
 }
 
-func NewOngRepository(db *sqlx.DB) interfaces.OngRepository {
+func NewOngRepository(dbconn *sqlx.DB) interfaces.OngRepository {
 	return &OngRepository{
-		dbconnection: db,
+		dbconnection: dbconn,
 		logger:       *config.GetLogger("ong-repository"),
 	}
 }
@@ -36,7 +36,7 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	return nil
 }
 
-func (pr *OngRepository) FindByID(ID uuid.UUID) (*entity.Ong, error) {
+func (pr *OngRepository) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	row, err := pr.dbconnection.Query(`
         SELECT
             p.id,

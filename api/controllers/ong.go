@@ -16,7 +16,7 @@ type OngController struct {
 	logger  config.Logger
 }
 
-func NewOngcontroller(usecase *usecase.OngUsecase) *OngController {
+func NewOngController(usecase *usecase.OngUsecase) *OngController {
 	return &OngController{
 		usecase: usecase,
 		logger:  *config.GetLogger("ong-controller"),
@@ -62,6 +62,27 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (cntrl *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	ong, err := cntrl.usecase.FindByID(ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&ong); err != nil {
+		http.Error(w, "Failed to encode Ong", http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

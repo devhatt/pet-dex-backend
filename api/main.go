@@ -44,7 +44,7 @@ func main() {
 	breedController := controllers.NewBreedController(breedUsecase)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
-	ongController := controllers.NewOngcontroller(ongUseCase)
+	ongController := controllers.NewOngController(ongUseCase)
 
 	controllers := routes.Controllers{
 		PetController:   petController,
