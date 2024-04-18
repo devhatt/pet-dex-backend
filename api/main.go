@@ -30,7 +30,7 @@ func main() {
 
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
-	dbOnRepo := db.NewOngRepository(sqlxDb)
+	dbOngRepo := db.NewOngRepository(sqlxDb)
 	hash := hasher.NewHasher()
 	bdBreedRepo := db.NewBreedRepository(sqlxDb)
 
@@ -39,7 +39,7 @@ func main() {
 	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
 	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
-	ongUsecase := usecase.NewOngUseCase(dbOnRepo, hash)
+	ongUsecase := usecase.NewOngUseCase(dbOngRepo, hash)
 	breedController := controllers.NewBreedController(breedUsecase)
 	petController := controllers.NewPetController(petUsecase)
 	userController := controllers.NewUserController(uusercase)
