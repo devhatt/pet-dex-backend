@@ -17,11 +17,12 @@ type Pet struct {
 	Birthdate           time.Time         `json:"birthdate"`
 	Comorbidity         string            `json:"comorbidity"`
 	Tags                string            `json:"tags"`
-	Castrated           bool              `json:"castrated"`
-	AvailableToAdoption bool              `json:"available_to_adoption"`
+	Castrated           *bool             `json:"castrated"`
+	AvailableToAdoption *bool             `json:"available_to_adoption"`
 	BreedName           string            `json:"breed_name"`
 	ImageUrl            string            `json:"image_url"`
 	Vaccines            []Vaccines        `json:"vaccines"`
+	NeedSpecialCare     SpecialCare       `json:"special_care"`
 }
 
 type Vaccines struct {
@@ -31,10 +32,16 @@ type Vaccines struct {
 	Date      time.Time         `json:"date"`
 	DoctorCRM string            `json:"doctor_crm"`
 }
+
+type SpecialCare struct {
+	Needed      *bool  `json:"needed"`
+	Description string `json:"description"`
+}
+
 type PetDetails struct {
 	Breed string
-	Age int
-	Size string
+	Age   int
+	Size  string
 }
 
 func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
