@@ -98,8 +98,27 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 }
 func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity.Pet) error {
 
-	query := "UPDATE pets SET name=?, size=?, weight=?, adoptionDate=?, birthdate=?, comorbidity=?, tags=?, castrated=?, availableToAdoption=?, breedId=? WHERE id=?"
-	values := []interface{}{petToUpdate.Name, petToUpdate.Size, petToUpdate.Weight, petToUpdate.AdoptionDate, petToUpdate.Birthdate, petToUpdate.Comorbidity, petToUpdate.Tags, petToUpdate.Castrated, petToUpdate.AvailableToAdoption, petToUpdate.BreedID, petID}
+	query := "UPDATE pets SET" 
+	values := []interface{}{}
+
+	if petToUpdate.Size != "" {
+		query = query + " size =?,"
+		values = append(values, petToUpdate.Size)
+	}
+
+	if !petToUpdate.AdoptionDate.IsZero() {
+		query = query + " adoptionDate =?,"
+		values = append(values, petToUpdate.AdoptionDate)
+	}
+
+	if !petToUpdate.Birthdate.IsZero() {
+		query = query + " birthdate =?,"
+		values = append(values, petToUpdate.Birthdate)
+	}
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, petID)
 
 	_, err := pr.dbconnection.Exec(query, values...)
 	if err != nil {

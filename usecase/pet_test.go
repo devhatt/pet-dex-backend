@@ -38,8 +38,10 @@ func (m *MockPetRepository) ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet,
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
+	Data, _ := time.Parse(time.DateTime,"2023-09-20")
+	Birthdate, _ := time.Parse(time.DateTime,"2023-09-20")
 	userID := uniqueEntityId.NewID()
-	petUpdateDto := dto.PetUpdatetDto{Size: "small"}
+	petUpdateDto := dto.PetUpdatetDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate}
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID.String(), petUpdateDto.ToEntity()).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
