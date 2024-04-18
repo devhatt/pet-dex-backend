@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/interfaces"
-	"pet-dex-backend/v2/pkg/uniqueEntityId"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -19,8 +18,9 @@ func NewOngRepository(db *sqlx.DB) interfaces.OngRepository {
 	}
 }
 
-func (or *OngRepository) Save(ong *entity.Ong, userId uniqueEntityId.ID) error {
-	_, err := or.dbconnection.Query("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (?,?,?,?,?,?)", ong.ID, userId, ong.Phone, ong.SocialMedia, ong.OpeningHours, ong.AdoptionPolicy)
+func (or *OngRepository) Save(ong *entity.Ong) error {
+
+	_, err := or.dbconnection.NamedExec("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (:id, :userId, :phone, :links, :openingHours, :adoptionPolicy)", &ong)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngRepository.Save error: %w", err))
