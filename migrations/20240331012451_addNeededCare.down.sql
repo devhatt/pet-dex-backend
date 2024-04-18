@@ -1,2 +1,2 @@
-ALTER TABLE pets DROP COLUMN needed;
-ALTER TABLE pets DROP COLUMN description;
+ALTER TABLE pets DROP COLUMN neededSpecialCare;
+ALTER TABLE pets DROP COLUMN descriptionSpecialCare;

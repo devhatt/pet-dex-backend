@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
-
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
+
+var loggerUpdate = config.GetLogger("update-usecase")
 
 type PetUseCase struct {
 	repo interfaces.PetRepository
@@ -40,6 +42,7 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
+		loggerUpdate.Error("error updating pet", err)
 		return fmt.Errorf("failed to update for pet with ID %s: %w", petID, err)
 	}
 

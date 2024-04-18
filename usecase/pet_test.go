@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
