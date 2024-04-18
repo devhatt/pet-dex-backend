@@ -19,31 +19,31 @@ func NewOngUseCase(repo interfaces.OngRepository, hasher interfaces.Hasher) *Ong
 }
 
 func (o *OngUsecase) Save(ong *entity.Ong) error {
-	user := entity.NewUser(ong.Name, ong.Type, ong.Document, ong.AvatarURL, ong.Email, ong.Phone, ong.Pass, ong.Address.City, ong.Address.State, ong.CreationDate)
-	hashedPass, err := o.hasher.Hash(ong.Pass)
+	ongUser := entity.NewUser(ong.User.Name, ong.User.Type, ong.User.Document, ong.User.AvatarURL, ong.User.Email, ong.User.Phone, ong.User.Pass, ong.User.Adresses.City, ong.User.Adresses.State, ong.User.BirthDate)
+	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUsecase.Hash error: %w", err))
 		return err
 	}
 
-	user.Pass = hashedPass
+	ongUser.Pass = hashedPass
 
-	err = o.repo.SaveUser(user)
+	err = o.repo.SaveUser(ongUser)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUseCase.SaveUser error: %w", err))
 		return err
 	}
 
-	err = o.repo.SaveAddress(&user.Adresses)
+	err = o.repo.SaveAddress(&ongUser.Adresses)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUseCase.SaveAddress error: %w", err))
 		return err
 	}
 
-	err = o.repo.Save(ong, user.ID)
+	err = o.repo.Save(ong)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUseCase.Save error: %w", err))
