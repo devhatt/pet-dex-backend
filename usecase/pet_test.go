@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
@@ -131,9 +130,11 @@ func TestUpdateUseCaseDoVaccinesError(t *testing.T) {
 
 func TestListUserPets(t *testing.T) {
 	userID := uniqueEntityId.NewID()
+
+	var availabelToAdoption = true
 	expectedPets := []*entity.Pet{
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availabelToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availabelToAdoption},
 	}
 
 	mockRepo := new(MockPetRepository)
@@ -181,7 +182,9 @@ func TestListUserPetsErrorOnRepo(t *testing.T) {
 
 func TestFindByID(t *testing.T) {
 	ID := uniqueEntityId.NewID()
-	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: true}
+
+	var availabelToAdoption = true
+	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: &availabelToAdoption}
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
