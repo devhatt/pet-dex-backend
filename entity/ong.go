@@ -9,30 +9,34 @@ import (
 
 type Ong struct {
 	ID             uniqueEntityId.ID `json:"id" db:"id"`
-	User           User
-	OpeningHours   string           `json:"horario_funcionamento"`
-	AdoptionPolicy string           `json:"politica_adocao"`
-	SocialMedia    *json.RawMessage `json:"redes_sociais"`
+	UserID         uniqueEntityId.ID `json:"userId" db:"userId"`
+	User           User              `json:"user"`
+	Phone          string            `json:"phone" db:"phone"`
+	OpeningHours   string            `json:"openingHours" db:"openingHours"`
+	AdoptionPolicy string            `json:"adoptionPolicy" db:"adoptionPolicy"`
+	Links          *json.RawMessage  `json:"links"`
 
 	CreatedAt *time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time `json:"updatedAt" db:"updated_at"`
 }
 
-func NewOng(name, uType, document, avatar_url, email, phone, pass, city, state, openingHours, adoptionPolicy string, creationDate *time.Time, socialMedia json.RawMessage) *Ong {
+func NewOng(name, uType, document, avatar_url, email, phone, pass, city, state, openingHours, adoptionPolicy string, creationDate *time.Time, links json.RawMessage) *Ong {
 	ongId := uniqueEntityId.NewID()
 
 	user := NewUser(name, uType, document, avatar_url, email, phone, pass, city, state, creationDate)
 
 	var socials *json.RawMessage
-	err := json.Unmarshal(socialMedia, &socials)
+	err := json.Unmarshal(links, &socials)
 	if err != nil {
 		log.Fatalln("error:", err)
 	}
 
 	return &Ong{
 		ID:             ongId,
+		UserID:         user.ID,
 		User:           *user,
-		SocialMedia:    socials,
+		Phone:          phone,
+		Links:          socials,
 		OpeningHours:   openingHours,
 		AdoptionPolicy: adoptionPolicy,
 	}
