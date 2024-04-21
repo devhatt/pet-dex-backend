@@ -36,7 +36,7 @@ func (ur *UserRepository) Save(user *entity.User) error {
 }
 
 func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
-	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitute) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitute)", &addr)
+	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitude) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitude)", &addr)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#UserRepository.SaveAddress error: %w", err))
