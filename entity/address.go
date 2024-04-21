@@ -9,7 +9,7 @@ type Address struct {
 	City      string            `json:"city" db:"city"`
 	State     string            `json:"state" db:"state"`
 	Latitude  float64           `json:"latitude" db:"latitude"`
-	Logintute float64           `json:"longitute" db:"longitute"`
+	Logintute float64           `json:"longitude" db:"longitude"`
 }
 
 func NewAddress(userId uniqueEntityId.ID, city, state string) Address {
