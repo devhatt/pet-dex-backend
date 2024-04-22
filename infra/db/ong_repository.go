@@ -25,7 +25,7 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	_, err := or.dbconnection.NamedExec("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (:id, :userId, :phone, :links, :openingHours, :adoptionPolicy)", &ong)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#OngRepository.Save error: %w", err))
+		logger.Error("error on Save: ", err)
 		err = fmt.Errorf("error on saving ong")
 		return err
 	}
