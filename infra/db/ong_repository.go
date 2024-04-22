@@ -19,7 +19,6 @@ func NewOngRepository(db *sqlx.DB) interfaces.OngRepository {
 }
 
 func (or *OngRepository) Save(ong *entity.Ong) error {
-	fmt.Println("or", ong.OpeningHours)
 	_, err := or.dbconnection.NamedExec("INSERT INTO legal_persons (id, userId, phone, links, openingHours, adoptionPolicy) VALUES (:id, :userId, :phone, :links, :openingHours, :adoptionPolicy)", &ong)
 
 	if err != nil {
