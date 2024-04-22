@@ -4,18 +4,21 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 )
 
 type OngUsecase struct {
 	repo   interfaces.OngRepository
 	hasher interfaces.Hasher
+	logger config.Logger
 }
 
 func NewOngUseCase(repo interfaces.OngRepository, hasher interfaces.Hasher) *OngUsecase {
 	return &OngUsecase{
 		repo:   repo,
 		hasher: hasher,
+		logger: *config.NewLogger("ong-usecase"),
 	}
 }
 
@@ -24,7 +27,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#OngUsecase.Hash error: %w", err))
+		logger.Error("error on hashing: ", err)
 		return err
 	}
 
@@ -47,7 +50,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.repo.Save(ong)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#OngUseCase.Save error: %w", err))
+		logger.Error("error on Save: ", err)
 		return err
 	}
 
