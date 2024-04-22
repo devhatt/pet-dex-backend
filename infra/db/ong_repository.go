@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 
 	"github.com/jmoiron/sqlx"
@@ -10,11 +11,13 @@ import (
 
 type OngRepository struct {
 	dbconnection *sqlx.DB
+	logger       config.Logger
 }
 
 func NewOngRepository(db *sqlx.DB) interfaces.OngRepository {
 	return &OngRepository{
 		dbconnection: db,
+		logger:       *config.GetLogger("ong-repository"),
 	}
 }
 
