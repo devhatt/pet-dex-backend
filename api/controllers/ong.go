@@ -2,19 +2,21 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/usecase"
 )
 
 type OngController struct {
-	ongUsecase *usecase.OngUsecase
+	usecase *usecase.OngUsecase
+	logger  config.Logger
 }
 
-func NewOngcontroller(ongUsecase *usecase.OngUsecase) *OngController {
+func NewOngcontroller(usecase *usecase.OngUsecase) *OngController {
 	return &OngController{
-		ongUsecase: ongUsecase,
+		usecase: usecase,
+		logger:  *config.GetLogger("ong-controller"),
 	}
 }
 
@@ -23,15 +25,15 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("error on ong decode: %w", err))
+		logger.Error("error on ong decode: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = oc.ongUsecase.Save(&ongDto)
+	err = oc.usecase.Save(&ongDto)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("error saving ong: %w", err))
+		logger.Error("error saving ong: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
