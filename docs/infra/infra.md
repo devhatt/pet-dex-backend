@@ -1,7 +1,7 @@
 
 # Infra
 
-## Sumãrio
+## Sumário
 
 1. [Logger](#logger)
    1. [Funcionalidade](#funcionalidade)
@@ -45,7 +45,7 @@ func (pc *PetController) Create(w http.ResponseWriter, r *http.Request){
 }
 ```
 
-> É nessário passar o contexto o logger vai ser executado pelo parametro da função
+> É necessário passar o contexto, o logger vai ser executado pelo parâmetro da função
 
 O logger tem alguns métodos:
 

@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
-
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
+
+var loggerUpdate = config.GetLogger("update-usecase")
 
 type PetUseCase struct {
 	repo interfaces.PetRepository
@@ -35,8 +37,13 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 		return errors.New("the animal size is invalid")
 	}
 
+	if !c.isValideSpecialCare(petToUpdate) {
+		return errors.New("failed to update special care")
+	}
+
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
+		loggerUpdate.Error("error updating pet", err)
 		return fmt.Errorf("failed to update for pet with ID %s: %w", petID, err)
 	}
 
@@ -44,12 +51,12 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 }
 
 func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
-    var size = petToUpdate.Size
+	var size = petToUpdate.Size
 
-    if size != "" {
-        return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
-    }
-    return true
+	if size != "" {
+		return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
+	}
+	return true
 }
 
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
@@ -59,4 +66,30 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 		return nil, err
 	}
 	return pets, nil
+}
+
+func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
+	var needed = petToUpdate.NeedSpecialCare.Needed
+	var description = petToUpdate.NeedSpecialCare.Description
+
+	if needed != nil {
+		if *needed {
+			return description != ""
+		}
+		if !*needed {
+			return description == ""
+		}
+	}
+	return true
+}
+
+func (c *PetUseCase) Save(petDto dto.PetInsertDto) error {
+	pet := entity.NewPet(petDto.UserID, petDto.BreedID, petDto.Size, petDto.Name, petDto.Weight, petDto.AdoptionDate, petDto.Birthdate)
+
+	err := c.repo.Save(*pet)
+	if err != nil {
+		err = fmt.Errorf("failed to save pet: %w", err)
+		return err
+	}
+	return nil
 }

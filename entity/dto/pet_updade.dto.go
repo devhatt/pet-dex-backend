@@ -14,16 +14,22 @@ type PetUpdatetDto struct {
 	Birthdate           time.Time         `json:"birthdate"`
 	Comorbidity         string            `json:"comorbidity"`
 	Tags                string            `json:"tags"`
-	Castrated           bool              `json:"castrated"`
-	AvailableToAdoption bool              `json:"available_to_adoption"`
+	Castrated           *bool             `json:"castrated"`
+	AvailableToAdoption *bool             `json:"available_to_adoption"`
 	BreedID             uniqueEntityId.ID `json:"breed_id"`
 	Vaccines            []VaccinesDto     `json:"vaccines"`
+	NeedSpecialCare     SpecialCareDto    `json:"special_care"`
 }
 
 type VaccinesDto struct {
 	Name      string    `json:"name"`
 	Date      time.Time `json:"date"`
 	DoctorCRM string    `json:"doctor_crm"`
+}
+
+type SpecialCareDto struct {
+	Needed      *bool  `json:"needed"`
+	Description string `json:"description"`
 }
 
 func (dto *PetUpdatetDto) ToEntity() *entity.Pet {
@@ -34,6 +40,10 @@ func (dto *PetUpdatetDto) ToEntity() *entity.Pet {
 			Date:      v.Date,
 			DoctorCRM: v.DoctorCRM,
 		}
+	}
+	special_care := entity.SpecialCare{
+		Needed:      dto.NeedSpecialCare.Needed,
+		Description: dto.NeedSpecialCare.Description,
 	}
 
 	return &entity.Pet{
@@ -48,5 +58,6 @@ func (dto *PetUpdatetDto) ToEntity() *entity.Pet {
 		AvailableToAdoption: dto.AvailableToAdoption,
 		BreedID:             dto.BreedID,
 		Vaccines:            vaccines,
+		NeedSpecialCare:     special_care,
 	}
 }

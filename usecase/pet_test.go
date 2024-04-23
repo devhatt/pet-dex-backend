@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 )
@@ -131,9 +132,11 @@ func TestUpdateUseCaseDoVaccinesError(t *testing.T) {
 
 func TestListUserPets(t *testing.T) {
 	userID := uniqueEntityId.NewID()
+
+	var availabelToAdoption = true
 	expectedPets := []*entity.Pet{
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: true},
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: true},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availabelToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availabelToAdoption},
 	}
 
 	mockRepo := new(MockPetRepository)
@@ -181,7 +184,9 @@ func TestListUserPetsErrorOnRepo(t *testing.T) {
 
 func TestFindByID(t *testing.T) {
 	ID := uniqueEntityId.NewID()
-	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: true}
+
+	var availabelToAdoption = true
+	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: &availabelToAdoption}
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
@@ -228,4 +233,59 @@ func TestFindByIDErrorOnRepo(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, resultPet)
 	assert.EqualError(t, err, "failed to retrieve pet: this is a repository error")
+}
+func TestPetUseCase_Save(t *testing.T) {
+	birthdateString := "2016/10/21"
+	adoptDateString := "2018/07/29"
+
+	birthDate, _ := time.Parse(config.StandardDateLayout, birthdateString)
+	adtopDate, _ := time.Parse(config.StandardDateLayout, adoptDateString)
+
+	petToSave := dto.PetInsertDto{
+		Name:         "Felpudo",
+		UserID:       uniqueEntityId.NewID(),
+		BreedID:      uniqueEntityId.NewID(),
+		Weight:       4,
+		Size:         "Médio",
+		Birthdate:    &birthDate,
+		AdoptionDate: &adtopDate,
+	}
+
+	mockRepo := new(MockPetRepository)
+	mockRepo.On("Save", mock.AnythingOfType("entity.Pet")).Return(nil)
+
+	usecase := NewPetUseCase(mockRepo)
+	err := usecase.Save(petToSave)
+
+	assert.NoError(t, err)
+
+	mockRepo.AssertExpectations(t)
+}
+
+func TestPetUseCase_SaveErrorOnRepo(t *testing.T) {
+	birthdateString := "2016/10/21"
+	adoptDateString := "2018/07/29"
+
+	birthDate, _ := time.Parse(config.StandardDateLayout, birthdateString)
+	adoptDate, _ := time.Parse(config.StandardDateLayout, adoptDateString)
+
+	petToSave := dto.PetInsertDto{
+		Name:         "",
+		UserID:       uniqueEntityId.NewID(),
+		BreedID:      uniqueEntityId.NewID(),
+		Weight:       4,
+		Size:         "Médio",
+		Birthdate:    &birthDate,
+		AdoptionDate: &adoptDate,
+	}
+
+	repoError := errors.New("error saving pet")
+	mockRepo := new(MockPetRepository)
+	mockRepo.On("Save", mock.AnythingOfType("entity.Pet")).Return(repoError)
+	usecase := NewPetUseCase(mockRepo)
+
+	err := usecase.Save(petToSave)
+
+	assert.EqualError(t, err, "failed to save pet: error saving pet")
+	mockRepo.AssertExpectations(t)
 }
