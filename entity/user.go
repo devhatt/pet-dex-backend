@@ -19,22 +19,3 @@ type User struct {
 	UpdatedAt *time.Time        `json:"updatedAt" db:"updated_at"`
 	Adresses  Address           `json:"addresses"`
 }
-
-func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *User {
-	userId := uniqueEntityId.NewID()
-
-	address := NewAddress(userId, city, state)
-
-	return &User{
-		ID:        userId,
-		Name:      name,
-		Type:      uType,
-		Document:  document,
-		AvatarURL: avatar_url,
-		Email:     email,
-		Phone:     phone,
-		Pass:      pass,
-		BirthDate: birthdate,
-		Adresses:  address,
-	}
-}
