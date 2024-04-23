@@ -33,27 +33,3 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 
 	return nil
 }
-
-func (or *OngRepository) SaveUser(user *entity.User) error {
-	_, err := or.dbconnection.NamedExec("INSERT INTO users (id, name, type, document, avatarUrl, email, phone, pass) VALUES (:id, :name, :type, :document, :avatarUrl, :email, :phone, :pass)", &user)
-
-	if err != nil {
-		fmt.Println(fmt.Errorf("#OngRepository.SaveUser error: %w", err))
-		err = fmt.Errorf("error on saving user")
-		return err
-	}
-
-	return nil
-}
-
-func (or *OngRepository) SaveAddress(addr *entity.Address) error {
-	_, err := or.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitude) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitude)", &addr)
-
-	if err != nil {
-		fmt.Println(fmt.Errorf("#OngRepository.SaveAddress error: %w", err))
-		err = fmt.Errorf("error on saving address")
-		return err
-	}
-
-	return nil
-}
