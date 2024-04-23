@@ -25,7 +25,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong decode: ", err)
+		logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -33,7 +33,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err = oc.usecase.Save(&ongDto)
 
 	if err != nil {
-		logger.Error("error saving ong: ", err)
+		logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

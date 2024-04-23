@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
@@ -23,11 +22,11 @@ func NewOngUseCase(repo interfaces.OngRepository, hasher interfaces.Hasher) *Ong
 }
 
 func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
-	ong := entity.NewOng(ongDto.Name, ongDto.Type, ongDto.Document, ongDto.AvatarURL, ongDto.Email, ongDto.Phone, ongDto.Pass, ongDto.City, ongDto.State, ongDto.OpeningHours, ongDto.AdoptionPolicy, ongDto.BirthDate, *ongDto.Links)
+	ong := dto.NewOng(*ongDto)
 	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
-		logger.Error("error on hashing: ", err)
+		logger.Error("error on ong usecase: ", err)
 		return err
 	}
 
@@ -50,7 +49,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.repo.Save(ong)
 
 	if err != nil {
-		logger.Error("error on Save: ", err)
+		logger.Error("error on ong Save: ", err)
 		return err
 	}
 
