@@ -6,6 +6,4 @@ import (
 
 type OngRepository interface {
 	Save(ong *entity.Ong) error
-	SaveUser(user *entity.User) error
-	AdressRepo
 }

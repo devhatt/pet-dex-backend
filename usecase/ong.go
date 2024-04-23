@@ -8,16 +8,18 @@ import (
 )
 
 type OngUsecase struct {
-	repo   interfaces.OngRepository
-	hasher interfaces.Hasher
-	logger config.Logger
+	repo     interfaces.OngRepository
+	userRepo interfaces.UserRepository
+	hasher   interfaces.Hasher
+	logger   config.Logger
 }
 
-func NewOngUseCase(repo interfaces.OngRepository, hasher interfaces.Hasher) *OngUsecase {
+func NewOngUseCase(repo interfaces.OngRepository, userRepo interfaces.UserRepository, hasher interfaces.Hasher) *OngUsecase {
 	return &OngUsecase{
-		repo:   repo,
-		hasher: hasher,
-		logger: *config.NewLogger("ong-usecase"),
+		repo:     repo,
+		userRepo: userRepo,
+		hasher:   hasher,
+		logger:   *config.NewLogger("ong-usecase"),
 	}
 }
 
@@ -32,14 +34,14 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 	ong.User.Pass = hashedPass
 
-	err = o.repo.SaveUser(&ong.User)
+	err = o.userRepo.Save(&ong.User)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUseCase.SaveUser error: %w", err))
 		return err
 	}
 
-	err = o.repo.SaveAddress(&ong.User.Adresses)
+	err = o.userRepo.SaveAddress(&ong.User.Adresses)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#OngUseCase.SaveAddress error: %w", err))
