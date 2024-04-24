@@ -15,11 +15,14 @@ type MockOngRepository struct {
 	mock.Mock
 }
 
+func (m *MockOngRepository) Save(ong *entity.Ong) error {
+	return nil
+}
+
 func (m *MockOngRepository) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	args := m.Called(ID)
 	return args.Get(0).(*entity.Ong), args.Error(1)
 }
-
 func TestFindOngByID(t *testing.T) {
 	tcases := map[string]struct {
 		repo           interfaces.OngRepository

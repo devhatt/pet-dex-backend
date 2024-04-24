@@ -62,11 +62,10 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 }
 
 func (o *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
-	// Buscar a ONG pelo ID no repositório.
 	ong, err := o.repo.FindByID(ID)
 	if err != nil {
 		o.logger.Error("Error find Ong by ID: ", err)
 		return nil, fmt.Errorf("Error find Ong by ID: %w", err)
 	}
-	return ong, nil
+	return ong, err
 }
