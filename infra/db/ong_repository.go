@@ -14,16 +14,11 @@ type OngRepository struct {
 	dbconnection *sqlx.DB
 }
 
-// FindByID implements interfaces.OngRepository.
 func (pr *OngRepository) FindByID(ID uuid.UUID) (*entity.Ong, error) {
 	row, err := pr.dbconnection.Query(`
         SELECT
             p.id,
             p.name,
-            p.address,
-            p.phone
-        FROM
-            ongs
         WHERE
             id = ?`,
 		ID,
@@ -39,10 +34,7 @@ func (pr *OngRepository) FindByID(ID uuid.UUID) (*entity.Ong, error) {
 
 	var ong entity.Ong
 
-	if err := row.Scan(
-		&ong.ID,
-		&ong.Name,
-	); err != nil {
+	if err := row.Scan(&pr.dbconnection, "SELECT * FROM table where id = ?", 1); err != nil {
 		return nil, fmt.Errorf("error scanning ONG: %w", err)
 	}
 
