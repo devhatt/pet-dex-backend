@@ -3,8 +3,6 @@ package dto
 import (
 	"fmt"
 	"net/mail"
-	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"regexp"
 	"time"
 )
@@ -39,28 +37,4 @@ func (u *UserInsertDto) Validate() error {
 		return fmt.Errorf("invalid password format")
 	}
 	return nil
-}
-
-func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *entity.User {
-	userId := uniqueEntityId.NewID()
-
-	var addressDto AddressInsertDto
-	addressDto.UserId = userId
-	addressDto.City = city
-	addressDto.State = state
-
-	address := NewAddress(addressDto)
-
-	return &entity.User{
-		ID:        userId,
-		Name:      name,
-		Type:      uType,
-		Document:  document,
-		AvatarURL: avatar_url,
-		Email:     email,
-		Phone:     phone,
-		Pass:      pass,
-		BirthDate: birthdate,
-		Adresses:  *address,
-	}
 }

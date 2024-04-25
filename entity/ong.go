@@ -2,6 +2,8 @@ package entity
 
 import (
 	"encoding/json"
+	"log"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"time"
 )
@@ -17,4 +19,26 @@ type Ong struct {
 
 	CreatedAt *time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time `json:"updatedAt" db:"updated_at"`
+}
+
+func NewOng(ong dto.OngInsertDto) *Ong {
+	ongId := uniqueEntityId.NewID()
+
+	user := NewUser(ong.Name, ong.Type, ong.Document, ong.AvatarURL, ong.Email, ong.Phone, ong.Pass, ong.City, ong.State, ong.BirthDate)
+
+	var socials *json.RawMessage
+	err := json.Unmarshal(*ong.Links, &socials)
+	if err != nil {
+		log.Fatalln("error:", err)
+	}
+
+	return &Ong{
+		ID:             ongId,
+		UserID:         user.ID,
+		User:           *user,
+		Phone:          user.Phone,
+		Links:          socials,
+		OpeningHours:   ong.OpeningHours,
+		AdoptionPolicy: ong.AdoptionPolicy,
+	}
 }

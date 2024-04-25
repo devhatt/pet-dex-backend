@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"time"
 )
@@ -18,4 +19,28 @@ type User struct {
 	CreatedAt *time.Time        `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time        `json:"updatedAt" db:"updated_at"`
 	Adresses  Address           `json:"addresses"`
+}
+
+func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *User {
+	userId := uniqueEntityId.NewID()
+
+	var addressDto dto.AddressInsertDto
+	addressDto.UserId = userId
+	addressDto.City = city
+	addressDto.State = state
+
+	address := NewAddress(addressDto)
+
+	return &User{
+		ID:        userId,
+		Name:      name,
+		Type:      uType,
+		Document:  document,
+		AvatarURL: avatar_url,
+		Email:     email,
+		Phone:     phone,
+		Pass:      pass,
+		BirthDate: birthdate,
+		Adresses:  *address,
+	}
 }
