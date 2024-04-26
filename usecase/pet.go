@@ -32,6 +32,7 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
 	petToUpdate := petUpdateDto.ToEntity()
 
+	fmt.Println(petToUpdate.Size + "")
 	if !c.isValidPetSize(petToUpdate) {
 		return errors.New("the animal size is invalid")
 	}
