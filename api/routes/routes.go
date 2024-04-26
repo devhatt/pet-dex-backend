@@ -10,8 +10,8 @@ import (
 type Controllers struct {
 	PetController   *controllers.PetController
 	UserController  *controllers.UserController
-	BreedController *controllers.BreedController
 	OngController   *controllers.OngController
+	BreedController *controllers.BreedController
 }
 
 func InitRoutes(controllers Controllers, c *chi.Mux) {
@@ -31,6 +31,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 		r.Route("/ong", func(r chi.Router) {
 			r.Get("/{id}", controllers.OngController.FindOng)
+			r.Post("/", controllers.OngController.Insert)
 		})
 
 		r.Route("/user", func(r chi.Router) {

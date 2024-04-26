@@ -7,4 +7,5 @@ import (
 
 type OngRepository interface {
 	FindByID(ID uniqueEntityId.ID) (*entity.Ong, error)
+	Save(ong *entity.Ong) error
 }

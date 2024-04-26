@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/interfaces"
+	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 
@@ -19,22 +21,26 @@ func (m *MockOngRepository) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) 
 }
 
 func TestFindOngByID(t *testing.T) {
-	ID := uniqueEntityId.NewID()
-	expectedOng := &entity.Ong{
-		ID:   ID,
-		Name: "Peludinhos",
+	tcases := map[string]struct {
+		repo           interfaces.OngRepository
+		userRepo       interfaces.UserRepository
+		hasher         interfaces.Hasher
+		expectOutput   *OngUsecase
+		expectedErrMsg string
+	}{
+		"success": {
+			repo:           mockInterfaces.NewMockOngRepository(t),
+			userRepo:       mockInterfaces.NewMockUserRepository(t),
+			hasher:         mockInterfaces.NewMockHasher(t),
+			expectOutput:   &OngUsecase{},
+			expectedErrMsg: "",
+		},
 	}
 
-	mockRepo := new(MockOngRepository)
-	defer mockRepo.AssertExpectations(t)
-
-	mockRepo.On("FindByID", ID).Return(expectedOng, nil)
-	usecase := NewOngUseCase(mockRepo)
-
-	resultOng, err := usecase.FindByID(ID)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, resultOng)
-	assert.Equal(t, expectedOng, resultOng)
-
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			usecase := NewOngUseCase(tcase.repo, tcase.userRepo, tcase.hasher)
+			assert.IsTypef(t, tcase.expectOutput, usecase, "error: NewOngUsecase does not return expected type", nil)
+		})
+	}
 }

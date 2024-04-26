@@ -14,7 +14,3 @@ type UserRepository interface {
 	List() ([]entity.User, error)
 	AdressRepo
 }
-
-type AdressRepo interface {
-	SaveAddress(addr *entity.Address) error
-}
