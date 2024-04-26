@@ -37,6 +37,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Route("/user", func(r chi.Router) {
 			r.Post("/token", controllers.UserController.GenerateToken)
 			r.Post("/", controllers.UserController.Insert)
+			r.Patch("/{id}", controllers.UserController.Update)
 		})
 	})
 }

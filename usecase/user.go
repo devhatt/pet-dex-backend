@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
+
+var loggerUser = config.GetLogger("user-usercase")
 
 type UserUsecase struct {
 	repo    interfaces.UserRepository
@@ -71,4 +75,18 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 		},
 	})
 	return token, nil
+}
+
+func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
+	user := userDto.ToEntity()
+
+	err := uc.repo.Update(userID, user)
+
+	if err != nil {
+		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
+		return err
+	}
+
+	return nil
+
 }
