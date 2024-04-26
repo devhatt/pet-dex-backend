@@ -30,7 +30,7 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 }
 
 func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
-	petToUpdate := petUpdateDto.ToEntity()
+	petToUpdate := entity.ToEntity(&petUpdateDto)
 
 	fmt.Println(petToUpdate.Size + "")
 	if !c.isValidPetSize(petToUpdate) {
@@ -44,19 +44,14 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
 		loggerUpdate.Error("error updating pet", err)
-		return fmt.Errorf("failed to update for pet with ID %s: %w", petID, err)
+		return fmt.Errorf("failed to update pet with ID %s: %w", petID, err)
 	}
 
 	return nil
 }
 
 func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
-	var size = petToUpdate.Size
-
-	if size != "" {
-		return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
-	}
-	return true
+	return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
 
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {

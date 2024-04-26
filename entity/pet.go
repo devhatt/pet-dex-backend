@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
@@ -54,5 +55,35 @@ func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64
 		Weight:       weight,
 		AdoptionDate: *adoptionDate,
 		Birthdate:    *birthdate,
+	}
+}
+
+func ToEntity(dto *dto.PetUpdatetDto) *Pet {
+	vaccines := make([]Vaccines, len(dto.Vaccines))
+	for i, v := range dto.Vaccines {
+		vaccines[i] = Vaccines{
+			Name:      v.Name,
+			Date:      v.Date,
+			DoctorCRM: v.DoctorCRM,
+		}
+	}
+	special_care := SpecialCare{
+		Needed:      dto.NeedSpecialCare.Needed,
+		Description: dto.NeedSpecialCare.Description,
+	}
+
+	return &Pet{
+		Name:                dto.Name,
+		Size:                dto.Size,
+		Weight:              dto.Weight,
+		AdoptionDate:        dto.AdoptionDate,
+		Birthdate:           dto.Birthdate,
+		Comorbidity:         dto.Comorbidity,
+		Tags:                dto.Tags,
+		Castrated:           dto.Castrated,
+		AvailableToAdoption: dto.AvailableToAdoption,
+		BreedID:             dto.BreedID,
+		Vaccines:            vaccines,
+		NeedSpecialCare:     special_care,
 	}
 }
