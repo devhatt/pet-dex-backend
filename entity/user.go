@@ -44,3 +44,20 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 		Adresses:  *address,
 	}
 }
+
+func UserToEntity(dto *dto.UserUpdateDto) User {
+	user := &User{
+		Name:      dto.Name,
+		Document:  dto.Document,
+		AvatarURL: dto.AvatarURL,
+		Email:     dto.Email,
+		Phone:     dto.Phone,
+		BirthDate: dto.BirthDate,
+	}
+
+	if dto.BirthDate == nil {
+		user.BirthDate = nil
+	}
+
+	return *user
+}

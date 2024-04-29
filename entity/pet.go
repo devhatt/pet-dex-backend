@@ -58,7 +58,7 @@ func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64
 	}
 }
 
-func ToEntity(dto *dto.PetUpdatetDto) *Pet {
+func PetToEntity(dto *dto.PetUpdatetDto) *Pet {
 	vaccines := make([]Vaccines, len(dto.Vaccines))
 	for i, v := range dto.Vaccines {
 		vaccines[i] = Vaccines{

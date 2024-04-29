@@ -14,13 +14,13 @@ var nameRegex = regexp.MustCompile(`^[a-zA-Z0-9\s]+$`)
 var sizeRegex = regexp.MustCompile(`^(small|medium|large|giant)$`)
 
 type PetInsertDto struct {
-	Name         string          `json:"name"`
+	Name         string            `json:"name"`
 	UserID       uniqueEntityId.ID `json:"user_id"`
 	BreedID      uniqueEntityId.ID `json:"breed_id"`
-	AdoptionDate *time.Time      `json:"adoption_date"`
-	Birthdate    *time.Time      `json:"birthdate"`
-	Weight       float64         `json:"weight"`
-	Size         string          `json:"size"`
+	AdoptionDate *time.Time        `json:"adoption_date"`
+	Birthdate    *time.Time        `json:"birthdate"`
+	Weight       float64           `json:"weight"`
+	Size         string            `json:"size"`
 }
 
 func (p *PetInsertDto) Validate() error {

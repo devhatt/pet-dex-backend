@@ -29,7 +29,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
-		logger.Error("error on ong usecase: ", err)
+		o.logger.Error("error on ong usecase: ", err)
 		return err
 	}
 
@@ -52,7 +52,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.repo.Save(ong)
 
 	if err != nil {
-		logger.Error("error on ong Save: ", err)
+		o.logger.Error("error on ong Save: ", err)
 		return err
 	}
 
