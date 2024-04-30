@@ -36,7 +36,7 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 		return errors.New("the animal size is invalid")
 	}
 
-	if !c.isValideSpecialCare(petToUpdate) {
+	if !c.isValidSpecialCare(petToUpdate) {
 		return errors.New("failed to update special care")
 	}
 

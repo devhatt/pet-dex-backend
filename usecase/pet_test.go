@@ -142,10 +142,10 @@ func TestUpdateUseCaseValidWeight(t *testing.T) {
 func TestListUserPets(t *testing.T) {
 	userID := uniqueEntityId.NewID()
 
-	var availabelToAdoption = true
+	var availableToAdoption = true
 	expectedPets := []*entity.Pet{
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availabelToAdoption},
-		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availabelToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availableToAdoption},
 	}
 
 	mockRepo := new(MockPetRepository)
