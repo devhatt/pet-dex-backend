@@ -59,7 +59,7 @@ func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64
 	}
 }
 
-func ToEntity(dto *dto.PetUpdatetDto) *Pet {
+func ToEntity(dto *dto.PetUpdateDto) *Pet {
 	vaccines := make([]Vaccines, len(dto.Vaccines))
 	for i, v := range dto.Vaccines {
 		vaccines[i] = Vaccines{
@@ -68,7 +68,7 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 			DoctorCRM: v.DoctorCRM,
 		}
 	}
-	special_care := SpecialCare{
+	specialCare := SpecialCare{
 		Needed:      dto.NeedSpecialCare.Needed,
 		Description: dto.NeedSpecialCare.Description,
 	}
@@ -86,6 +86,6 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 		AvailableToAdoption: dto.AvailableToAdoption,
 		BreedID:             dto.BreedID,
 		Vaccines:            vaccines,
-		NeedSpecialCare:     special_care,
+		NeedSpecialCare:     specialCare,
 	}
 }

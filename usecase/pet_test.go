@@ -42,7 +42,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 	Data, _ := time.Parse(time.DateTime,"2023-09-20")
 	Birthdate, _ := time.Parse(time.DateTime,"2023-09-20")
 	userID := uniqueEntityId.NewID()
-	petUpdateDto := dto.PetUpdatetDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
+	petUpdateDto := dto.PetUpdateDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID.String(), entity.ToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
@@ -56,7 +56,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
 	userID := uniqueEntityId.NewID()
-	petUpdateDto := dto.PetUpdatetDto{Size: "Invalid Size"}
+	petUpdateDto := dto.PetUpdateDto{Size: "Invalid Size"}
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID.String(), entity.ToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
@@ -70,7 +70,7 @@ func TestUseCaseDoInvalidSize(t *testing.T) {
 func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
 	id := "123"
 	userID := "321"
-	petUpdateDto := dto.PetUpdatetDto{Size: "small", Weight: 4.53, WeightMeasure: "kg"}
+	petUpdateDto := dto.PetUpdateDto{Size: "small", Weight: 4.53, WeightMeasure: "kg"}
 	repoError := errors.New("error updating pet")
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.ToEntity(&petUpdateDto)).Return(repoError)
@@ -100,7 +100,7 @@ func TestUpdateUseCaseDoVaccines(t *testing.T) {
 		{Name: "Rabies", Date: time.Now(), DoctorCRM: "123456"},
 		{Name: "Distemper", Date: time.Now(), DoctorCRM: "123456"},
 	}
-	petUpdateDto := dto.PetUpdatetDto{Size: "medium", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
+	petUpdateDto := dto.PetUpdateDto{Size: "medium", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.ToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
@@ -118,7 +118,7 @@ func TestUpdateUseCaseDoVaccinesError(t *testing.T) {
 		{Name: "Rabies", Date: time.Now(), DoctorCRM: "123456"},
 		{Name: "Distemper", Date: time.Now(), DoctorCRM: "123456"},
 	}
-	petUpdateDto := dto.PetUpdatetDto{Size: "small", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
+	petUpdateDto := dto.PetUpdateDto{Size: "small", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
 	repoError := errors.New("error updating vaccines")
 	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.ToEntity(&petUpdateDto)).Return(repoError)

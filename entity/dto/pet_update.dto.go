@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type PetUpdatetDto struct {
+type PetUpdateDto struct {
 	Name                string            `json:"name"`
 	Size                string            `json:"size"`
 	Weight              float64           `json:"weight"`

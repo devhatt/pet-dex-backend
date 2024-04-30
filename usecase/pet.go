@@ -29,7 +29,7 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	return pet, nil
 }
 
-func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
+func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdateDto) (err error) {
 	petToUpdate := entity.ToEntity(&petUpdateDto)
 
 	if !c.isValidPetSize(petToUpdate) {
@@ -71,7 +71,7 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	return pets, nil
 }
 
-func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
+func (c *PetUseCase) isValidSpecialCare(petToUpdate *entity.Pet) bool {
 	var needed = petToUpdate.NeedSpecialCare.Needed
 	var description = petToUpdate.NeedSpecialCare.Description
 
