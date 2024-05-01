@@ -6,6 +6,7 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type OngUsecase struct {
@@ -58,4 +59,17 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 	return nil
 
+}
+
+func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
+	ong := entity.OngToUpdate(&ongDto)
+
+	err := o.repo.Update(ongId, ong)
+
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+
+	return nil
 }
