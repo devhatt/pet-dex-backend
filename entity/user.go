@@ -45,7 +45,7 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 	}
 }
 
-func UserToEntity(dto *dto.UserUpdateDto) User {
+func UserToUpdate(dto *dto.UserUpdateDto) User {
 	user := &User{
 		Name:      dto.Name,
 		Document:  dto.Document,
