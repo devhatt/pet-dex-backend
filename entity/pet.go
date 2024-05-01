@@ -14,6 +14,7 @@ type Pet struct {
 	Name                string            `json:"name"`
 	Size                string            `json:"size"`
 	Weight              float64           `json:"weight"`
+	WeightMeasure       string            `json:"weight_measure"`
 	AdoptionDate        time.Time         `json:"adoption_date"`
 	Birthdate           time.Time         `json:"birthdate"`
 	Comorbidity         string            `json:"comorbidity"`
@@ -58,7 +59,7 @@ func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64
 	}
 }
 
-func ToEntity(dto *dto.PetUpdatetDto) *Pet {
+func ToEntity(dto *dto.PetUpdateDto) *Pet {
 	vaccines := make([]Vaccines, len(dto.Vaccines))
 	for i, v := range dto.Vaccines {
 		vaccines[i] = Vaccines{
@@ -67,7 +68,7 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 			DoctorCRM: v.DoctorCRM,
 		}
 	}
-	special_care := SpecialCare{
+	specialCare := SpecialCare{
 		Needed:      dto.NeedSpecialCare.Needed,
 		Description: dto.NeedSpecialCare.Description,
 	}
@@ -76,6 +77,7 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 		Name:                dto.Name,
 		Size:                dto.Size,
 		Weight:              dto.Weight,
+		WeightMeasure:       dto.WeightMeasure,
 		AdoptionDate:        dto.AdoptionDate,
 		Birthdate:           dto.Birthdate,
 		Comorbidity:         dto.Comorbidity,
@@ -84,6 +86,6 @@ func ToEntity(dto *dto.PetUpdatetDto) *Pet {
 		AvailableToAdoption: dto.AvailableToAdoption,
 		BreedID:             dto.BreedID,
 		Vaccines:            vaccines,
-		NeedSpecialCare:     special_care,
+		NeedSpecialCare:     specialCare,
 	}
 }

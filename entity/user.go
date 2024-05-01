@@ -44,3 +44,20 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 		Adresses:  *address,
 	}
 }
+
+func UserToUpdate(dtoUpdate dto.UserUpdateDto ) User {
+	user := User{
+		Name:      dtoUpdate.Name,
+		Document:  dtoUpdate.Document,
+		AvatarURL: dtoUpdate.AvatarURL,
+		Email:     dtoUpdate.Email,
+		Phone:     dtoUpdate.Phone,
+		BirthDate: dtoUpdate.BirthDate,
+	}
+
+	if dtoUpdate.BirthDate == nil {
+		user.BirthDate = nil
+	}
+
+	return user
+}
