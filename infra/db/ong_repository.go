@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -37,22 +36,37 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	return nil
 }
 
-func (or *OngRepository) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
+func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) error {
 
 	query := "UPDATE legal_persons SET"
 	values := []interface{}{}
 
-	/*
-		Add queries
+	if ongToUpdate.Phone != "" {
+		query = query + " phone =?"
+		values = append(values, ongToUpdate.Phone)
+	}
 
-	*/
+	if ongToUpdate.OpeningHours != "" {
+		query = query + " openingHours =?"
+		values = append(values, ongToUpdate.OpeningHours)
+	}
+
+	if ongToUpdate.AdoptionPolicy != "" {
+		query = query + " adoptionPolicy =?"
+		values = append(values, ongToUpdate.AdoptionPolicy)
+	}
+
+	if string(*ongToUpdate.Links) != "" {
+		query = query + " links =?"
+		values = append(values, ongToUpdate.Links)
+	}
 
 	query = query + " updated_at =?,"
 	values = append(values, time.Now())
 
 	n := len(query)
 	query = query[:n-1] + " WHERE id =?"
-	values = append(values, ongId)
+	values = append(values, id)
 
 	fmt.Printf("Query to update: %s", query)
 
@@ -65,4 +79,8 @@ func (or *OngRepository) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDt
 	}
 
 	return nil
+}
+
+func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
+	return nil, nil
 }
