@@ -5,12 +5,12 @@ import (
 )
 
 type OngUpdateDto struct {
-	/* 	Name           string           `json:"name"`
-	   	Document       string           `json:"document"`
-	   	AvatarURL      string           `json:"avatar_url"`
-	*/
+	/* Name           string           `json:"name" db:"name"`
+	Document       string           `json:"document" db:"document"`
+	AvatarURL      string           `json:"avatar_url" db:"avatarUrl"`
+	Email          string           `json:"email" db:"email"`*/
+	Phone          string `json:"phone" db:"phone"`
 	User           UserUpdateDto
-	Phone          string           `json:"phone"`
 	OpeningHours   string           `json:"openingHours"`
 	AdoptionPolicy string           `json:"adoptionPolicy"`
 	Links          *json.RawMessage `json:"links"`
