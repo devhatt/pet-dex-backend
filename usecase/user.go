@@ -78,7 +78,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 }
 
 func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
-	user := entity.UserToUpdate(&userDto)
+	user := entity.UserToUpdate(userDto)
 
 	err := uc.repo.Update(userID, user)
 

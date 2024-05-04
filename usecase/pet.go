@@ -29,16 +29,19 @@ func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	return pet, nil
 }
 
-func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdatetDto) (err error) {
-	petToUpdate := entity.PetToEntity(&petUpdateDto)
+func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpdateDto) (err error) {
+	petToUpdate := entity.ToEntity(&petUpdateDto)
 
-	fmt.Println(petToUpdate.Size + "")
 	if !c.isValidPetSize(petToUpdate) {
 		return errors.New("the animal size is invalid")
 	}
 
-	if !c.isValideSpecialCare(petToUpdate) {
+	if !c.isValidSpecialCare(petToUpdate) {
 		return errors.New("failed to update special care")
+	}
+
+	if !c.isValidWeight(petToUpdate) {
+		return errors.New("the animal weight is invalid")
 	}
 
 	err = c.repo.Update(petID, userID, petToUpdate)
@@ -54,6 +57,11 @@ func (c *PetUseCase) isValidPetSize(petToUpdate *entity.Pet) bool {
 	return (petToUpdate.Size == "small" || petToUpdate.Size == "medium" || petToUpdate.Size == "large" || petToUpdate.Size == "giant")
 }
 
+func (c *PetUseCase) isValidWeight(petToUpdate *entity.Pet) bool {
+	return (petToUpdate.Weight > 0 &&
+		(petToUpdate.WeightMeasure == "kg" || petToUpdate.WeightMeasure == "lb"))
+}
+
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
 	pets, err := c.repo.ListByUser(userID)
 	if err != nil {
@@ -63,7 +71,7 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	return pets, nil
 }
 
-func (c *PetUseCase) isValideSpecialCare(petToUpdate *entity.Pet) bool {
+func (c *PetUseCase) isValidSpecialCare(petToUpdate *entity.Pet) bool {
 	var needed = petToUpdate.NeedSpecialCare.Needed
 	var description = petToUpdate.NeedSpecialCare.Description
 
