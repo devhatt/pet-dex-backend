@@ -62,10 +62,23 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 }
 
 func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
-	ong := entity.OngToUpdate(&ongDto)
+	ong := entity.OngToUpdate(*ongDto)
 
-	err := o.repo.Update(ongId, ong)
-
+	ong, err := o.repo.FindById(ongId)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+	err = o.userRepo.Update(ong.UserID, *&ong.User)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+	err = o.repo.Update(ongId, *ong)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
 	if err != nil {
 		o.logger.Error("error on ong usecase: ", err)
 		return err
