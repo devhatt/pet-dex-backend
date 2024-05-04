@@ -6,4 +6,5 @@ packages:
           Hasher:
           PetRepository:
           UserRepository:
+          OngRepository:
           AdressRepo:
