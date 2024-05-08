@@ -1,4 +1,4 @@
-title := "migration"
+title := "add_needed_care"
 include .env
 
 run:
@@ -17,7 +17,7 @@ create-migrations:
 	migrate create -ext sql -dir migrations ${title}
 
 run-migrations-up:
-	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL2}" -verbose up
+	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL}" -verbose up
 
 run-migrations-down:
-	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL2}" -verbose down
+	migrate -path migrations -database "mysql://${MIGRATION_DATABASE_URL}" -verbose down
