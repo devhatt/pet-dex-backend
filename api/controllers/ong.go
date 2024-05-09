@@ -28,7 +28,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -36,7 +36,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err = oc.usecase.Save(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -49,7 +49,7 @@ func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -58,7 +58,7 @@ func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -66,7 +66,7 @@ func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
 	err = oc.usecase.Update(ID, &ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
