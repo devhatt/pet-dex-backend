@@ -69,16 +69,14 @@ func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) e
 		o.logger.Error("error on ong usecase: ", err)
 		return err
 	}
-	err = o.userRepo.Update(ong.UserID, *&ong.User)
+
+	err = o.userRepo.Update(ong.UserID, ong.User)
 	if err != nil {
 		o.logger.Error("error on ong usecase: ", err)
 		return err
 	}
+
 	err = o.repo.Update(ongId, *ong)
-	if err != nil {
-		o.logger.Error("error on ong usecase: ", err)
-		return err
-	}
 	if err != nil {
 		o.logger.Error("error on ong usecase: ", err)
 		return err
