@@ -39,7 +39,7 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) error {
 
 	query := "UPDATE legal_persons SET"
-	values := []interface{}{}
+	var values []interface{}
 
 	if ongToUpdate.Phone != "" {
 		query = query + " phone =?"
