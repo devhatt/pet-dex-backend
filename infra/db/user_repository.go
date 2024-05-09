@@ -24,6 +24,13 @@ func NewUserRepository(dbconn *sqlx.DB) interfaces.UserRepository {
 }
 
 func (ur *UserRepository) Delete(id uniqueEntityId.ID) error {
+	_, err := ur.dbconnection.Exec("UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", id)
+
+	if err != nil {
+		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Delete error: %w", err))
+		return fmt.Errorf("error on update user")
+	}
+
 	return nil
 }
 
