@@ -1,0 +1,2 @@
+ALTER TABLE pets ADD COLUMN neededSpecialCare BOOLEAN;
+ALTER TABLE pets ADD COLUMN descriptionSpecialCare VARCHAR(255) NULL;
