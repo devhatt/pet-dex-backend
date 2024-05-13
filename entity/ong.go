@@ -42,3 +42,22 @@ func NewOng(ong dto.OngInsertDto) *Ong {
 		AdoptionPolicy: ong.AdoptionPolicy,
 	}
 }
+
+func OngToUpdate(ong dto.OngUpdateDto) *Ong {
+	user := User{
+		Name:      ong.User.Name,
+		Document:  ong.User.Document,
+		AvatarURL: ong.User.AvatarURL,
+		Email:     ong.User.Email,
+		Phone:     ong.User.Phone,
+		BirthDate: ong.User.BirthDate,
+	}
+
+	return &Ong{
+		User:           user,
+		Phone:          user.Phone,
+		Links:          ong.Links,
+		OpeningHours:   ong.OpeningHours,
+		AdoptionPolicy: ong.AdoptionPolicy,
+	}
+}

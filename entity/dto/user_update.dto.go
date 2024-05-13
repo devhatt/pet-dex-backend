@@ -12,4 +12,3 @@ type UserUpdateDto struct {
 	Phone     string     `json:"phone" db:"phone"`
 	BirthDate *time.Time `json:"birthdate"`
 }
-
