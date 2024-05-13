@@ -23,7 +23,6 @@ func NewUserController(usecase *usecase.UserUsecase) *UserController {
 	}
 }
 
-
 func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 	var userDto dto.UserInsertDto
 	err := json.NewDecoder(r.Body).Decode(&userDto)
@@ -132,4 +131,25 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+	ID, err := uniqueEntityId.ParseID(IDStr)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
+		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.Delete(ID)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: %v", err)
+		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
