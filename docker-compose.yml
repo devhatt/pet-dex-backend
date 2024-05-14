@@ -109,7 +109,7 @@ services:
   api-test:
     build:
       context: .
-      dockerfile: ./docker/integration-tests/Dockerfile
+      dockerfile: ./docker/testes.Dockerfile
     profiles:
       - integration-tests
     hostname: api-tests

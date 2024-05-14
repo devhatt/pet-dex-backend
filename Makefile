@@ -4,7 +4,7 @@ include .env
 dev:
 	docker compose --profile development --env-file .env up
 
-integration-tests:
+integration:
 	docker compose --profile integration-tests up
 
 run:
