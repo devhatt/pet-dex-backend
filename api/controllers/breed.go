@@ -22,8 +22,8 @@ func NewBreedController(usecase *usecase.BreedUseCase) *BreedController {
 	}
 }
 
-func (breedControllerc *BreedController) List(responseWriter http.ResponseWriter, request *http.Request) {
-	breeds, err := breedControllerc.Usecase.List()
+func (cntrl *BreedController) List(responseWriter http.ResponseWriter, request *http.Request) {
+	breeds, err := cntrl.Usecase.List()
 	if err != nil {
 		logger.Error("error listing breeds", err)
 		responseWriter.WriteHeader(http.StatusInternalServerError)
