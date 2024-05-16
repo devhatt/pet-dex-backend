@@ -16,18 +16,16 @@ import (
 var loggerUser = config.GetLogger("user-usercase")
 
 type UserUsecase struct {
-	repo        interfaces.UserRepository
-	hasher      interfaces.Hasher
-	encoder     interfaces.Encoder
-	addressRepo interfaces.AdressRepo
+	repo    interfaces.UserRepository
+	hasher  interfaces.Hasher
+	encoder interfaces.Encoder
 }
 
-func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder, addressRepo interfaces.AdressRepo) *UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
 	return &UserUsecase{
-		repo:        repo,
-		hasher:      hasher,
-		encoder:     encoder,
-		addressRepo: addressRepo,
+		repo:    repo,
+		hasher:  hasher,
+		encoder: encoder,
 	}
 }
 
@@ -102,7 +100,7 @@ func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		return nil, err
 	}
 
-	address, err := uc.addressRepo.FindAddressByUserID(user.ID)
+	address, err := uc.repo.FindAddressByUserID(user.ID)
 
 	if err != nil {
 		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
