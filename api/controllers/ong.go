@@ -5,7 +5,10 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type OngController struct {
@@ -39,4 +42,29 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "ongID")
+
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	ong, err := oc.usecase.FindByID(ID)
+
+	if err != nil {
+		logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err = json.NewEncoder(w).Encode(&ong); err != nil {
+		http.Error(w, "Failed to encode ong", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
