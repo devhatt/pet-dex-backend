@@ -1,7 +1,7 @@
 package db
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -75,7 +75,7 @@ func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity
 	defer row.Close()
 
 	if !row.Next() {
-		return nil, sql.ErrNoRows
+		return nil, errors.New("sql: no rows in result")
 	}
 
 	var address entity.Address
@@ -180,7 +180,7 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	defer row.Close()
 
 	if !row.Next() {
-		return nil, sql.ErrNoRows
+		return nil, errors.New("sql: no rows in result")
 	}
 
 	var user entity.User
