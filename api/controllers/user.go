@@ -15,12 +15,12 @@ import (
 var loggerUserController = config.GetLogger("user-controller")
 
 type UserController struct {
-	uusecase *usecase.UserUsecase
+	usecase *usecase.UserUsecase
 }
 
-func NewUserController(uusecase *usecase.UserUsecase) *UserController {
+func NewUserController(usecase *usecase.UserUsecase) *UserController {
 	return &UserController{
-		uusecase: uusecase,
+		usecase: usecase,
 	}
 }
 
@@ -41,7 +41,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = uc.uusecase.Save(userDto)
+	err = uc.usecase.Save(userDto)
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("#UserController.Save error: %w", err))
@@ -65,7 +65,7 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	token, err := uc.uusecase.GenerateToken(&userLoginDto)
+	token, err := uc.usecase.GenerateToken(&userLoginDto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -97,7 +97,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = uc.uusecase.Update(ID, userUpdateDto)
+	err = uc.usecase.Update(ID, userUpdateDto)
 
 	if err != nil {
 		loggerUserController.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
@@ -105,4 +105,26 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	user, err := uc.usecase.FindByID(ID)
+
+	if err != nil {
+		logger.Error("error on user controller: ", err)
+		if err = json.NewEncoder(w).Encode(&user); err != nil {
+			http.Error(w, "Failed to encode user", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
 }
