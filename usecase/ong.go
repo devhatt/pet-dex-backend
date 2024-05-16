@@ -6,6 +6,7 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
 type OngUsecase struct {
@@ -58,4 +59,27 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 	return nil
 
+}
+
+func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+
+	ong, err := c.repo.FindByID(ID)
+
+	if err != nil {
+		c.logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("failed to retrieve ong: %w", err)
+		return nil, err
+	}
+
+	user := c.userRepo.FindById(ong.UserID)
+
+	if err != nil {
+		c.logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("failed to retrieve ong: %w", err)
+		return nil, err
+	}
+
+	ong.User = *user
+
+	return ong, nil
 }
