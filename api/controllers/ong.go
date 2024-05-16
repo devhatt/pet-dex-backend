@@ -49,6 +49,7 @@ func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
 		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
 		return
 	}
