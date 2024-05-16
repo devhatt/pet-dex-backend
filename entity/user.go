@@ -45,19 +45,19 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 	}
 }
 
-func UserToUpdate(dtoUpdate dto.UserUpdateDto ) User {
-	user := User{
-		Name:      dtoUpdate.Name,
-		Document:  dtoUpdate.Document,
-		AvatarURL: dtoUpdate.AvatarURL,
-		Email:     dtoUpdate.Email,
-		Phone:     dtoUpdate.Phone,
-		BirthDate: dtoUpdate.BirthDate,
+func UserToUpdate(dto *dto.UserUpdateDto) User {
+	user := &User{
+		Name:      dto.Name,
+		Document:  dto.Document,
+		AvatarURL: dto.AvatarURL,
+		Email:     dto.Email,
+		Phone:     dto.Phone,
+		BirthDate: dto.BirthDate,
 	}
 
-	if dtoUpdate.BirthDate == nil {
+	if dto.BirthDate == nil {
 		user.BirthDate = nil
 	}
 
-	return user
+	return *user
 }

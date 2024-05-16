@@ -28,7 +28,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -36,7 +36,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err = oc.usecase.Save(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -57,14 +57,42 @@ func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logger.Error("error on ong controller: ", err)
+		if err = json.NewEncoder(w).Encode(&ong); err != nil {
+			http.Error(w, "Failed to encode ong", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+	ID, err := uniqueEntityId.ParseID(IDStr)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var ongDto dto.OngUpdateDto
+	err = json.NewDecoder(r.Body).Decode(&ongDto)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = oc.usecase.Update(ID, &ongDto)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if err = json.NewEncoder(w).Encode(&ong); err != nil {
-		http.Error(w, "Failed to encode ong", http.StatusInternalServerError)
-		return
-	}
+	w.WriteHeader(http.StatusCreated)
 
-	w.WriteHeader(http.StatusOK)
 }

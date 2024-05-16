@@ -30,7 +30,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	hashedPass, err := o.hasher.Hash(ong.User.Pass)
 
 	if err != nil {
-		fmt.Errorf("error on ong usecase: %v", err)
+		o.logger.Error("error on ong usecase: ", err)
 		return err
 	}
 
@@ -53,7 +53,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.repo.Save(ong)
 
 	if err != nil {
-		fmt.Errorf("error on ong Save: %v", err)
+		o.logger.Error("error on ong Save: ", err)
 		return err
 	}
 
@@ -61,6 +61,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
+<<<<<<< HEAD
 func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 
 	ong, err := c.repo.FindByID(ID)
@@ -82,4 +83,28 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	ong.User = *user
 
 	return ong, nil
+=======
+func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
+	ongToUpdate := entity.OngToUpdate(*ongDto)
+
+	ong, err := o.repo.FindById(ongId)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+
+	err = o.userRepo.Update(ong.UserID, ongToUpdate.User)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+
+	err = o.repo.Update(ongId, *ongToUpdate)
+	if err != nil {
+		o.logger.Error("error on ong usecase: ", err)
+		return err
+	}
+
+	return nil
+>>>>>>> main
 }

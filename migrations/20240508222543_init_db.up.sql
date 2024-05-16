@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMP,
     UNIQUE INDEX idx_email (email)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS legal_persons
 (
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS legal_persons
     links          varchar(255),
     openingHours   varchar(120)        not null,
     adoptionPolicy longtext    not null
-);
+    );
 
 CREATE TABLE IF NOT EXISTS addresses
 (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS addresses
     state     varchar(20),
     latitude  float,
     longitude float
-);
+    );
 
 CREATE TABLE IF NOT EXISTS breeds
 (
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS breeds
     weather         varchar(255),
     dressage        varchar(255),
     lifeExpectancy  varchar(30)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS pets
 (
@@ -70,14 +70,14 @@ CREATE TABLE IF NOT EXISTS pets
     castrated           bool,
     availableToAdoption bool             default true,
     userId              uuid REFERENCES users (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS pets_image
 (
     id    uuid primary key default UUID(),
     url   varchar(255),
     petId uuid REFERENCES pets (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS vaccines
 (
@@ -86,4 +86,4 @@ CREATE TABLE IF NOT EXISTS vaccines
     name      varchar(128) not null,
     date      date         not null,
     doctorCRM varchar(15)  not null
-);
+    );
