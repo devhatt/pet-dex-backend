@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -49,6 +50,56 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 	}
 
 	return nil
+}
+
+func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity.Address, error) {
+	row, err := ur.dbconnection.Query(`
+	SELECT
+		a.id,
+		a.address,
+		a.city,
+		a.state,
+		a.latitude,
+		a.longitude,
+	FROM
+		addresses a
+	WHERE
+		a.userId = ?`,
+		userID,
+	)
+	if err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		err = fmt.Errorf("error retrieving address %d: %w", userID, err)
+		return nil, err
+	}
+	defer row.Close()
+
+	if !row.Next() {
+		return nil, sql.ErrNoRows
+	}
+
+	var address entity.Address
+
+	err = row.Scan(
+		&address.ID,
+		&address.Address,
+		&address.City,
+		&address.State,
+		&address.Latitude,
+		&address.Longitude,
+	)
+	if err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		err = fmt.Errorf("error scanning address %d: %w", userID, err)
+		return nil, err
+	}
+
+	if err := row.Err(); err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		return nil, fmt.Errorf("error iterating over address rows: %w", err)
+	}
+
+	return &address, nil
 }
 
 func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.User) error {
@@ -105,9 +156,61 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 	return nil
 }
 
-func (ur *UserRepository) FindById(id uniqueEntityId.ID) *entity.User {
+func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
+	row, err := ur.dbconnection.Query(`
+	SELECT
+		u.id,
+		u.name,
+		u.birthdate,
+		u.document,
+		u.avatarUrl,
+		u.email,
+		u.phone
+	FROM
+		users u
+	WHERE
+		u.id = ?`,
+		ID,
+	)
+	if err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		err = fmt.Errorf("error retrieving user %d: %w", ID, err)
+		return nil, err
+	}
+	defer row.Close()
 
-	return &entity.User{}
+	if !row.Next() {
+		return nil, sql.ErrNoRows
+	}
+
+	var user entity.User
+	var birthdateStr string
+
+	err = row.Scan(
+		&user.ID,
+		&user.Name,
+		&birthdateStr,
+		&user.Document,
+		&user.AvatarURL,
+		&user.Email,
+		&user.Phone,
+	)
+	if err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		err = fmt.Errorf("error scanning user %d: %w", ID, err)
+		return nil, err
+	}
+
+	if *user.BirthDate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+		return nil, fmt.Errorf("error parsing adoptionDate: %w", err)
+	}
+
+	if err := row.Err(); err != nil {
+		loggerUserRepository.Error("error on user repository: ", err)
+		return nil, fmt.Errorf("error iterating over user rows: %w", err)
+	}
+
+	return &user, nil
 }
 
 func (ur *UserRepository) FindByEmail(email string) *entity.User {
