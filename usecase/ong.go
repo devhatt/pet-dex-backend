@@ -61,7 +61,6 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
-<<<<<<< HEAD
 func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 
 	ong, err := c.repo.FindByID(ID)
@@ -83,11 +82,12 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	ong.User = *user
 
 	return ong, nil
-=======
+}
+
 func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
 	ongToUpdate := entity.OngToUpdate(*ongDto)
 
-	ong, err := o.repo.FindById(ongId)
+	ong, err := o.repo.FindByID(ongId)
 	if err != nil {
 		o.logger.Error("error on ong usecase: ", err)
 		return err
@@ -106,5 +106,4 @@ func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) e
 	}
 
 	return nil
->>>>>>> main
 }

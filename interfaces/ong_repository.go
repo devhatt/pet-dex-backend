@@ -8,5 +8,5 @@ import (
 type OngRepository interface {
 	Save(ong *entity.Ong) error
 	Update(id uniqueEntityId.ID, ong entity.Ong) error
-	FindById(id uniqueEntityId.ID) (*entity.Ong, error)
+	FindByID(ID uniqueEntityId.ID) (*entity.Ong, error)
 }

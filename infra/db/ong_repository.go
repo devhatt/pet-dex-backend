@@ -129,7 +129,3 @@ func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) er
 
 	return nil
 }
-
-func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
-	return nil, nil
-}
