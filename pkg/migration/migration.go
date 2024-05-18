@@ -8,7 +8,9 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
+	"os"
 	"pet-dex-backend/v2/infra/config"
+	"time"
 )
 
 func Up() {
@@ -71,4 +73,31 @@ func Down() {
 		log.Fatalf("Failed on running migrations down: %v\n", err)
 		return
 	}
+
+}
+
+func Create(name string) {
+	path, err := config.LoadEnv("../../")
+	if err != nil {
+		fmt.Println("Error loading the .env file:", err)
+	}
+	data := time.Now()
+	timestamp := data.Format("20060102150405")
+	fmt.Println("Current date and time: ", timestamp)
+	fileNameDown := fmt.Sprintf("%s/%s_%s.down.sql", path.MIGRATIONS_PATH, timestamp, name)
+	fileNameUp := fmt.Sprintf("%s/%s_%s.up.sql", path.MIGRATIONS_PATH, timestamp, name)
+	// Create the file
+	fileDown, err := os.Create(fileNameDown)
+	if err != nil {
+		fmt.Println("Error creating down file:", err)
+		return
+	}
+	defer fileDown.Close()
+
+	fileUp, err := os.Create(fileNameUp)
+	if err != nil {
+		fmt.Println("Error creating up file:", err)
+		return
+	}
+	defer fileUp.Close()
 }
