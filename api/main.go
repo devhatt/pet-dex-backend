@@ -22,7 +22,7 @@ func main() {
 	}
 
 	config.InitConfigs()
-	sqlxDb, err := sqlx.Connect("mysql", env.DBUrl)
+	sqlxDb, err := sqlx.Open("mysql", env.DBUrl)
 
 	if err != nil {
 		panic(err)
