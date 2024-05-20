@@ -59,3 +59,13 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	return nil
 
 }
+
+func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngList, error) {
+	ong, err := o.repo.List(limit, offset, sortBy, order)
+
+	if err != nil {
+		err = fmt.Errorf("error listing ongs: %w", err)
+		return nil, err
+	}
+	return ong, nil
+}
