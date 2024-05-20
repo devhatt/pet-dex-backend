@@ -55,16 +55,18 @@ func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ong, err := oc.usecase.FindByID(ID)
-
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
-		if err = json.NewEncoder(w).Encode(&ong); err != nil {
-			http.Error(w, "Failed to encode ong", http.StatusInternalServerError)
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	if err = json.NewEncoder(w).Encode(&ong); err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		http.Error(w, "Failed to encode ong", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
