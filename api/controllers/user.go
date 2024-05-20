@@ -29,7 +29,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		uc.logger.Error("Error on user controller insert: ", err)
-		http.Error(w, "Erro ao converter requisição ", http.StatusBadRequest)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +45,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		uc.logger.Error("Error on user controller insert: ", err)
-		http.Error(w, "Erro ao salvar usuario", http.StatusInternalServerError)
+		http.Error(w, "Error saving user", http.StatusInternalServerError)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 
 	if err != nil {
 		uc.logger.Error("error on user controller: ", err)
-		http.Error(w, "Erro ao converter requisição ", http.StatusBadRequest)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 	err = userLoginDto.Validate()
@@ -83,8 +83,8 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
-		uc.logger.Error("[#UserController.Update] ID Inválido -> Erro: ", err)
-		http.Error(w, "ID inválido", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Invalid ID -> Error: ", err)
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
@@ -92,16 +92,16 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&userUpdateDto)
 
 	if err != nil {
-		uc.logger.Error("[#UserController.Update] Erro ao tentar converter o body da requisiçao -> Erro: ", err)
-		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Error decoding request -> Error: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 
 	err = uc.usecase.Update(ID, userUpdateDto)
 
 	if err != nil {
-		uc.logger.Error("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: ", err)
-		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Error trying to update User -> Error: ", err)
+		http.Error(w, "Error trying to update User ", http.StatusBadRequest)
 		return
 	}
 
