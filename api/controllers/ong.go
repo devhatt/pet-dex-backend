@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
 	"strconv"
+	"github.com/go-chi/chi/v5"
 )
 
 type OngController struct {
@@ -26,7 +28,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -34,7 +36,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	err = oc.usecase.Save(&ongDto)
 
 	if err != nil {
-		logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -72,11 +74,43 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	ongs, err := oc.usecase.List(limit, offset, sortBy, order)
 
 	if err != nil {
-		logger.Error("error listing breeds", err)
+		logger.Error("error listing ongs", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(ongs)
+}
+
+    
+func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+	ID, err := uniqueEntityId.ParseID(IDStr)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var ongDto dto.OngUpdateDto
+	err = json.NewDecoder(r.Body).Decode(&ongDto)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = oc.usecase.Update(ID, &ongDto)
+
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+
 }

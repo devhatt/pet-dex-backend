@@ -6,6 +6,8 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -72,4 +74,54 @@ func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*
 	}
 
 	return ongs, nil
+}
+  
+func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) error {
+
+	query := "UPDATE legal_persons SET"
+	var values []interface{}
+
+	if ongToUpdate.Phone != "" {
+		query = query + " phone =?"
+		values = append(values, ongToUpdate.Phone)
+	}
+
+	if ongToUpdate.OpeningHours != "" {
+		query = query + " openingHours =?"
+		values = append(values, ongToUpdate.OpeningHours)
+	}
+
+	if ongToUpdate.AdoptionPolicy != "" {
+		query = query + " adoptionPolicy =?"
+		values = append(values, ongToUpdate.AdoptionPolicy)
+	}
+
+	if string(*ongToUpdate.Links) != "" {
+		query = query + " links =?"
+		values = append(values, ongToUpdate.Links)
+	}
+
+	query = query + " updated_at =?,"
+	values = append(values, time.Now())
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, id)
+
+	fmt.Printf("Query to update: %s", query)
+
+	_, err := or.dbconnection.Exec(query, values...)
+
+	if err != nil {
+		logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("error on updating ong")
+		return err
+	}
+
+	return nil
+}
+
+func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
+	return nil, nil
+
 }

@@ -32,6 +32,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Route("/ongs", func(r chi.Router) {
 			r.Post("/", controllers.OngController.Insert)
 			r.Get("/", controllers.OngController.List)
+			r.Patch("/{ongID}", controllers.OngController.Update)
 		})
 
 		r.Route("/user", func(r chi.Router) {
