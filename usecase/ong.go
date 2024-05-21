@@ -61,10 +61,33 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
+func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+
+	ong, err := c.repo.FindByID(ID)
+
+	if err != nil {
+		c.logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("failed to retrieve ong: %w", err)
+		return nil, err
+	}
+
+	user := c.userRepo.FindById(ong.UserID)
+
+	if err != nil {
+		c.logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("failed to retrieve ong: %w", err)
+		return nil, err
+	}
+
+	ong.User = *user
+
+	return ong, nil
+}
+
 func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
 	ongToUpdate := entity.OngToUpdate(*ongDto)
 
-	ong, err := o.repo.FindById(ongId)
+	ong, err := o.repo.FindByID(ongId)
 	if err != nil {
 		o.logger.Error("error on ong usecase: ", err)
 		return err
