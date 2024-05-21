@@ -23,6 +23,7 @@ func NewUserController(usecase *usecase.UserUsecase) *UserController {
 	}
 }
 
+
 func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 	var userDto dto.UserInsertDto
 	err := json.NewDecoder(r.Body).Decode(&userDto)

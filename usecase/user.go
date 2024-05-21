@@ -19,6 +19,7 @@ type UserUsecase struct {
 	repo    interfaces.UserRepository
 	hasher  interfaces.Hasher
 	encoder interfaces.Encoder
+	logger  config.Logger
 }
 
 func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
@@ -26,6 +27,7 @@ func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, en
 		repo:    repo,
 		hasher:  hasher,
 		encoder: encoder,
+		logger:  *config.GetLogger("user-usecase"),
 	}
 }
 
@@ -83,7 +85,7 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 	err := uc.repo.Update(userID, user)
 
 	if err != nil {
-		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
+		uc.logger.Error("error on user usecase:	", err)
 		return err
 	}
 
@@ -95,7 +97,7 @@ func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	user, err := uc.repo.FindByID(ID)
 
 	if err != nil {
-		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
+		uc.logger.Error("error on user usecase:", err)
 		err = fmt.Errorf("failed to retrieve user: %w", err)
 		return nil, err
 	}
@@ -103,8 +105,8 @@ func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	address, err := uc.repo.FindAddressByUserID(user.ID)
 
 	if err != nil {
-		loggerUser.Error(fmt.Errorf("#UserUsecase.Update error: %w", err))
-		err = fmt.Errorf("failed to retrieve user: %w", err)
+		uc.logger.Error("error on user usecase:", err)
+		err = fmt.Errorf("failed to retrieve user address: %w", err)
 		return nil, err
 	}
 
