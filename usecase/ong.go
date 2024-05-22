@@ -71,7 +71,7 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 		return nil, err
 	}
 
-	user := c.userRepo.FindById(ong.UserID)
+	user, err := c.userRepo.FindByID(ong.UserID)
 
 	if err != nil {
 		c.logger.Error("error on ong repository: ", err)
