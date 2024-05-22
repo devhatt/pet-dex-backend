@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
@@ -12,8 +11,6 @@ import (
 
 	"github.com/golang-jwt/jwt"
 )
-
-var loggerUser = config.GetLogger("user-usercase")
 
 type UserUsecase struct {
 	repo    interfaces.UserRepository
@@ -33,26 +30,24 @@ func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, en
 
 func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 	user := entity.NewUser(userDto.Name, userDto.Type, userDto.Document, userDto.AvatarURL, userDto.Email, userDto.Phone, userDto.Pass, userDto.City, userDto.State, userDto.BirthDate)
-	hashedPass, err := uc.hasher.Hash(user.Pass)
 
+	hashedPass, err := uc.hasher.Hash(user.Pass)
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserUsecase.Hash error: %w", err))
+		uc.logger.Error("error hashing: ", err)
 		return err
 	}
 
 	user.Pass = hashedPass
 
 	err = uc.repo.Save(user)
-
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserUsecase.Save error: %w", err))
+		uc.logger.Error("error saving user: ", err)
 		return err
 	}
 
 	err = uc.repo.SaveAddress(&user.Adresses)
-
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserUsecase.SaveAddress error: %w", err))
+		uc.logger.Error("error saving user adress: ", err)
 		return err
 	}
 
@@ -83,9 +78,8 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 	user := entity.UserToUpdate(&userDto)
 
 	err := uc.repo.Update(userID, user)
-
 	if err != nil {
-		uc.logger.Error("error on user usecase:	", err)
+		uc.logger.Error("error updating user: ", err)
 		return err
 	}
 
@@ -97,16 +91,14 @@ func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	user, err := uc.repo.FindByID(ID)
 
 	if err != nil {
-		uc.logger.Error("error on user usecase:", err)
-		err = fmt.Errorf("failed to retrieve user: %w", err)
+		uc.logger.Error("error finding user by id:", err)
 		return nil, err
 	}
 
 	address, err := uc.repo.FindAddressByUserID(user.ID)
 
 	if err != nil {
-		uc.logger.Error("error on user usecase:", err)
-		err = fmt.Errorf("failed to retrieve user address: %w", err)
+		uc.logger.Error("error finding user address:", err)
 		return nil, err
 	}
 

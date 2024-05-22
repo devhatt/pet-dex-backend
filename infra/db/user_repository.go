@@ -16,11 +16,13 @@ var loggerUserRepository = config.GetLogger("user-repository")
 
 type UserRepository struct {
 	dbconnection *sqlx.DB
+	logger       config.Logger
 }
 
 func NewUserRepository(dbconn *sqlx.DB) interfaces.UserRepository {
 	return &UserRepository{
 		dbconnection: dbconn,
+		logger:       *config.GetLogger("ong-repository"),
 	}
 }
 
@@ -32,8 +34,7 @@ func (ur *UserRepository) Save(user *entity.User) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO users (id, name, type, document, avatarUrl, email, phone, pass) VALUES (:id, :name, :type, :document, :avatarUrl, :email, :phone, :pass)", &user)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserRepository.Save error: %w", err))
-		err = fmt.Errorf("error on saving user")
+		ur.logger.Error("error saving user: ", err)
 		return err
 	}
 
@@ -44,8 +45,7 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitude) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitude)", &addr)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserRepository.SaveAddress error: %w", err))
-		err = fmt.Errorf("error on saving address")
+		ur.logger.Error("error saving address: ", err)
 		return err
 	}
 
@@ -68,7 +68,7 @@ func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity
 		userID,
 	)
 	if err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error saving address: ", err)
 		err = fmt.Errorf("error retrieving address %d: %w", userID, err)
 		return nil, err
 	}
@@ -89,13 +89,13 @@ func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity
 		&address.Longitude,
 	)
 	if err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error on user repository: ", err)
 		err = fmt.Errorf("error scanning address %d: %w", userID, err)
 		return nil, err
 	}
 
 	if err := row.Err(); err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error on user repository: ", err)
 		return nil, fmt.Errorf("error iterating over address rows: %w", err)
 	}
 
@@ -149,7 +149,7 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 	_, err := ur.dbconnection.Exec(query, values...)
 
 	if err != nil {
-		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
+		ur.logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
 		return fmt.Errorf("error on update user")
 	}
 
@@ -173,7 +173,7 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		ID,
 	)
 	if err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error saving address: ", err)
 		err = fmt.Errorf("error retrieving user %d: %w", ID, err)
 		return nil, err
 	}
@@ -196,7 +196,7 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		&user.Phone,
 	)
 	if err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error saving address: ", err)
 		err = fmt.Errorf("error scanning user %d: %w", ID, err)
 		return nil, err
 	}
@@ -206,7 +206,7 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	}
 
 	if err := row.Err(); err != nil {
-		loggerUserRepository.Error("error on user repository: ", err)
+		ur.logger.Error("error saving address: ", err)
 		return nil, fmt.Errorf("error iterating over user rows: %w", err)
 	}
 
