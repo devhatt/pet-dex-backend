@@ -12,8 +12,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var loggerUserRepository = config.GetLogger("user-repository")
-
 type UserRepository struct {
 	dbconnection *sqlx.DB
 	logger       config.Logger
