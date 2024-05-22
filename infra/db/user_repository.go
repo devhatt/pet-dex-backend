@@ -1,7 +1,6 @@
 package db
 
 import (
-	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -51,8 +50,10 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 }
 
 func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity.Address, error) {
-	row, err := ur.dbconnection.Query(`
-	SELECT
+	var address entity.Address
+
+	err := ur.dbconnection.Get(&address,
+		`SELECT
 		a.id,
 		a.address,
 		a.city,
@@ -66,35 +67,9 @@ func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity
 		userID,
 	)
 	if err != nil {
-		ur.logger.Error("error saving address: ", err)
+		ur.logger.Error("error retrieving address: ", err)
 		err = fmt.Errorf("error retrieving address %d: %w", userID, err)
 		return nil, err
-	}
-	defer row.Close()
-
-	if !row.Next() {
-		return nil, errors.New("sql: no rows in result")
-	}
-
-	var address entity.Address
-
-	err = row.Scan(
-		&address.ID,
-		&address.Address,
-		&address.City,
-		&address.State,
-		&address.Latitude,
-		&address.Longitude,
-	)
-	if err != nil {
-		ur.logger.Error("error on user repository: ", err)
-		err = fmt.Errorf("error scanning address %d: %w", userID, err)
-		return nil, err
-	}
-
-	if err := row.Err(); err != nil {
-		ur.logger.Error("error on user repository: ", err)
-		return nil, fmt.Errorf("error iterating over address rows: %w", err)
 	}
 
 	return &address, nil
@@ -155,8 +130,10 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 }
 
 func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
-	row, err := ur.dbconnection.Query(`
-	SELECT
+	var user entity.User
+
+	err := ur.dbconnection.Get(&user,
+		`SELECT
 		u.id,
 		u.name,
 		u.birthdate,
@@ -171,41 +148,9 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		ID,
 	)
 	if err != nil {
-		ur.logger.Error("error saving address: ", err)
+		ur.logger.Error("error retrieving user: ", err)
 		err = fmt.Errorf("error retrieving user %d: %w", ID, err)
 		return nil, err
-	}
-	defer row.Close()
-
-	if !row.Next() {
-		return nil, errors.New("sql: no rows in result")
-	}
-
-	var user entity.User
-	var birthdateStr string
-
-	err = row.Scan(
-		&user.ID,
-		&user.Name,
-		&birthdateStr,
-		&user.Document,
-		&user.AvatarURL,
-		&user.Email,
-		&user.Phone,
-	)
-	if err != nil {
-		ur.logger.Error("error saving address: ", err)
-		err = fmt.Errorf("error scanning user %d: %w", ID, err)
-		return nil, err
-	}
-
-	if *user.BirthDate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
-		return nil, fmt.Errorf("error parsing adoptionDate: %w", err)
-	}
-
-	if err := row.Err(); err != nil {
-		ur.logger.Error("error saving address: ", err)
-		return nil, fmt.Errorf("error iterating over user rows: %w", err)
 	}
 
 	return &user, nil
