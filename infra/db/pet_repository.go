@@ -183,9 +183,9 @@ func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity
 		return fmt.Errorf("error updating pet: %w \\n", err)
 	}
 
-	_, errDel := pr.dbconnection.Exec("DELETE FROM vaccines WHERE petId = ?", petID)
+	_, err = pr.dbconnection.Exec("DELETE FROM vaccines WHERE petId = ?", petID)
 	if err != nil {
-		return fmt.Errorf("error removing existing vaccines: %w", errDel)
+		return fmt.Errorf("error removing existing vaccines: %w", err)
 	}
 
 	for _, vaccine := range petToUpdate.Vaccines {

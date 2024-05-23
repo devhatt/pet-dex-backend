@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
@@ -12,40 +11,42 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var loggerUserController = config.GetLogger("user-controller")
-
 type UserController struct {
-	uusecase *usecase.UserUsecase
+	usecase *usecase.UserUsecase
+	logger  config.Logger
 }
 
-func NewUserController(uusecase *usecase.UserUsecase) *UserController {
+func NewUserController(usecase *usecase.UserUsecase) *UserController {
 	return &UserController{
-		uusecase: uusecase,
+		usecase: usecase,
+		logger:  *config.GetLogger("user-controller"),
 	}
 }
+
 
 func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 	var userDto dto.UserInsertDto
 	err := json.NewDecoder(r.Body).Decode(&userDto)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserController.Insert error: %w", err))
-		http.Error(w, "Erro ao converter requisição ", http.StatusBadRequest)
+		uc.logger.Error("Error on user controller insert: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 
 	err = userDto.Validate()
 
 	if err != nil {
+		uc.logger.Error("Error on user controller insert: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = uc.uusecase.Save(userDto)
+	err = uc.usecase.Save(userDto)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserController.Save error: %w", err))
-		http.Error(w, "Erro ao salvar usuario", http.StatusInternalServerError)
+		uc.logger.Error("Error on user controller insert: ", err)
+		http.Error(w, "Error saving user", http.StatusInternalServerError)
 		return
 	}
 
@@ -56,8 +57,8 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserController.GenerateToken error: %w", err))
-		http.Error(w, "Erro ao converter requisição ", http.StatusBadRequest)
+		uc.logger.Error("error on user controller: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 	err = userLoginDto.Validate()
@@ -65,7 +66,7 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	token, err := uc.uusecase.GenerateToken(&userLoginDto)
+	token, err := uc.usecase.GenerateToken(&userLoginDto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -83,8 +84,8 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
-		loggerUserController.Errorf("[#UserController.Update] ID Inválido -> Erro: %v", err)
-		http.Error(w, "ID inválido", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Invalid ID -> Error: ", err)
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
@@ -92,17 +93,43 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&userUpdateDto)
 
 	if err != nil {
-		loggerUserController.Errorf("[#UserController.Update] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
-		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Error decoding request -> Error: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 
-	err = uc.uusecase.Update(ID, userUpdateDto)
+	err = uc.usecase.Update(ID, userUpdateDto)
 
 	if err != nil {
-		loggerUserController.Errorf("[#UserController.Update] Erro ao tentar atualizar o usuário -> Erro: %v", err)
-		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
+		uc.logger.Error("[#UserController.Update] Error trying to update User -> Error: ", err)
+		http.Error(w, "Error trying to update User ", http.StatusBadRequest)
 		return
 	}
 
+}
+
+func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		uc.logger.Error("Error on user controller insert: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	user, err := uc.usecase.FindByID(ID)
+
+	if err != nil {
+		logger.Error("error on user controller: ", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	if err = json.NewEncoder(w).Encode(&user); err != nil {
+		logger.Error("error on user controller: ", err)
+		http.Error(w, "Failed to encode user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
