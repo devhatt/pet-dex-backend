@@ -1,11 +1,15 @@
 title := "add_needed_care"
 include .env
 
-run:
-	go run cmd/main.go
+dev:
+	docker compose --profile development --env-file .env up
 
-run-api:
-	go run api/main.go
+integration:
+	docker compose --profile integration-tests up
+
+run:
+	go run ./api/main.go
+
 test:
 	go test ./...
 compose-dev:

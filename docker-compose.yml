@@ -1,18 +1,18 @@
-version: "3.8"
-
 volumes:
   cache:
     driver: local
-
 networks:
-  pet-dex-network:
+  pet-dex-dev:
+    driver: bridge
+  pet-dex-integration-tests:
     driver: bridge
 
 services:
-  api-dev:
+  api: &api
     image: cosmtrek/air
     profiles:
       - development
+    hostname: api
     working_dir: /app
     environment:
       - DATABASE_URL=${DATABASE_URL}
@@ -20,7 +20,7 @@ services:
       - ENVIRONMENT=${ENVIRONMENT}
       - MIGRATIONS_PATH=${MIGRATIONS_PATH}
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     volumes:
       - ./:/app
     depends_on:
@@ -31,10 +31,10 @@ services:
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
 
-  api-prod:
-    image: pet-dex-api
+  db: &db
+    image: mariadb:11.4.1-rc-jammy
     profiles:
       - production
     build:
@@ -60,9 +60,8 @@ services:
   db:
     image: mariadb
     restart: always
-    hostname: db
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:${DB_PORT}"
     environment:
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
@@ -75,31 +74,77 @@ services:
       start_period: 1m
      
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
 
-  cache:
-    image: redis:latest
+  cache: &cache
+    image: redis:7.2.4-alpine
+    profiles:
+      - development
+    hostname: pet-dex-cache
     restart: always
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:${REDIS_PORT}"
     command: redis-server --save "" --requirepass ${REDIS_PASSWORD}
     volumes:
-      - cache:/data
+      - ./cache:/data
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       start_period: 1m
       
       interval: 1m
-      timeout: 5s
+      timeout: 10s
       retries: 3
     env_file:
       - .env
     networks:
-      - pet-dex-network
+      - pet-dex-dev
+
+  api-test:
+    build:
+      context: .
+      dockerfile: ./docker/testes.Dockerfile
+    profiles:
+      - integration-tests
+    hostname: api-tests
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: ${PORT}
+      ENVIRONMENT: ${ENVIRONMENT}
+      MIGRATIONS_PATH: ${MIGRATIONS_PATH}
+      INTEGRATION: true
+    depends_on:
+      cache-test:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
+
+  cache-test:
+    <<: *cache
+    profiles:
+      - integration-tests
+    hostname: cache-test
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
+
+  db-test:
+    <<: *db
+    profiles:
+      - integration-tests
+    hostname: db-test
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
