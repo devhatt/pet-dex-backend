@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -28,7 +29,7 @@ func (ur *UserRepository) Delete(id uniqueEntityId.ID) error {
 
 	if err != nil {
 		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Delete error: %w", err))
-		return fmt.Errorf("error on update user")
+		return fmt.Errorf("error on delete user")
 	}
 
 	return nil
@@ -163,8 +164,18 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	return &user, nil
 }
 
-func (ur *UserRepository) FindByEmail(email string) *entity.User {
-	return &entity.User{}
+func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
+	var user entity.User
+	err := ur.dbconnection.QueryRow("SELECT name, pass, email FROM users WHERE email = ?", email).Scan(&user.Name, &user.Pass, &user.Email)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("error retrieving user: %w", err)
+	}
+
+	return &user, nil
 }
 
 func (ur *UserRepository) List() (users []entity.User, err error) {

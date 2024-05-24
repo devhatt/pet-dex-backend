@@ -57,7 +57,11 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 }
 
 func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
-	user := uc.repo.FindByEmail(loginDto.Email)
+	user, err := uc.repo.FindByEmail(loginDto.Email)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
 	if user.Name == "" {
 		return "", errors.New("invalid credentials")
 	}
