@@ -8,6 +8,8 @@ import (
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
+
+	"github.com/google/uuid"
 )
 
 var loggerUpdate = config.GetLogger("update-usecase")
@@ -71,6 +73,41 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	return pets, nil
 }
 
+func (c *PetUseCase) ListPetsByPage(page int, isAuthenticated bool) ([]*entity.Pet, error) {
+	if isAuthenticated {
+		return c.listPetsAuthenticated(page)
+	}
+	return c.listPetsUnauthenticated()
+}
+
+func (c *PetUseCase) listPetsAuthenticated(page int) ([]*entity.Pet, error) {
+	pets, err := c.repo.ListAllByPage(page)
+	if err != nil {
+		err = fmt.Errorf("failed to retrieve pets page: %w", err)
+		return nil, err
+	}
+	return pets, nil
+}
+
+func (c *PetUseCase) listPetsUnauthenticated() ([]*entity.Pet, error) {
+	pets, err := c.repo.ListAllByPage(1)
+	if len(pets) > 6 {
+		pets = pets[:6]
+	}
+
+	for i, pet := range pets {
+		tempPet := pet
+		pet.ID = uuid.Nil
+		pets[i] = tempPet
+	}
+
+	if err != nil {
+		err = fmt.Errorf("failed to retrieve all user pets: %w", err)
+		return nil, err
+	}
+	return pets, nil
+}
+
 func (c *PetUseCase) isValidSpecialCare(petToUpdate *entity.Pet) bool {
 	var needed = petToUpdate.NeedSpecialCare.Needed
 	var description = petToUpdate.NeedSpecialCare.Description
@@ -89,7 +126,7 @@ func (c *PetUseCase) isValidSpecialCare(petToUpdate *entity.Pet) bool {
 func (c *PetUseCase) Save(petDto dto.PetInsertDto) error {
 	pet := entity.NewPet(petDto.UserID, petDto.BreedID, petDto.Size, petDto.Name, petDto.Weight, petDto.AdoptionDate, petDto.Birthdate)
 
-	err := c.repo.Save(*pet)
+	err := c.repo.Save(pet)
 	if err != nil {
 		err = fmt.Errorf("failed to save pet: %w", err)
 		return err

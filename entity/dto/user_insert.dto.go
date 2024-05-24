@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"net/mail"
 	"regexp"
+	"slices"
 	"time"
 )
 
 var regex = regexp.MustCompile(`^[A-Za-z\d\W]{6,}$`)
+
+var userTypes = []string{"juridica", "fisica"}
 
 type UserInsertDto struct {
 	Name      string     `json:"name"`
@@ -31,6 +34,18 @@ func (u *UserInsertDto) Validate() error {
 
 	if err != nil {
 		return fmt.Errorf("invalid email")
+	}
+
+	if u.Type == "" {
+		return fmt.Errorf("type cannot be empty")
+	}
+
+	if !slices.Contains(userTypes, u.Type) {
+		return fmt.Errorf("type can only be 'juridica' or 'fisica'")
+	}
+
+	if u.Pass == "" {
+		return fmt.Errorf("password cannot be empty")
 	}
 
 	if !regex.MatchString(u.Pass) {
