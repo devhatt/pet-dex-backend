@@ -10,5 +10,5 @@ type OngRepository interface {
 	Save(ong *entity.Ong) error
 	List(limit, offset int, sortBy, order string) (ongs []*dto.OngListDto, err error)
 	Update(id uniqueEntityId.ID, ong entity.Ong) error
-	FindById(id uniqueEntityId.ID) (*entity.Ong, error)
+	FindByID(ID uniqueEntityId.ID) (*entity.Ong, error)
 }

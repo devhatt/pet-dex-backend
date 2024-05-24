@@ -78,6 +78,31 @@ func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*
 	return ongs, nil
 }
   
+
+func (or *OngRepository) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+	var ong entity.Ong
+
+	err := or.dbconnection.Get(&ong, `SELECT
+	l.id,
+	l.userId,
+	l.links,
+	l.openingHours,
+	l.adoptionPolicy
+FROM
+	legal_persons l
+WHERE
+	l.id = ?`, ID)
+
+	if err != nil {
+		logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("error retrieving ong %d: %w", ID, err)
+		return nil, err
+	}
+
+	return &ong, nil
+}
+
+
 func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) error {
 
 	query := "UPDATE legal_persons SET"
@@ -125,5 +150,5 @@ func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) er
 
 func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
 	return nil, nil
-
 }
+

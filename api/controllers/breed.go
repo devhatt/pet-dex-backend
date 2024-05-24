@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"pet-dex-backend/v2/infra/config"
+	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
+
+	"github.com/go-chi/chi/v5"
 )
 
 var logger = config.GetLogger("breed-controller")
@@ -19,8 +22,8 @@ func NewBreedController(usecase *usecase.BreedUseCase) *BreedController {
 	}
 }
 
-func (breedControllerc *BreedController) List(responseWriter http.ResponseWriter, request *http.Request) {
-	breeds, err := breedControllerc.Usecase.List()
+func (cntrl *BreedController) List(responseWriter http.ResponseWriter, request *http.Request) {
+	breeds, err := cntrl.Usecase.List()
 	if err != nil {
 		logger.Error("error listing breeds", err)
 		responseWriter.WriteHeader(http.StatusInternalServerError)
@@ -29,4 +32,27 @@ func (breedControllerc *BreedController) List(responseWriter http.ResponseWriter
 
 	responseWriter.WriteHeader(http.StatusOK)
 	json.NewEncoder(responseWriter).Encode(breeds)
+}
+
+func (cntrl *BreedController) FindBreed(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	breed, err := cntrl.Usecase.FindByID(ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&breed); err != nil {
+		http.Error(w, "Failed to encode breed", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

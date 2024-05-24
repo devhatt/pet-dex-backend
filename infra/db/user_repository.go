@@ -11,15 +11,15 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var loggerUserRepository = config.GetLogger("user-repository")
-
 type UserRepository struct {
 	dbconnection *sqlx.DB
+	logger       config.Logger
 }
 
 func NewUserRepository(dbconn *sqlx.DB) interfaces.UserRepository {
 	return &UserRepository{
 		dbconnection: dbconn,
+		logger:       *config.GetLogger("ong-repository"),
 	}
 }
 
@@ -31,8 +31,7 @@ func (ur *UserRepository) Save(user *entity.User) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO users (id, name, type, document, avatarUrl, email, phone, pass) VALUES (:id, :name, :type, :document, :avatarUrl, :email, :phone, :pass)", &user)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserRepository.Save error: %w", err))
-		err = fmt.Errorf("error on saving user")
+		ur.logger.Error("error saving user: ", err)
 		return err
 	}
 
@@ -43,12 +42,37 @@ func (ur *UserRepository) SaveAddress(addr *entity.Address) error {
 	_, err := ur.dbconnection.NamedExec("INSERT INTO addresses (id, userId, address, city, state, latitude, longitude) VALUES (:id, :userId, :address, :city, :state, :latitude, :longitude)", &addr)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#UserRepository.SaveAddress error: %w", err))
-		err = fmt.Errorf("error on saving address")
+		ur.logger.Error("error saving address: ", err)
 		return err
 	}
 
 	return nil
+}
+
+func (ur *UserRepository) FindAddressByUserID(userID uniqueEntityId.ID) (*entity.Address, error) {
+	var address entity.Address
+
+	err := ur.dbconnection.Get(&address,
+		`SELECT
+		a.id,
+		a.address,
+		a.city,
+		a.state,
+		a.latitude,
+		a.longitude,
+	FROM
+		addresses a
+	WHERE
+		a.userId = ?`,
+		userID,
+	)
+	if err != nil {
+		ur.logger.Error("error retrieving address: ", err)
+		err = fmt.Errorf("error retrieving address %d: %w", userID, err)
+		return nil, err
+	}
+
+	return &address, nil
 }
 
 func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.User) error {
@@ -98,16 +122,38 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 	_, err := ur.dbconnection.Exec(query, values...)
 
 	if err != nil {
-		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
+		ur.logger.Error(fmt.Errorf("#UserRepository.Update error: %w", err))
 		return fmt.Errorf("error on update user")
 	}
 
 	return nil
 }
 
-func (ur *UserRepository) FindById(id uniqueEntityId.ID) *entity.User {
+func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
+	var user entity.User
 
-	return &entity.User{}
+	err := ur.dbconnection.Get(&user,
+		`SELECT
+		u.id,
+		u.name,
+		u.birthdate,
+		u.document,
+		u.avatarUrl,
+		u.email,
+		u.phone
+	FROM
+		users u
+	WHERE
+		u.id = ?`,
+		ID,
+	)
+	if err != nil {
+		ur.logger.Error("error retrieving user: ", err)
+		err = fmt.Errorf("error retrieving user %d: %w", ID, err)
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (ur *UserRepository) FindByEmail(email string) *entity.User {
