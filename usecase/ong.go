@@ -62,7 +62,7 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 }
 
 
-func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngList, error) {
+func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngListDto, error) {
 	ong, err := o.repo.List(limit, offset, sortBy, order)
 
 	if err != nil {

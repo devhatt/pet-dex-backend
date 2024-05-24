@@ -8,6 +8,8 @@ import (
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
 	"strconv"
+	"strings"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -47,15 +49,16 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
-	sortBy := r.URL.Query().Get("sort_by")
+	sortBy := r.URL.Query().Get("sortBy")
 	order := r.URL.Query().Get("order")
+	offsetStr := r.URL.Query().Get("offset")
 
-	validSortBy := map[string]bool{"name": true, "city": true}
+	validSortBy := map[string]bool{"name": true, "address": true}
 	if !validSortBy[sortBy] {
 		sortBy = "name"
 	}
 
-	if order != "asc" && order != "desc" {
+	if strings.ToLower(order) != "asc" && strings.ToLower(order) != "desc" {
 		order = "asc"
 	}
 
@@ -69,7 +72,7 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
-	offset := (page - 1) * limit
+	offset, _ := strconv.Atoi(offsetStr)
 
 	ongs, err := oc.usecase.List(limit, offset, sortBy, order)
 

@@ -37,20 +37,28 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	return nil
 }
 
-func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*dto.OngList, err error) {
+func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*dto.OngListDto, err error) {
 	query := fmt.Sprintf(`
 	SELECT 
-		id, 
-		name, 
-		city, 
-		phone, 
-		state, 
-		openingHours, 
-		adoptionPolicy, 
-		links 
-	FROM legal_persons 
-	ORDER BY %s %s LIMIT $1 OFFSET $2`, sortBy, order)
-	rows, err := or.dbconnection.Query(query, limit, offset)
+    legal_persons.id, 
+    legal_persons.userId, 
+    legal_persons.phone, 
+    legal_persons.openingHours,
+		legal_persons.links,
+    users.name,
+		addresses.address,
+		addresses.city,
+		addresses.state
+	FROM 
+    legal_persons
+	INNER JOIN 
+    users ON legal_persons.userId = users.id
+	INNER JOIN
+		addresses ON legal_persons.userId = addresses.userId
+	ORDER BY 
+    %s %s
+	LIMIT ? OFFSET ?`, sortBy, order)
+	rows, err := or.dbconnection.Queryx(query, limit, offset)
 	if err != nil {
 		logger.Error("error listing ongs", err)
 		return nil, fmt.Errorf("error listing ongs: %w", err)
@@ -58,14 +66,8 @@ func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*
 	defer rows.Close()
 
 	for rows.Next() {
-		var ong dto.OngList
-		err := rows.Scan(
-			&ong.ID,
-			&ong.Phone,
-			&ong.OpeningHours,
-			&ong.AdoptionPolicy,
-			&ong.Links,
-		)
+		var ong dto.OngListDto
+		err := rows.StructScan(&ong)
 		if err != nil {
 			logger.Error("error scanning ongs", err)
 			return nil, fmt.Errorf("error scanning ongs: %w", err)
