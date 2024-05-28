@@ -4,7 +4,7 @@ import (
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
-type OngListDto struct {
+type OngListMapper struct {
 	ID             uniqueEntityId.ID   `json:"id" db:"id"`
 	UserId         uniqueEntityId.ID   `json:"userId" db:"userId"`
 	Name           string              `json:"name" db:"name"`

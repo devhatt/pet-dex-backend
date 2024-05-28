@@ -37,7 +37,7 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	return nil
 }
 
-func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*dto.OngListDto, err error) {
+func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*dto.OngListMapper, err error) {
 	query := fmt.Sprintf(`
 	SELECT 
     legal_persons.id, 
@@ -66,7 +66,7 @@ func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*
 	defer rows.Close()
 
 	for rows.Next() {
-		var ong dto.OngListDto
+		var ong dto.OngListMapper
 		err := rows.StructScan(&ong)
 		if err != nil {
 			logger.Error("error scanning ongs", err)
