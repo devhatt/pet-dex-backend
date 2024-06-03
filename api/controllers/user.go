@@ -3,10 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"pet-dex-backend/v2/api/middlewares"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
-	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
 
@@ -136,23 +134,8 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
-	ID, err := uniqueEntityId.ParseID(IDStr)
-
-	if err != nil {
-		uc.logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisiçao -> Erro: %v", err)
-		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
-	}
-
-	userclaims, ok := r.Context().Value(middlewares.ContextKey("userClaims")).(interfaces.UserClaims)
-	if !ok {
-		logger.Error("[#UserController.Delete] Falha ao receber userclaims")
-		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
-		return
-	}
-
-	err = uc.usecase.Delete(ID)
-	userIDFromUserclaims, err := uniqueEntityId.ParseID(userclaims.Id)
+	userIDFromTokenStr := r.Header.Get("UserId")
+	userIDFromToken, err := uniqueEntityId.ParseID(userIDFromTokenStr)
 	if err != nil {
 		logger.Error("[#UserController.Delete] Erro ao tentar receber o ID do token -> Erro: %v", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
@@ -161,14 +144,13 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 
 	IDStr := chi.URLParam(r, "id")
 	ID, err := uniqueEntityId.ParseID(IDStr)
-
 	if err != nil {
 		logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: %v", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
 
-	if userIDFromUserclaims != ID {
+	if userIDFromToken != ID {
 		logger.Error("[#UserController.Delete] Erro ao tentar excluir outro usuário -> Erro: %v", err)
 		http.Error(w, "Usuário não autorizado a excluir este usuário", http.StatusUnauthorized)
 		return
