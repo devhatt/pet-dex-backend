@@ -21,6 +21,9 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: Create .env
+        run: cp .env.example .env
+
       - name: Test
         run: make test
 
