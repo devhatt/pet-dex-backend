@@ -61,6 +61,18 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
+
+
+func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngListMapper, error) {
+	ong, err := o.repo.List(limit, offset, sortBy, order)
+
+	if err != nil {
+		err = fmt.Errorf("error listing ongs: %w", err)
+		return nil, err
+	}
+	return ong, nil 
+}
+
 func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 
 	ong, err := c.repo.FindByID(ID)
@@ -71,7 +83,7 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 		return nil, err
 	}
 
-	user := c.userRepo.FindById(ong.UserID)
+	user, err := c.userRepo.FindByID(ong.UserID)
 
 	if err != nil {
 		c.logger.Error("error on ong repository: ", err)
@@ -106,4 +118,5 @@ func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) e
 	}
 
 	return nil
+
 }

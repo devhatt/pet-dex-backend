@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -36,6 +37,48 @@ func (or *OngRepository) Save(ong *entity.Ong) error {
 	return nil
 }
 
+func (or *OngRepository) List(limit, offset int, sortBy, order string) (ongs []*dto.OngListMapper, err error) {
+	query := fmt.Sprintf(`
+	SELECT 
+    legal_persons.id, 
+    legal_persons.userId, 
+    legal_persons.phone, 
+    legal_persons.openingHours,
+		legal_persons.links,
+    users.name,
+		addresses.address,
+		addresses.city,
+		addresses.state
+	FROM 
+    legal_persons
+	INNER JOIN 
+    users ON legal_persons.userId = users.id
+	INNER JOIN
+		addresses ON legal_persons.userId = addresses.userId
+	ORDER BY 
+    %s %s
+	LIMIT ? OFFSET ?`, sortBy, order)
+	rows, err := or.dbconnection.Queryx(query, limit, offset)
+	if err != nil {
+		logger.Error("error listing ongs", err)
+		return nil, fmt.Errorf("error listing ongs: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var ong dto.OngListMapper
+		err := rows.StructScan(&ong)
+		if err != nil {
+			logger.Error("error scanning ongs", err)
+			return nil, fmt.Errorf("error scanning ongs: %w", err)
+		}
+		ongs = append(ongs, &ong)
+	}
+
+	return ongs, nil
+}
+  
+
 func (or *OngRepository) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 	var ong entity.Ong
 
@@ -58,6 +101,7 @@ WHERE
 
 	return &ong, nil
 }
+
 
 func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) error {
 
@@ -103,3 +147,8 @@ func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) er
 
 	return nil
 }
+
+func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
+	return nil, nil
+}
+

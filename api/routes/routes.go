@@ -32,6 +32,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 		r.Route("/ongs", func(r chi.Router) {
 			r.Post("/", controllers.OngController.Insert)
+			r.Get("/", controllers.OngController.List)
 			r.Get("/{ongID}", controllers.OngController.FindByID)
 			r.Patch("/{ongID}", controllers.OngController.Update)
 		})
@@ -40,6 +41,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			r.Post("/token", controllers.UserController.GenerateToken)
 			r.Post("/", controllers.UserController.Insert)
 			r.Patch("/{id}", controllers.UserController.Update)
+			r.Get("/{id}", controllers.UserController.FindByID)
 		})
 	})
 }

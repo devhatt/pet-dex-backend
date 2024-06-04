@@ -69,6 +69,64 @@ func (_c *MockUserRepository_Delete_Call) RunAndReturn(run func(uuid.UUID) error
 	return _c
 }
 
+// FindAddressByUserID provides a mock function with given fields: ID
+func (_m *MockUserRepository) FindAddressByUserID(ID uuid.UUID) (*entity.Address, error) {
+	ret := _m.Called(ID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindAddressByUserID")
+	}
+
+	var r0 *entity.Address
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (*entity.Address, error)); ok {
+		return rf(ID)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) *entity.Address); ok {
+		r0 = rf(ID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.Address)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(ID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockUserRepository_FindAddressByUserID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindAddressByUserID'
+type MockUserRepository_FindAddressByUserID_Call struct {
+	*mock.Call
+}
+
+// FindAddressByUserID is a helper method to define mock.On call
+//   - ID uuid.UUID
+func (_e *MockUserRepository_Expecter) FindAddressByUserID(ID interface{}) *MockUserRepository_FindAddressByUserID_Call {
+	return &MockUserRepository_FindAddressByUserID_Call{Call: _e.mock.On("FindAddressByUserID", ID)}
+}
+
+func (_c *MockUserRepository_FindAddressByUserID_Call) Run(run func(ID uuid.UUID)) *MockUserRepository_FindAddressByUserID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockUserRepository_FindAddressByUserID_Call) Return(_a0 *entity.Address, _a1 error) *MockUserRepository_FindAddressByUserID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockUserRepository_FindAddressByUserID_Call) RunAndReturn(run func(uuid.UUID) (*entity.Address, error)) *MockUserRepository_FindAddressByUserID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // FindByEmail provides a mock function with given fields: email
 func (_m *MockUserRepository) FindByEmail(email string) *entity.User {
 	ret := _m.Called(email)
@@ -117,50 +175,60 @@ func (_c *MockUserRepository_FindByEmail_Call) RunAndReturn(run func(string) *en
 	return _c
 }
 
-// FindById provides a mock function with given fields: id
-func (_m *MockUserRepository) FindById(id uuid.UUID) *entity.User {
-	ret := _m.Called(id)
+// FindByID provides a mock function with given fields: ID
+func (_m *MockUserRepository) FindByID(ID uuid.UUID) (*entity.User, error) {
+	ret := _m.Called(ID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for FindById")
+		panic("no return value specified for FindByID")
 	}
 
 	var r0 *entity.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (*entity.User, error)); ok {
+		return rf(ID)
+	}
 	if rf, ok := ret.Get(0).(func(uuid.UUID) *entity.User); ok {
-		r0 = rf(id)
+		r0 = rf(ID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.User)
 		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(ID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
-// MockUserRepository_FindById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindById'
-type MockUserRepository_FindById_Call struct {
+// MockUserRepository_FindByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindByID'
+type MockUserRepository_FindByID_Call struct {
 	*mock.Call
 }
 
-// FindById is a helper method to define mock.On call
-//   - id uuid.UUID
-func (_e *MockUserRepository_Expecter) FindById(id interface{}) *MockUserRepository_FindById_Call {
-	return &MockUserRepository_FindById_Call{Call: _e.mock.On("FindById", id)}
+// FindByID is a helper method to define mock.On call
+//   - ID uuid.UUID
+func (_e *MockUserRepository_Expecter) FindByID(ID interface{}) *MockUserRepository_FindByID_Call {
+	return &MockUserRepository_FindByID_Call{Call: _e.mock.On("FindByID", ID)}
 }
 
-func (_c *MockUserRepository_FindById_Call) Run(run func(id uuid.UUID)) *MockUserRepository_FindById_Call {
+func (_c *MockUserRepository_FindByID_Call) Run(run func(ID uuid.UUID)) *MockUserRepository_FindByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(uuid.UUID))
 	})
 	return _c
 }
 
-func (_c *MockUserRepository_FindById_Call) Return(_a0 *entity.User) *MockUserRepository_FindById_Call {
-	_c.Call.Return(_a0)
+func (_c *MockUserRepository_FindByID_Call) Return(_a0 *entity.User, _a1 error) *MockUserRepository_FindByID_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUserRepository_FindById_Call) RunAndReturn(run func(uuid.UUID) *entity.User) *MockUserRepository_FindById_Call {
+func (_c *MockUserRepository_FindByID_Call) RunAndReturn(run func(uuid.UUID) (*entity.User, error)) *MockUserRepository_FindByID_Call {
 	_c.Call.Return(run)
 	return _c
 }
