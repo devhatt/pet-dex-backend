@@ -28,7 +28,7 @@ func (ur *UserRepository) Delete(id uniqueEntityId.ID) error {
 	_, err := ur.dbconnection.Exec("UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", id)
 
 	if err != nil {
-		loggerUserRepository.Error(fmt.Errorf("#UserRepository.Delete error: %w", err))
+		ur.logger.Error("#UserRepository.Delete error: %w", err)
 		return fmt.Errorf("error on delete user")
 	}
 
