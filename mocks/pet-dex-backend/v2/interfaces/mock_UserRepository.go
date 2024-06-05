@@ -128,7 +128,7 @@ func (_c *MockUserRepository_FindAddressByUserID_Call) RunAndReturn(run func(uui
 }
 
 // FindByEmail provides a mock function with given fields: email
-func (_m *MockUserRepository) FindByEmail(email string) *entity.User {
+func (_m *MockUserRepository) FindByEmail(email string) (*entity.User, error) {
 	ret := _m.Called(email)
 
 	if len(ret) == 0 {
@@ -144,7 +144,7 @@ func (_m *MockUserRepository) FindByEmail(email string) *entity.User {
 		}
 	}
 
-	return r0
+	return r0, nil
 }
 
 // MockUserRepository_FindByEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindByEmail'

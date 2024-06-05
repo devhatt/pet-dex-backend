@@ -32,6 +32,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			w.WriteHeader(401)
 			return
 		}
+		r.Header.Add("userId", userclaims.Id)
 		next.ServeHTTP(w, r)
 	})
 }

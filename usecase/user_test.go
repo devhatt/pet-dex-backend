@@ -259,3 +259,53 @@ func TestErrorUpdate(t *testing.T) {
 		})
 	}
 }
+
+func TestDelete(t *testing.T) {
+	tcases := map[string]struct {
+		repo         *mockInterfaces.MockUserRepository
+		inputID      uniqueEntityId.ID
+		expectOutput error
+	}{
+		"success": {
+			repo:         mockInterfaces.NewMockUserRepository(t),
+			inputID:      uniqueEntityId.NewID(),
+			expectOutput: nil,
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Delete", tcase.inputID).Return(tcase.expectOutput)
+
+			usecase := NewUserUsecase(tcase.repo, nil, nil)
+			err := usecase.Delete(tcase.inputID)
+
+			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
+
+func TestErrorDelete(t *testing.T) {
+	tcases := map[string]struct {
+		repo         *mockInterfaces.MockUserRepository
+		inputID      uniqueEntityId.ID
+		expectOutput error
+	}{
+		"errorDelete": {
+			repo:         mockInterfaces.NewMockUserRepository(t),
+			inputID:      uniqueEntityId.NewID(),
+			expectOutput: fmt.Errorf("error on delete user"),
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Delete", tcase.inputID).Return(tcase.expectOutput)
+
+			usecase := NewUserUsecase(tcase.repo, nil, nil)
+			err := usecase.Delete(tcase.inputID)
+
+			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
