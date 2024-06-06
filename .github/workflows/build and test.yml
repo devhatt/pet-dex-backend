@@ -27,28 +27,10 @@ jobs:
       - name: Test
         run: go test ./...
 
-  build-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-
-      - name: Create .env
-        run: cp .env.example .env
-
-      - name: Run Docker Compose Dev
-        run: |
-          docker compose --profile development --env-file .env up --build -d
-
-  build-prod:
+  build:
     runs-on: ubuntu-latest
     needs:
-      # - test
-      - build-dev
+      - test
     steps:
       - uses: actions/checkout@v4
 
