@@ -42,7 +42,7 @@ jobs:
 
       - name: Run Docker Compose Dev
         run: |
-          docker compose --profile development --env-file .env up --build
+          docker compose --profile development --env-file .env up --build -d
 
   build-prod:
     runs-on: ubuntu-latest
@@ -62,4 +62,4 @@ jobs:
 
       - name: Run Docker Compose Prod
         run: |
-          docker compose --profile integration-tests up
+          docker compose --profile integration-tests up -d
