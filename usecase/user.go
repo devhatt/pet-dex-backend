@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
@@ -56,7 +57,11 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 }
 
 func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
-	user := uc.repo.FindByEmail(loginDto.Email)
+	user, err := uc.repo.FindByEmail(loginDto.Email)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
 	if user.Name == "" {
 		return "", errors.New("invalid credentials")
 	}
@@ -105,4 +110,15 @@ func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 	user.Adresses = *address
 
 	return user, nil
+}
+
+func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
+	err := uc.repo.Delete(userID)
+
+	if err != nil {
+		uc.logger.Error(fmt.Errorf("#UserUsecase.Delete error: %w", err))
+		return err
+	}
+
+	return nil
 }

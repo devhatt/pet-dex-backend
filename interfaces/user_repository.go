@@ -10,7 +10,7 @@ type UserRepository interface {
 	Update(userID uniqueEntityId.ID, user entity.User) error
 	Delete(id uniqueEntityId.ID) error
 	FindByID(ID uniqueEntityId.ID) (*entity.User, error)
-	FindByEmail(email string) *entity.User
+	FindByEmail(email string) (*entity.User, error)
 	List() ([]entity.User, error)
 	AdressRepo
 }
