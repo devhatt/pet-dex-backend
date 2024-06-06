@@ -10,20 +10,22 @@ import (
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
-var loggerUpdate = config.GetLogger("update-usecase")
-
 type PetUseCase struct {
-	repo interfaces.PetRepository
+	repo   interfaces.PetRepository
+	logger config.Logger
 }
 
 func NewPetUseCase(repo interfaces.PetRepository) *PetUseCase {
-	return &PetUseCase{repo: repo}
+	return &PetUseCase{
+		repo:   repo,
+		logger: *config.GetLogger("pet-usecase"),
+	}
 }
 
 func (c *PetUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	pet, err := c.repo.FindByID(ID)
 	if err != nil {
-		err = fmt.Errorf("failed to retrieve pet: %w", err)
+		c.logger.Error("failed to retrieve pet: ", err)
 		return nil, err
 	}
 	return pet, nil
@@ -46,7 +48,7 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
-		loggerUpdate.Error("error updating pet", err)
+		c.logger.Error("error updating pet", err)
 		return fmt.Errorf("failed to update pet with ID %s: %w", petID, err)
 	}
 
@@ -65,7 +67,7 @@ func (c *PetUseCase) isValidWeight(petToUpdate *entity.Pet) bool {
 func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
 	pets, err := c.repo.ListByUser(userID)
 	if err != nil {
-		err = fmt.Errorf("failed to retrieve all user pets: %w", err)
+		c.logger.Error("failed to retrieve all user pets: ", err)
 		return nil, err
 	}
 	return pets, nil
@@ -91,7 +93,7 @@ func (c *PetUseCase) Save(petDto dto.PetInsertDto) error {
 
 	err := c.repo.Save(*pet)
 	if err != nil {
-		err = fmt.Errorf("failed to save pet: %w", err)
+		c.logger.Error("failed to save pet: ", err)
 		return err
 	}
 	return nil
