@@ -39,14 +39,14 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 	err = o.userRepo.Save(&ong.User)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#OngUseCase.SaveUser error: %w", err))
+		o.logger.Error("#OngUseCase.SaveUser error: ", err)
 		return err
 	}
 
 	err = o.userRepo.SaveAddress(&ong.User.Adresses)
 
 	if err != nil {
-		fmt.Println(fmt.Errorf("#OngUseCase.SaveAddress error: %w", err))
+		o.logger.Error("#OngUseCase.SaveAddress error: ", err)
 		return err
 	}
 
@@ -61,32 +61,31 @@ func (o *OngUsecase) Save(ongDto *dto.OngInsertDto) error {
 
 }
 
-
-
 func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngListMapper, error) {
 	ong, err := o.repo.List(limit, offset, sortBy, order)
 
 	if err != nil {
+		o.logger.Error("error listing ongs: ", err)
 		err = fmt.Errorf("error listing ongs: %w", err)
 		return nil, err
 	}
-	return ong, nil 
+	return ong, nil
 }
 
-func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+func (o *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 
-	ong, err := c.repo.FindByID(ID)
+	ong, err := o.repo.FindByID(ID)
 
 	if err != nil {
-		c.logger.Error("error on ong repository: ", err)
+		o.logger.Error("error on ong repository: ", err)
 		err = fmt.Errorf("failed to retrieve ong: %w", err)
 		return nil, err
 	}
 
-	user, err := c.userRepo.FindByID(ong.UserID)
+	user, err := o.userRepo.FindByID(ong.UserID)
 
 	if err != nil {
-		c.logger.Error("error on ong repository: ", err)
+		o.logger.Error("error on ong repository: ", err)
 		err = fmt.Errorf("failed to retrieve ong: %w", err)
 		return nil, err
 	}
