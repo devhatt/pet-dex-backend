@@ -27,9 +27,8 @@ jobs:
       - name: Test
         run: go test ./...
 
-  build:
+  build-dev:
     runs-on: ubuntu-latest
-    # needs: test
     steps:
       - uses: actions/checkout@v4
 
@@ -41,17 +40,26 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          load: true
-          tags: pet-dex-api:latest
-
-      - name: Run Docker image
+      - name: Run Docker Compose Dev
         run: |
-          docker run -d -p 3000:3000 pet-dex-api:latest
+          docker compose --profile development --env-file .env up --build
+
+  build-prod:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - build-dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Run Docker Compose Prod
+        run: |
+          docker compose --profile integration-tests up
