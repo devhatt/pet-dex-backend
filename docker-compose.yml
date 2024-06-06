@@ -1,6 +1,8 @@
 volumes:
   cache:
     driver: local
+  cache-test:
+    driver: local
 networks:
   pet-dex-dev:
     driver: bridge
@@ -8,7 +10,7 @@ networks:
     driver: bridge
 
 services:
-  api: &api
+  api:
     image: cosmtrek/air
     profiles:
       - development
@@ -25,9 +27,9 @@ services:
       - ./:/app
     depends_on:
       cache:
-        condition: service_healthy
+        condition: service_started
       db:
-        condition: service_healthy
+        condition: service_started
     env_file:
       - .env
     networks:
@@ -36,46 +38,20 @@ services:
   db: &db
     image: mariadb:11.4.1-rc-jammy
     profiles:
-      - production
-    build:
-      context: ./
-      dockerfile: Dockerfile
+      - development
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
-      - ENVIRONMENT=${ENVIRONMENT}
-      - MIGRATIONS_PATH=${MIGRATIONS_PATH}
-    ports:
-      - "3000:3000"
-    depends_on:
-      cache:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
-    networks:
-      - pet-dex-network
-
-  db:
-    image: mariadb
-    restart: always
+      - MARIADB_DATABASE=${DB_DATABASE}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - PORT=${DB_PORT}
     ports:
       - "${DB_PORT}:${DB_PORT}"
-    environment:
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${DB_DATABASE}
+    depends_on:
+      cache:
+        condition: service_started
     volumes:
-      - ./data:/var/lib/mysql/data
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 1m
-     
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      - ./data:/var/lib/mysql
     env_file:
       - .env
     networks:
@@ -94,13 +70,6 @@ services:
     command: redis-server --save "" --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./cache:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      start_period: 1m
-      
-      interval: 1m
-      timeout: 10s
-      retries: 3
     env_file:
       - .env
     networks:
@@ -109,7 +78,7 @@ services:
   api-test:
     build:
       context: .
-      dockerfile: ./docker/testes.Dockerfile
+      dockerfile: Dockerfile
     profiles:
       - integration-tests
     hostname: api-tests
@@ -134,6 +103,14 @@ services:
     profiles:
       - integration-tests
     hostname: cache-test
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      start_period: 1m
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./cache:/data-teste
     env_file:
       - .env.example
     networks:
@@ -141,9 +118,20 @@ services:
 
   db-test:
     <<: *db
+    depends_on:
+      cache-test:
+        condition: service_healthy
     profiles:
       - integration-tests
     hostname: db-test
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 1m
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./data-teste:/var/lib/mysql
     env_file:
       - .env.example
     networks:

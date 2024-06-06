@@ -25,11 +25,11 @@ jobs:
         run: cp .env.example .env
 
       - name: Test
-        run: make test
+        run: go test ./...
 
   build:
     runs-on: ubuntu-latest
-    needs: test
+    # needs: test
     steps:
       - uses: actions/checkout@v4
 
