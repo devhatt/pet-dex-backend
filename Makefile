@@ -15,3 +15,6 @@ test:
 
 migration:
 	go run cmd/main.go
+
+migration-up:
+	go run cmd/main.go -up 

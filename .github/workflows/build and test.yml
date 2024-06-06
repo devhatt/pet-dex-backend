@@ -63,3 +63,7 @@ jobs:
       - name: Run Docker Compose Prod
         run: |
           docker compose --profile integration-tests up -d
+
+      - name: Up migrations
+        run: |
+          go run cmd/main.go -up
