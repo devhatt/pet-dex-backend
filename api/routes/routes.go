@@ -24,7 +24,6 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			private.Use(middlewares.AuthMiddleware)
 
 			private.Route("/pets", func(r chi.Router) {
-				r.Get("/{page}", controllers.PetController.ListAllPets)
 				r.Route("/breeds", func(r chi.Router) {
 					r.Get("/", controllers.BreedController.List)
 				})
@@ -51,6 +50,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		r.Group(func(public chi.Router) {
 			public.Post("/user", controllers.UserController.Insert)
 			public.Post("/user/token", controllers.UserController.GenerateToken)
+			public.Get("/pets/", controllers.PetController.ListAllPets)
 		})
 	})
 }
