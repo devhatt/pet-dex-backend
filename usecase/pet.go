@@ -73,11 +73,11 @@ func (c *PetUseCase) ListUserPets(userID uniqueEntityId.ID) ([]*entity.Pet, erro
 	return pets, nil
 }
 
-func (c *PetUseCase) ListPetsByPage(page int, isAuthenticated bool) ([]*entity.Pet, error) {
-	if isAuthenticated {
-		return c.listPetsAuthenticated(page)
+func (c *PetUseCase) ListPetsByPage(page int, isUnauthorized bool) ([]*entity.Pet, error) {
+	if isUnauthorized {
+		return c.listPetsUnauthenticated()
 	}
-	return c.listPetsUnauthenticated()
+	return c.listPetsAuthenticated(page)
 }
 
 func (c *PetUseCase) listPetsAuthenticated(page int) ([]*entity.Pet, error) {
