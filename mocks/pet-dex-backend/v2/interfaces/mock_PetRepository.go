@@ -139,63 +139,6 @@ func (_c *MockPetRepository_ListAllByPage_Call) RunAndReturn(run func(int) ([]*e
 	return _c
 }
 
-// ListAllUnauthenticated provides a mock function with given fields:
-func (_m *MockPetRepository) ListAllUnauthenticated() ([]*entity.Pet, error) {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListAllUnauthenticated")
-	}
-
-	var r0 []*entity.Pet
-	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]*entity.Pet, error)); ok {
-		return rf()
-	}
-	if rf, ok := ret.Get(0).(func() []*entity.Pet); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Pet)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockPetRepository_ListAllUnauthenticated_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAllUnauthenticated'
-type MockPetRepository_ListAllUnauthenticated_Call struct {
-	*mock.Call
-}
-
-// ListAllUnauthenticated is a helper method to define mock.On call
-func (_e *MockPetRepository_Expecter) ListAllUnauthenticated() *MockPetRepository_ListAllUnauthenticated_Call {
-	return &MockPetRepository_ListAllUnauthenticated_Call{Call: _e.mock.On("ListAllUnauthenticated")}
-}
-
-func (_c *MockPetRepository_ListAllUnauthenticated_Call) Run(run func()) *MockPetRepository_ListAllUnauthenticated_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPetRepository_ListAllUnauthenticated_Call) Return(_a0 []*entity.Pet, _a1 error) *MockPetRepository_ListAllUnauthenticated_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockPetRepository_ListAllUnauthenticated_Call) RunAndReturn(run func() ([]*entity.Pet, error)) *MockPetRepository_ListAllUnauthenticated_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListByUser provides a mock function with given fields: userID
 func (_m *MockPetRepository) ListByUser(userID uuid.UUID) ([]*entity.Pet, error) {
 	ret := _m.Called(userID)

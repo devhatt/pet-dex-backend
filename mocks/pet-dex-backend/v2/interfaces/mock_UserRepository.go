@@ -154,7 +154,7 @@ func (_m *MockUserRepository) FindByEmail(email string) (*entity.User, error) {
 		r1 = ret.Error(1)
 	}
 
-	return r0, r1, nil
+	return r0, r1
 }
 
 // MockUserRepository_FindByEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindByEmail'

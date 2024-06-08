@@ -4,6 +4,7 @@ package interfaces
 
 import (
 	entity "pet-dex-backend/v2/entity"
+	dto "pet-dex-backend/v2/entity/dto"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -77,6 +78,67 @@ func (_c *MockOngRepository_FindByID_Call) Return(_a0 *entity.Ong, _a1 error) *M
 }
 
 func (_c *MockOngRepository_FindByID_Call) RunAndReturn(run func(uuid.UUID) (*entity.Ong, error)) *MockOngRepository_FindByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// List provides a mock function with given fields: limit, offset, sortBy, order
+func (_m *MockOngRepository) List(limit int, offset int, sortBy string, order string) ([]*dto.OngListMapper, error) {
+	ret := _m.Called(limit, offset, sortBy, order)
+
+	if len(ret) == 0 {
+		panic("no return value specified for List")
+	}
+
+	var r0 []*dto.OngListMapper
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int, int, string, string) ([]*dto.OngListMapper, error)); ok {
+		return rf(limit, offset, sortBy, order)
+	}
+	if rf, ok := ret.Get(0).(func(int, int, string, string) []*dto.OngListMapper); ok {
+		r0 = rf(limit, offset, sortBy, order)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*dto.OngListMapper)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int, int, string, string) error); ok {
+		r1 = rf(limit, offset, sortBy, order)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockOngRepository_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
+type MockOngRepository_List_Call struct {
+	*mock.Call
+}
+
+// List is a helper method to define mock.On call
+//   - limit int
+//   - offset int
+//   - sortBy string
+//   - order string
+func (_e *MockOngRepository_Expecter) List(limit interface{}, offset interface{}, sortBy interface{}, order interface{}) *MockOngRepository_List_Call {
+	return &MockOngRepository_List_Call{Call: _e.mock.On("List", limit, offset, sortBy, order)}
+}
+
+func (_c *MockOngRepository_List_Call) Run(run func(limit int, offset int, sortBy string, order string)) *MockOngRepository_List_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int), args[1].(int), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockOngRepository_List_Call) Return(ongs []*dto.OngListMapper, err error) *MockOngRepository_List_Call {
+	_c.Call.Return(ongs, err)
+	return _c
+}
+
+func (_c *MockOngRepository_List_Call) RunAndReturn(run func(int, int, string, string) ([]*dto.OngListMapper, error)) *MockOngRepository_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
