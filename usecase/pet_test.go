@@ -44,11 +44,6 @@ func (m *MockPetRepository) ListAllByPage(page int) ([]*entity.Pet, error) {
 	return args.Get(0).([]*entity.Pet), args.Error(1)
 }
 
-func (m *MockPetRepository) ListAllUnauthenticated() ([]*entity.Pet, error) {
-	args := m.Called()
-	return args.Get(0).([]*entity.Pet), args.Error(1)
-}
-
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
 	Data, _ := time.Parse(time.DateTime, "2023-09-20")
@@ -318,6 +313,7 @@ func TestPetUseCase_SaveErrorOnRepo(t *testing.T) {
 func TestListPetsUnauthenticated(t *testing.T) {
 	userID := uniqueEntityId.NewID()
 
+	isUnauthorized := true
 	var availableToAdoption = true
 	allPets := []*entity.Pet{
 		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availableToAdoption},
@@ -336,24 +332,25 @@ func TestListPetsUnauthenticated(t *testing.T) {
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListAllUnauthenticated").Return(expectedPets, nil)
+	mockRepo.On("ListAllByPage", 1).Return(expectedPets, nil)
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsUnauthenticated()
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.NoError(t, err)
-	assert.Len(t, pets, 8)
+	assert.Len(t, pets, 6)
 }
 
 func TestListPetsUnauthenticatedNoPets(t *testing.T) {
 
+	isUnauthorized := true
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListAllUnauthenticated").Return([]*entity.Pet{}, nil)
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, nil)
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsUnauthenticated()
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.NoError(t, err)
 	assert.Len(t, pets, 0)
@@ -364,10 +361,11 @@ func TestListPetsUnauthenticatedErrorOnRepo(t *testing.T) {
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
-	mockRepo.On("ListAllUnauthenticated").Return([]*entity.Pet{}, errors.New("repository error"))
+	isUnauthorized := true
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, errors.New("repository error"))
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsUnauthenticated()
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.Error(t, err)
 	assert.Len(t, pets, 0)
@@ -395,6 +393,7 @@ func TestListPetsAuthenticated(t *testing.T) {
 	}
 
 	expectedPets := allPets[:len(allPets)-1]
+	isUnauthorized := false
 
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
@@ -402,7 +401,7 @@ func TestListPetsAuthenticated(t *testing.T) {
 	mockRepo.On("ListAllByPage", 1).Return(expectedPets, nil)
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsByPage(1)
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.NoError(t, err)
 	assert.Len(t, pets, 12)
@@ -411,13 +410,14 @@ func TestListPetsAuthenticated(t *testing.T) {
 
 func TestListPetsAuthenticatedNoPets(t *testing.T) {
 
+	isUnauthorized := false
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, nil)
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsByPage(1)
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.NoError(t, err)
 	assert.Len(t, pets, 0)
@@ -425,13 +425,14 @@ func TestListPetsAuthenticatedNoPets(t *testing.T) {
 
 func TestListPetsAuthenticatedErrorOnRepo(t *testing.T) {
 
+	isUnauthorized := false
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, errors.New("repository error"))
 	usecase := NewPetUseCase(mockRepo)
 
-	pets, err := usecase.ListPetsByPage(1)
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
 
 	assert.Error(t, err)
 	assert.Len(t, pets, 0)
