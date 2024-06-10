@@ -36,10 +36,6 @@ func (u *UserInsertDto) Validate() error {
 		return fmt.Errorf("invalid email")
 	}
 
-	if u.Type == "" {
-		return fmt.Errorf("type cannot be empty")
-	}
-
 	if !slices.Contains(userTypes, u.Type) {
 		return fmt.Errorf("type can only be 'juridica' or 'fisica'")
 	}
