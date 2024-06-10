@@ -48,7 +48,7 @@ func (c *PetUseCase) Update(petID string, userID string, petUpdateDto dto.PetUpd
 
 	err = c.repo.Update(petID, userID, petToUpdate)
 	if err != nil {
-		c.logger.Error("error updating pet", err)
+		c.logger.Error("error updating pet: ", err)
 		return fmt.Errorf("failed to update pet with ID %s: %w", petID, err)
 	}
 
