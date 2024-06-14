@@ -24,9 +24,10 @@ func NewPetRepository(dbconn *sqlx.DB) interfaces.PetRepository {
 	}
 }
 
-func (pr *PetRepository) Save(entity.Pet) error {
-	var petToSave entity.Pet
-	err := pr.dbconnection.QueryRow("INSERT INTO pets (name, weight, size, adoptionDate, birthdate, breedId, userId) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id", petToSave.Name, petToSave.Weight, petToSave.Size, petToSave.AdoptionDate, petToSave.Birthdate, petToSave.BreedID, petToSave.UserID).Scan(&petToSave.ID, &petToSave.Name, &petToSave.Weight, &petToSave.AdoptionDate, &petToSave.Birthdate, &petToSave.BreedID, &petToSave.UserID)
+func (pr *PetRepository) Save(petToSave *entity.Pet) error {
+	_, err := pr.dbconnection.NamedExec("INSERT INTO pets (name, weight, size, adoptionDate, birthdate, breedId, userId) VALUES (:name, :weight, :size, :adoptionDate, :birthdate, :breedId, :userId)", &petToSave)
+
+
 	if err != nil {
 		err = fmt.Errorf("error saving pet: %w", err)
 		fmt.Println(err)
@@ -269,6 +270,60 @@ func (pr *PetRepository) ListByUser(userID uniqueEntityId.ID) (pets []*entity.Pe
 		pet.NeedSpecialCare = entity.SpecialCare{
 			Needed:      &needed,
 			Description: description,
+		}
+
+		pets = append(pets, &pet)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over pet rows: %w", err)
+	}
+
+	return pets, nil
+}
+
+func (pr *PetRepository) ListAllByPage(page int) (pets []*entity.Pet, err error) {
+	offset := (page - 1) * 12
+	rows, err := pr.dbconnection.Query(`
+	SELECT
+		p.id,
+		p.name,
+		p.breedId,
+		p.birthdate,
+		p.availableToAdoption,
+		b.name AS breed_name,
+		pi.url AS pet_image_url
+	FROM
+		pets p
+		JOIN breeds b ON p.breedId = b.id
+		LEFT JOIN pets_image pi ON p.id = pi.petId
+	LIMIT 12 
+	OFFSET ?`, offset)
+
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving pets: %w", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var pet entity.Pet
+		var birthdateStr string
+
+		if err = rows.Scan(
+			&pet.ID,
+			&pet.Name,
+			&pet.BreedID,
+			&birthdateStr,
+			&pet.AvailableToAdoption,
+			&pet.BreedName,
+			&pet.ImageUrl,
+		); err != nil {
+			return nil, fmt.Errorf("error scanning pet row: %w", err)
+		}
+
+		if pet.Birthdate, err = time.Parse(config.StandardDateLayout, birthdateStr); err != nil {
+			return nil, fmt.Errorf("error parsing birthdate: %w", err)
 		}
 
 		pets = append(pets, &pet)

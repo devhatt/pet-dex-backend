@@ -5,9 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"pet-dex-backend/v2/api/errors"
+	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/usecase"
+	"strconv"
+	"strings"
+	"time"
 
+	"pet-dex-backend/v2/pkg/encoder"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 
 	"github.com/go-chi/chi/v5"
@@ -50,7 +56,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		err := errors.ErrInvalidID{
 			Description: err.Error(),
 		}
-		
+
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -120,14 +126,13 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = petToSave.Validate()
-	if err != nil{
+	if err != nil {
 		fmt.Printf("Invalid request: could not validate pet data from request body %s", err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-
 
 	err = cntrl.Usecase.Save(petToSave)
 
@@ -142,4 +147,52 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (cntrl *PetController) ListAllPets(w http.ResponseWriter, r *http.Request) {
+	encoderAdapter := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
+	var pageNumber int
+	var err error
+	var pets []*entity.Pet
+	pageStr := r.URL.Query()
+
+	if pageStr.Get("page") == "" {
+		pageNumber = 1
+	} else {
+		pageNumber, err = strconv.Atoi(pageStr.Get("page"))
+	}
+
+	if err != nil {
+		http.Error(w, "Bad Request: Invalid page number", http.StatusBadRequest)
+		return
+	}
+
+	if pageNumber < 0 {
+		http.Error(w, "Bad Request: Page number cannot be negative", http.StatusBadRequest)
+		return
+	}
+
+	authHeader := r.Header.Get("Authorization")
+	isUnauthorized := true
+
+	headerSplited := strings.Split(authHeader, " ")
+	if len(headerSplited) == 2 {
+		bearerToken := headerSplited[1]
+
+		userclaims := encoderAdapter.ParseAccessToken(bearerToken)
+		isUnauthorized = userclaims.ExpiresAt != 0 && userclaims.ExpiresAt < time.Now().Unix()
+	}
+
+	pets, err = cntrl.Usecase.ListPetsByPage(pageNumber, isUnauthorized)
+
+	if err != nil {
+		http.Error(w, "Failed to retrieve pets", http.StatusInternalServerError)
+		return
+	}
+
+	if err = json.NewEncoder(w).Encode(&pets); err != nil {
+		http.Error(w, "Failed to encode pets", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

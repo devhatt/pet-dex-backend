@@ -57,7 +57,7 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 }
 
 func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
-	user, err := uc.repo.FindByEmail(loginDto.Email)
+	user, err := uc.FindByEmail(loginDto.Email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
@@ -121,4 +121,15 @@ func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
 	}
 
 	return nil
+}
+
+func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
+	user, err := uc.repo.FindByEmail(email)
+
+	if err != nil {
+		uc.logger.Error("error finding user by email:", err)
+		return nil, err
+	}
+
+	return user, nil
 }

@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -166,13 +165,23 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 
 func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 	var user entity.User
-	err := ur.dbconnection.QueryRow("SELECT name, pass, email FROM users WHERE email = ?", email).Scan(&user.Name, &user.Pass, &user.Email)
 
+	err := ur.dbconnection.Get(&user,
+		`SELECT
+		u.id,
+		u.name,
+		u.email,
+		u.pass
+	FROM
+		users u
+	WHERE
+		u.email = ?`,
+		email,
+	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("error retrieving user: %w", err)
+		ur.logger.Error("error retrieving user: ", err)
+		err = fmt.Errorf("error retrieving user %s: %w", email, err)
+		return nil, err
 	}
 
 	return &user, nil
