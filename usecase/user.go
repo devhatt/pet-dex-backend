@@ -30,7 +30,7 @@ func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, en
 }
 
 func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
-	user := entity.NewUser(userDto.Name, userDto.Type, userDto.Document, userDto.AvatarURL, userDto.Email, userDto.Phone, userDto.Pass, userDto.City, userDto.State, userDto.BirthDate)
+	user := entity.NewUser(userDto)
 
 	hashedPass, err := uc.hasher.Hash(user.Pass)
 	if err != nil {

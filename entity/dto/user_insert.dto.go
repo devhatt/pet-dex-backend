@@ -23,6 +23,7 @@ type UserInsertDto struct {
 	BirthDate *time.Time `json:"birthdate"`
 	City      string     `json:"city"`
 	State     string     `json:"state"`
+	Role      string     `json:"role"`
 }
 
 func (u *UserInsertDto) Validate() error {
@@ -48,4 +49,6 @@ func (u *UserInsertDto) Validate() error {
 		return fmt.Errorf("invalid password format")
 	}
 	return nil
+
+	//add validation for role
 }

@@ -24,7 +24,7 @@ type Ong struct {
 func NewOng(ong dto.OngInsertDto) *Ong {
 	ongId := uniqueEntityId.NewID()
 
-	user := NewUser(ong.Name, ong.Type, ong.Document, ong.AvatarURL, ong.Email, ong.Phone, ong.Pass, ong.City, ong.State, ong.BirthDate)
+	user := NewUser(ong.User)
 
 	var socials *json.RawMessage
 	err := json.Unmarshal(*ong.Links, &socials)
