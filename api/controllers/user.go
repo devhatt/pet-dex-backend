@@ -165,3 +165,15 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (uc *UserController) OtpNewPassword(w http.ResponseWriter, r *http.Request) {
+	var userOTPDto dto.UserOTPDto
+	err := json.NewDecoder(r.Body).Decode(&userOTPDto)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.OtpNewPassword] Error decoding request -> Error: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+}

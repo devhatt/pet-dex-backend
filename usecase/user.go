@@ -133,3 +133,11 @@ func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
 
 	return user, nil
 }
+
+func (uc *UserUsecase) SendOTP(userOTPDto dto.UserOTPDto) error {
+	user, err := uc.FindByEmail(userOTPDto.Email)
+	if err != nil {
+		return nil
+	}
+
+}

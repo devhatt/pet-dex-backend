@@ -44,11 +44,13 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 				r.Patch("/{id}", controllers.UserController.Update)
 				r.Get("/{id}", controllers.UserController.FindByID)
 				r.Delete("/{id}", controllers.UserController.Delete)
+
 			})
 		})
 
 		r.Group(func(public chi.Router) {
 			public.Post("/user", controllers.UserController.Insert)
+			public.Post("/user/otp-new-password", controllers.UserController.Insert)
 			public.Post("/user/token", controllers.UserController.GenerateToken)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
 		})
