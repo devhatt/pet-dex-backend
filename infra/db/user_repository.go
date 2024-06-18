@@ -147,7 +147,8 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		u.document,
 		u.avatarUrl,
 		u.email,
-		u.phone
+		u.phone,
+		u.pass
 	FROM
 		users u
 	WHERE
@@ -193,7 +194,7 @@ func (ur *UserRepository) List() (users []entity.User, err error) {
 
 func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
 
-	query := "UPDATE users SET pass = ?"
+	query := "UPDATE users SET pass = ?,"
 	values := []interface{}{}
 
 	values = append(values, newPassword)

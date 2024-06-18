@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
@@ -116,7 +115,7 @@ func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
 	err := uc.repo.Delete(userID)
 
 	if err != nil {
-		uc.logger.Error(fmt.Errorf("#UserUsecase.Delete error: %w", err))
+		uc.logger.Errorf("#UserUsecase.Delete error: %w", err)
 		return err
 	}
 
@@ -135,15 +134,15 @@ func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
 }
 
 func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswordDto, userId uniqueEntityId.ID) error {
-	user, err := uc.FindByID(userId)
+	user, err := uc.repo.FindByID(userId)
 	if err != nil {
 		uc.logger.Error("error finding user by id: ", err)
 		return errors.New("") // Don't show the user the reason for secure reasons
 	}
 
-	if uc.hasher.Compare(userChangePasswordDto.OldPassword, user.Pass) {
-		uc.logger.Error("old and new passwords are the same: ", err)
-		return errors.New("old and new passords are the same")
+	if !uc.hasher.Compare(userChangePasswordDto.OldPassword, user.Pass) {
+		uc.logger.Error("old password does not match")
+		return errors.New("old password does not match")
 	}
 
 	newPassword, err := uc.hasher.Hash(userChangePasswordDto.NewPassword)
