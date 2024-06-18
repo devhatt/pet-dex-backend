@@ -1,6 +1,9 @@
 package dto
 
-import "errors"
+import (
+	"errors"
+	"pet-dex-backend/v2/pkg/utils"
+)
 
 type UserChangePasswordDto struct {
 	OldPassword      string `json:"oldPassword"`
@@ -17,6 +20,10 @@ func (u *UserChangePasswordDto) Validate() error {
 	}
 	if u.NewPassword != u.NewPasswordAgain {
 		return errors.New("new passwords do not match")
+	}
+
+	if !utils.IsValidPassword(u.NewPassword) {
+		return errors.New("new password must be at least 6 characters long and contain at least one uppercase letter and one special character")
 	}
 	return nil
 }
