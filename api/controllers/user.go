@@ -166,14 +166,35 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (uc *UserController) OtpNewPassword(w http.ResponseWriter, r *http.Request) {
-	var userOTPDto dto.UserOTPDto
-	err := json.NewDecoder(r.Body).Decode(&userOTPDto)
-
+func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	parsedId, err := uniqueEntityId.ParseID(r.Header.Get("UserId"))
 	if err != nil {
-		uc.logger.Error("[#UserController.OtpNewPassword] Error decoding request -> Error: ", err)
+		uc.logger.Error("error parsing user id: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var userChangePasswordDto dto.UserChangePasswordDto
+	err = json.NewDecoder(r.Body).Decode(&userChangePasswordDto)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
 		http.Error(w, "Error decoding request ", http.StatusBadRequest)
 		return
 	}
 
+	err = userChangePasswordDto.Validate()
+	if err != nil {
+		uc.logger.Error(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.ChangePassword(userChangePasswordDto, parsedId)
+	if err != nil {
+		uc.logger.Error("error changing password: ", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

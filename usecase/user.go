@@ -134,10 +134,27 @@ func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
 	return user, nil
 }
 
-func (uc *UserUsecase) SendOTP(userOTPDto dto.UserOTPDto) error {
-	user, err := uc.FindByEmail(userOTPDto.Email)
+func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswordDto, userId uniqueEntityId.ID) error {
+	user, err := uc.FindByID(userId)
 	if err != nil {
-		return nil
+		uc.logger.Error("error finding user by id: ", err)
+		return errors.New("") // Don't show the user the reason for secure reasons
 	}
 
+	if uc.hasher.Compare(userChangePasswordDto.OldPassword, user.Pass) {
+		uc.logger.Error("old and new passwords are the same: ", err)
+		return errors.New("old and new passords are the same")
+	}
+
+	newPassword, err := uc.hasher.Hash(userChangePasswordDto.NewPassword)
+	if err != nil {
+		uc.logger.Error("error hashing: ", err)
+		return err
+	}
+	err = uc.repo.ChangePassword(userId, newPassword)
+	if err != nil {
+		uc.logger.Error(err)
+		return err
+	}
+	return nil
 }

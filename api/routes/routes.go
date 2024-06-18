@@ -41,6 +41,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 			private.Route("/user", func(r chi.Router) {
 				r.Get("/{id}/my-pets", controllers.PetController.ListUserPets)
+				r.Post("/change-password", controllers.UserController.ChangePassword)
 				r.Patch("/{id}", controllers.UserController.Update)
 				r.Get("/{id}", controllers.UserController.FindByID)
 				r.Delete("/{id}", controllers.UserController.Delete)
@@ -50,7 +51,6 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 		r.Group(func(public chi.Router) {
 			public.Post("/user", controllers.UserController.Insert)
-			public.Post("/user/otp-new-password", controllers.UserController.Insert)
 			public.Post("/user/token", controllers.UserController.GenerateToken)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
 		})
