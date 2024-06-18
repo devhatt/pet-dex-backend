@@ -115,7 +115,7 @@ func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
 	err := uc.repo.Delete(userID)
 
 	if err != nil {
-		uc.logger.Errorf("#UserUsecase.Delete error: %w", err)
+		uc.logger.Error("#UserUsecase.Delete error:", err)
 		return err
 	}
 
