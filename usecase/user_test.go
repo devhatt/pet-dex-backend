@@ -2,9 +2,11 @@ package usecase
 
 import (
 	"fmt"
+	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/hasher"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 	"time"
@@ -306,6 +308,52 @@ func TestErrorDelete(t *testing.T) {
 			err := usecase.Delete(tcase.inputID)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
+
+func TestChangePassword(t *testing.T) {
+	hash := hasher.NewHasher()
+	oldHashPassword, _ := hash.Hash("oldPassword")
+	userId := uniqueEntityId.NewID()
+	tcases := map[string]struct {
+		repo                       *mockInterfaces.MockUserRepository
+		hasher                     *mockInterfaces.MockHasher
+		inputID                    uniqueEntityId.ID
+		inputDto                   dto.UserChangePasswordDto
+		encoder                    interfaces.Encoder
+		expectOutputFindById       *entity.User
+		expectOutputChangePassword error
+	}{
+		"success": {
+			repo:    mockInterfaces.NewMockUserRepository(t),
+			hasher:  mockInterfaces.NewMockHasher(t),
+			inputID: userId,
+			inputDto: dto.UserChangePasswordDto{
+				OldPassword:      "oldPassword",
+				NewPassword:      "NewPassword!",
+				NewPasswordAgain: "NewPassword!",
+			},
+			expectOutputFindById: &entity.User{
+				ID:   userId,
+				Pass: oldHashPassword,
+			},
+			expectOutputChangePassword: nil,
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			hash := hasher.NewHasher()
+			newHashPassword, _ := hash.Hash(tcase.inputDto.NewPassword)
+			tcase.hasher.On("Compare", tcase.inputDto.OldPassword, tcase.expectOutputFindById.Pass).Return(true)
+			tcase.hasher.On("Hash", tcase.inputDto.NewPassword).Return(newHashPassword)
+			tcase.repo.On("FindByID", tcase.inputID).Return(tcase.expectOutputFindById, nil)
+			tcase.repo.On("ChangePassword", tcase.inputID, newHashPassword).Return(tcase.expectOutputChangePassword)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			err := usecase.ChangePassword(tcase.inputDto, tcase.inputID)
+
+			assert.Equal(t, tcase.expectOutputChangePassword, err, "expected error mismatch")
 		})
 	}
 }
