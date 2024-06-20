@@ -81,6 +81,64 @@ func (_c *MockPetRepository_FindByID_Call) RunAndReturn(run func(uuid.UUID) (*en
 	return _c
 }
 
+// ListAllByPage provides a mock function with given fields: page
+func (_m *MockPetRepository) ListAllByPage(page int) ([]*entity.Pet, error) {
+	ret := _m.Called(page)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAllByPage")
+	}
+
+	var r0 []*entity.Pet
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) ([]*entity.Pet, error)); ok {
+		return rf(page)
+	}
+	if rf, ok := ret.Get(0).(func(int) []*entity.Pet); ok {
+		r0 = rf(page)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Pet)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(page)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPetRepository_ListAllByPage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAllByPage'
+type MockPetRepository_ListAllByPage_Call struct {
+	*mock.Call
+}
+
+// ListAllByPage is a helper method to define mock.On call
+//   - page int
+func (_e *MockPetRepository_Expecter) ListAllByPage(page interface{}) *MockPetRepository_ListAllByPage_Call {
+	return &MockPetRepository_ListAllByPage_Call{Call: _e.mock.On("ListAllByPage", page)}
+}
+
+func (_c *MockPetRepository_ListAllByPage_Call) Run(run func(page int)) *MockPetRepository_ListAllByPage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockPetRepository_ListAllByPage_Call) Return(_a0 []*entity.Pet, _a1 error) *MockPetRepository_ListAllByPage_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPetRepository_ListAllByPage_Call) RunAndReturn(run func(int) ([]*entity.Pet, error)) *MockPetRepository_ListAllByPage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListByUser provides a mock function with given fields: userID
 func (_m *MockPetRepository) ListByUser(userID uuid.UUID) ([]*entity.Pet, error) {
 	ret := _m.Called(userID)
@@ -140,7 +198,7 @@ func (_c *MockPetRepository_ListByUser_Call) RunAndReturn(run func(uuid.UUID) ([
 }
 
 // Save provides a mock function with given fields: pet
-func (_m *MockPetRepository) Save(pet entity.Pet) error {
+func (_m *MockPetRepository) Save(pet *entity.Pet) error {
 	ret := _m.Called(pet)
 
 	if len(ret) == 0 {
@@ -148,7 +206,7 @@ func (_m *MockPetRepository) Save(pet entity.Pet) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(entity.Pet) error); ok {
+	if rf, ok := ret.Get(0).(func(*entity.Pet) error); ok {
 		r0 = rf(pet)
 	} else {
 		r0 = ret.Error(0)
@@ -163,14 +221,14 @@ type MockPetRepository_Save_Call struct {
 }
 
 // Save is a helper method to define mock.On call
-//   - pet entity.Pet
+//   - pet *entity.Pet
 func (_e *MockPetRepository_Expecter) Save(pet interface{}) *MockPetRepository_Save_Call {
 	return &MockPetRepository_Save_Call{Call: _e.mock.On("Save", pet)}
 }
 
-func (_c *MockPetRepository_Save_Call) Run(run func(pet entity.Pet)) *MockPetRepository_Save_Call {
+func (_c *MockPetRepository_Save_Call) Run(run func(pet *entity.Pet)) *MockPetRepository_Save_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(entity.Pet))
+		run(args[0].(*entity.Pet))
 	})
 	return _c
 }
@@ -180,7 +238,7 @@ func (_c *MockPetRepository_Save_Call) Return(_a0 error) *MockPetRepository_Save
 	return _c
 }
 
-func (_c *MockPetRepository_Save_Call) RunAndReturn(run func(entity.Pet) error) *MockPetRepository_Save_Call {
+func (_c *MockPetRepository_Save_Call) RunAndReturn(run func(*entity.Pet) error) *MockPetRepository_Save_Call {
 	_c.Call.Return(run)
 	return _c
 }

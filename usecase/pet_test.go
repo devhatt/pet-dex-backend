@@ -3,14 +3,11 @@ package usecase
 import (
 	"errors"
 	"time"
-
-	"pet-dex-backend/v2/entity/dto"
-
+  
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
-
+  "pet-dex-backend/v2/entity/dto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -240,8 +237,7 @@ func TestPetUseCase_Save(t *testing.T) {
 		AdoptionDate: &adoptDate,
 	}
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
-	mockRepo.On("Save", mock.AnythingOfType("entity.Pet")).Return(nil)
+	mockRepo.On("Save", mock.AnythingOfType("*entity.Pet")).Return(nil)
 
 	usecase := NewPetUseCase(mockRepo)
 	err := usecase.Save(petToSave)
@@ -269,12 +265,144 @@ func TestPetUseCase_SaveErrorOnRepo(t *testing.T) {
 	}
 
 	repoError := errors.New("error saving pet")
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
-	mockRepo.On("Save", mock.AnythingOfType("entity.Pet")).Return(repoError)
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+	
+	mockRepo.On("Save", mock.AnythingOfType("*entity.Pet")).Return(repoError)
 	usecase := NewPetUseCase(mockRepo)
 
 	err := usecase.Save(petToSave)
 
 	assert.EqualError(t, err, "failed to save pet: error saving pet")
 	mockRepo.AssertExpectations(t)
+}
+
+func TestListPetsUnauthenticated(t *testing.T) {
+	userID := uniqueEntityId.NewID()
+
+	isUnauthorized := true
+	var availableToAdoption = true
+	allPets := []*entity.Pet{
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Pedi", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Bob", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Bidu", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Mafu", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Pilão", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Chocolate", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Docinho", AvailableToAdoption: &availableToAdoption},
+	}
+
+	expectedPets := allPets[:len(allPets)-1]
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListAllByPage", 1).Return(expectedPets, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 6)
+}
+
+func TestListPetsUnauthenticatedNoPets(t *testing.T) {
+
+	isUnauthorized := true
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 0)
+}
+
+func TestListPetsUnauthenticatedErrorOnRepo(t *testing.T) {
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	isUnauthorized := true
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, errors.New("repository error"))
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.Error(t, err)
+	assert.Len(t, pets, 0)
+	assert.EqualError(t, err, "failed to retrieve all user pets: repository error")
+}
+
+func TestListPetsAuthenticated(t *testing.T) {
+	userID := uniqueEntityId.NewID()
+
+	var availableToAdoption = true
+	allPets := []*entity.Pet{
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Rex", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Pedi", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Bob", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Bidu", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Mafu", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Pilão", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Chocolate", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Docinho", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Amarelo", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Fofão", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Caramelo", AvailableToAdoption: &availableToAdoption},
+		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Dogão", AvailableToAdoption: &availableToAdoption},
+	}
+
+	expectedPets := allPets[:len(allPets)-1]
+	isUnauthorized := false
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListAllByPage", 1).Return(expectedPets, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 12)
+	assert.Equal(t, pets, expectedPets)
+}
+
+func TestListPetsAuthenticatedNoPets(t *testing.T) {
+
+	isUnauthorized := false
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, nil)
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.NoError(t, err)
+	assert.Len(t, pets, 0)
+}
+
+func TestListPetsAuthenticatedErrorOnRepo(t *testing.T) {
+
+	isUnauthorized := false
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
+
+	mockRepo.On("ListAllByPage", 1).Return([]*entity.Pet{}, errors.New("repository error"))
+	usecase := NewPetUseCase(mockRepo)
+
+	pets, err := usecase.ListPetsByPage(1, isUnauthorized)
+
+	assert.Error(t, err)
+	assert.Len(t, pets, 0)
+	assert.EqualError(t, err, "failed to retrieve pets page: repository error")
 }

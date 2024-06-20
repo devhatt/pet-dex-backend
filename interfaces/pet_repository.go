@@ -9,6 +9,8 @@ import (
 type PetRepository interface {
 	ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet, error)
 	FindByID(ID uniqueEntityId.ID) (*entity.Pet, error)
-	Save(pet entity.Pet) error
-	Update(petID, userID string, petToUpdate *entity.Pet) error
+
+	Save(pet *entity.Pet) error
+	Update(petID string, userID string, petToUpdate *entity.Pet) error
+	ListAllByPage(page int) ([]*entity.Pet, error)
 }
