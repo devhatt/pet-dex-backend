@@ -317,8 +317,8 @@ func TestChangePassword(t *testing.T) {
 	hash := hasher.NewHasher()
 	oldHashPassword, _ := hash.Hash("oldPassword123!")
 	userId := uniqueEntityId.NewID()
-	repo := mockInterfaces.NewMockUserRepository(t)
-	hasher := mockInterfaces.NewMockHasher(t)
+	mockedRepo := mockInterfaces.NewMockUserRepository(t)
+	mockedHasher := mockInterfaces.NewMockHasher(t)
 	tcases := map[string]struct {
 		inputDto                   dto.UserChangePasswordDto
 		encoder                    interfaces.Encoder
@@ -357,11 +357,11 @@ func TestChangePassword(t *testing.T) {
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
 			newHashPassword, _ := hash.Hash(tcase.inputDto.NewPassword)
-			hasher.On("Compare", tcase.inputDto.OldPassword, tcase.expectOutputFindById.Pass).Return(tcase.expectedCompareReturn)
-			hasher.On("Hash", tcase.inputDto.NewPassword).Return(newHashPassword, nil)
-			repo.On("FindByID", userId).Return(tcase.expectOutputFindById, nil)
-			repo.On("ChangePassword", mock.Anything, mock.Anything).Return(tcase.expectOutputChangePassword)
-			usecase := NewUserUsecase(repo, hasher, tcase.encoder)
+			mockedHasher.On("Compare", tcase.inputDto.OldPassword, tcase.expectOutputFindById.Pass).Return(tcase.expectedCompareReturn)
+			mockedHasher.On("Hash", tcase.inputDto.NewPassword).Return(newHashPassword, nil)
+			mockedRepo.On("FindByID", userId).Return(tcase.expectOutputFindById, nil)
+			mockedRepo.On("ChangePassword", mock.Anything, mock.Anything).Return(tcase.expectOutputChangePassword)
+			usecase := NewUserUsecase(mockedRepo, mockedHasher, tcase.encoder)
 			err := usecase.ChangePassword(tcase.inputDto, userId)
 
 			assert.Equal(t, tcase.expectOutputChangePassword, err, "expected error mismatch")
