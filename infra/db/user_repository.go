@@ -195,7 +195,7 @@ func (ur *UserRepository) List() (users []entity.User, err error) {
 func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
 
 	query := "UPDATE users SET pass = ?,"
-	values := []interface{}{}
+	var values []interface{}
 
 	values = append(values, newPassword)
 
