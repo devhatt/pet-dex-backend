@@ -1,10 +1,13 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
+	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/hasher"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 	"time"
@@ -306,6 +309,62 @@ func TestErrorDelete(t *testing.T) {
 			err := usecase.Delete(tcase.inputID)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
+}
+
+func TestChangePassword(t *testing.T) {
+	hash := hasher.NewHasher()
+	oldHashPassword, _ := hash.Hash("oldPassword123!")
+	userId := uniqueEntityId.NewID()
+	mockedRepo := mockInterfaces.NewMockUserRepository(t)
+	mockedHasher := mockInterfaces.NewMockHasher(t)
+	tcases := map[string]struct {
+		inputDto                   dto.UserChangePasswordDto
+		encoder                    interfaces.Encoder
+		expectedCompareReturn      bool
+		expectOutputFindById       *entity.User
+		expectOutputChangePassword error
+	}{
+		"success": {
+			inputDto: dto.UserChangePasswordDto{
+				OldPassword:      "oldPassword123!",
+				NewPassword:      "NewPassword123!",
+				NewPasswordAgain: "NewPassword123!",
+			},
+			expectedCompareReturn: true,
+			expectOutputFindById: &entity.User{
+				ID:   userId,
+				Pass: oldHashPassword,
+			},
+			expectOutputChangePassword: nil,
+		},
+		"Wrong old Password": {
+			expectedCompareReturn: false,
+			inputDto: dto.UserChangePasswordDto{
+				OldPassword:      "wrongOldPassword123!",
+				NewPassword:      "NewPassword123!",
+				NewPasswordAgain: "NewPassword123!",
+			},
+			expectOutputFindById: &entity.User{
+				ID:   userId,
+				Pass: oldHashPassword,
+			},
+			expectOutputChangePassword: errors.New("old password does not match"),
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			newHashPassword, _ := hash.Hash(tcase.inputDto.NewPassword)
+			mockedHasher.On("Compare", tcase.inputDto.OldPassword, tcase.expectOutputFindById.Pass).Return(tcase.expectedCompareReturn)
+			mockedHasher.On("Hash", tcase.inputDto.NewPassword).Return(newHashPassword, nil)
+			mockedRepo.On("FindByID", userId).Return(tcase.expectOutputFindById, nil)
+			mockedRepo.On("ChangePassword", mock.Anything, mock.Anything).Return(tcase.expectOutputChangePassword)
+			usecase := NewUserUsecase(mockedRepo, mockedHasher, tcase.encoder)
+			err := usecase.ChangePassword(tcase.inputDto, userId)
+
+			assert.Equal(t, tcase.expectOutputChangePassword, err, "expected error mismatch")
 		})
 	}
 }

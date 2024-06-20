@@ -147,7 +147,8 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		u.document,
 		u.avatarUrl,
 		u.email,
-		u.phone
+		u.phone,
+		u.pass
 	FROM
 		users u
 	WHERE
@@ -189,4 +190,30 @@ func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 
 func (ur *UserRepository) List() (users []entity.User, err error) {
 	return nil, nil
+}
+
+func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
+
+	query := "UPDATE users SET pass = ?,"
+	var values []interface{}
+
+	values = append(values, newPassword)
+
+	query = query + " updated_at =?,"
+	values = append(values, time.Now())
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, userId)
+
+	fmt.Printf("Query to update: %s", query)
+
+	_, err := ur.dbconnection.Exec(query, values...)
+
+	if err != nil {
+		ur.logger.Error(fmt.Errorf("#UserRepository.ChangePassword error: %w", err))
+		return fmt.Errorf("error on changing user password")
+	}
+
+	return nil
 }
