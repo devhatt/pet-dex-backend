@@ -1,0 +1,11 @@
+.github/
+.git/
+.husky/
+data/
+data-teste/
+*.yaml
+*.yml
+*.md
+.gitignore
+Makefile
+Dockerfile
