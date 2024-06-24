@@ -159,5 +159,6 @@ func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswo
 }
 
 func (uc *UserUsecase) GoogleLogin(idToken string) (string, error) {
-	return "", nil
+
+	return "", errors.New("not implemented")
 }

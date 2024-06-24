@@ -200,14 +200,22 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 }
 
 func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
+	uc.logger.Info("GoogleLogin")
 	userId := r.Header.Get("UserId")
 	if userId != "" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
+	// csrfToken, err := r.Cookie("g_csrf_token")
+	// if err != nil {
+	// 	uc.logger.Error("error getting csrf token: ", err)
+	// 	http.Error(w, "Error getting csrf token ", http.StatusBadRequest)
+	// 	return
+	// }
+
 	var body struct {
-		IdToken string `json:"id_token"`
+		Credential string `json:"credential"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
@@ -217,24 +225,27 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if body.IdToken == "" {
-		w.WriteHeader(http.StatusBadRequest)
+	if body.Credential == "" {
+		uc.logger.Error("empty credential: ", err)
+		http.Error(w, "Error empty credential ", http.StatusBadRequest)
 		return
 	}
 
-	token, err := uc.usecase.GoogleLogin(body.IdToken)
-	if err != nil {
-		uc.logger.Error("error logging in with google: ", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	uc.logger.Info("body.Credential: ", body.Credential)
 
-	w.Header().Add("Authorization", token)
-	json.NewEncoder(w).Encode(struct {
-		Token string `json:"token"`
-	}{
-		Token: token,
-	})
+	// token, err := uc.usecase.GoogleLogin(body.IdToken)
+	// if err != nil {
+	// 	uc.logger.Error("error logging in with google: ", err)
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// w.Header().Add("Authorization", token)
+	// json.NewEncoder(w).Encode(struct {
+	// 	Token string `json:"token"`
+	// }{
+	// 	Token: token,
+	// })
 
 	w.WriteHeader(http.StatusOK)
 }
