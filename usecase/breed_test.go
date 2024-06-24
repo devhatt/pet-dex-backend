@@ -1,27 +1,33 @@
 package usecase
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/interfaces"
+	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-type MockBreedRepository struct {
-	mock.Mock
-}
+func TestNewBreedUseCase(t *testing.T) {
+	tcases := map[string]struct {
+		repo         interfaces.BreedRepository
+		expectOutput *BreedUseCase
+	}{
+		"success": {
+			repo:         mockInterfaces.NewMockBreedRepository(t),
+			expectOutput: &BreedUseCase{},
+		},
+	}
 
-func (m *MockBreedRepository) FindByID(ID uniqueEntityId.ID) (*entity.Breed, error) {
-	args := m.Called(ID)
-	return args.Get(0).(*entity.Breed), args.Error(1)
-}
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			usecase := NewBreedUseCase(tcase.repo)
 
-func (m *MockBreedRepository) List() ([]*dto.BreedList, error) {
-	args := m.Called()
-	return args.Get(0).([]*dto.BreedList), args.Error(1)
+			assert.IsTypef(t, tcase.expectOutput, usecase, "error: New Hasher not returns a *Hasher{} struct", nil)
+		})
+	}
 }
 
 func TestBreedFindByID(t *testing.T) {
