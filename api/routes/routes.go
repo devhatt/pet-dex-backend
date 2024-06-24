@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 )
 
 type Controllers struct {
@@ -19,15 +18,7 @@ type Controllers struct {
 func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 	c.Route("/api", func(r chi.Router) {
-		// Cors Configuration
-		r.Use(cors.Handler(cors.Options{
-			AllowedOrigins:   []string{"*"},
-			AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-			ExposedHeaders:   []string{"Link"},
-			AllowCredentials: true,
-			MaxAge:           300, // Maximum value not ignored by any of major browsers
-		}))
+		r.Use(middlewares.CorsMiddleware())
 		r.Use(middleware.AllowContentType("application/json"))
 
 		r.Group(func(private chi.Router) {
