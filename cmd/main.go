@@ -8,7 +8,7 @@ import (
 func main() {
 	var number string
 	fmt.Println("Migrations CLI")
-	fmt.Println("Type the number of the command desired:\n1-Migrations UP\n2-Migrations DOWN\n3-Create a new migration\n")
+	fmt.Println("Type the number of the command desired:\n1-Migrations UP\n2-Migrations DOWN\n3-Create a new migration")
 	_, err := fmt.Scan(&number)
 	if err != nil {
 		fmt.Println("Error while reading the values", err)
@@ -40,5 +40,4 @@ func main() {
 		fmt.Println("Migration created!")
 	}
 
-	return
 }

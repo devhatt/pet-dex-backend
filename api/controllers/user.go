@@ -137,7 +137,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	userIDFromTokenStr := r.Header.Get("UserId")
 	userIDFromToken, err := uniqueEntityId.ParseID(userIDFromTokenStr)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar receber o ID do token -> Erro: %v", err)
+		logger.Error("[#UserController.Delete] Erro ao tentar receber o ID do token -> Erro: ", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
@@ -145,23 +145,56 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: %v", err)
+		logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: ", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
 
 	if userIDFromToken != ID {
-		logger.Error("[#UserController.Delete] Erro ao tentar excluir outro usuário -> Erro: %v", err)
+		logger.Error("[#UserController.Delete] Erro ao tentar excluir outro usuário -> Erro: ", err)
 		http.Error(w, "Usuário não autorizado a excluir este usuário", http.StatusUnauthorized)
 		return
 	}
 
 	err = uc.usecase.Delete(ID)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: %v", err)
+		logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: ", err)
 		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	parsedId, err := uniqueEntityId.ParseID(r.Header.Get("UserId"))
+	if err != nil {
+		uc.logger.Error("error parsing user id: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var userChangePasswordDto dto.UserChangePasswordDto
+	err = json.NewDecoder(r.Body).Decode(&userChangePasswordDto)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	err = userChangePasswordDto.Validate()
+	if err != nil {
+		uc.logger.Error(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.ChangePassword(userChangePasswordDto, parsedId)
+	if err != nil {
+		uc.logger.Error("error changing password: ", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

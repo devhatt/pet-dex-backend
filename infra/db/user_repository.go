@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
@@ -148,7 +147,8 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		u.document,
 		u.avatarUrl,
 		u.email,
-		u.phone
+		u.phone,
+		u.pass
 	FROM
 		users u
 	WHERE
@@ -166,13 +166,23 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 
 func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 	var user entity.User
-	err := ur.dbconnection.QueryRow("SELECT name, pass, email FROM users WHERE email = ?", email).Scan(&user.Name, &user.Pass, &user.Email)
 
+	err := ur.dbconnection.Get(&user,
+		`SELECT
+		u.id,
+		u.name,
+		u.email,
+		u.pass
+	FROM
+		users u
+	WHERE
+		u.email = ?`,
+		email,
+	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("error retrieving user: %w", err)
+		ur.logger.Error("error retrieving user: ", err)
+		err = fmt.Errorf("error retrieving user %s: %w", email, err)
+		return nil, err
 	}
 
 	return &user, nil
@@ -180,4 +190,30 @@ func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 
 func (ur *UserRepository) List() (users []entity.User, err error) {
 	return nil, nil
+}
+
+func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
+
+	query := "UPDATE users SET pass = ?,"
+	var values []interface{}
+
+	values = append(values, newPassword)
+
+	query = query + " updated_at =?,"
+	values = append(values, time.Now())
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, userId)
+
+	fmt.Printf("Query to update: %s", query)
+
+	_, err := ur.dbconnection.Exec(query, values...)
+
+	if err != nil {
+		ur.logger.Error(fmt.Errorf("#UserRepository.ChangePassword error: %w", err))
+		return fmt.Errorf("error on changing user password")
+	}
+
+	return nil
 }
