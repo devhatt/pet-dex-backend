@@ -157,3 +157,7 @@ func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswo
 	}
 	return nil
 }
+
+func (uc *UserUsecase) GoogleLogin(idToken string) (string, error) {
+	return "", nil
+}

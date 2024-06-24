@@ -198,3 +198,43 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
+	userId := r.Header.Get("UserId")
+	if userId != "" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var body struct {
+		IdToken string `json:"id_token"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	if body.IdToken == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token, err := uc.usecase.GoogleLogin(body.IdToken)
+	if err != nil {
+		uc.logger.Error("error logging in with google: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Authorization", token)
+	json.NewEncoder(w).Encode(struct {
+		Token string `json:"token"`
+	}{
+		Token: token,
+	})
+
+	w.WriteHeader(http.StatusOK)
+}
