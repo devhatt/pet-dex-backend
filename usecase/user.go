@@ -162,8 +162,8 @@ func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, 
 	user, err := uc.repo.FindByID(userID)
 
 	if err != nil {
-			uc.logger.Error("error finding user by id: ", err)
-			return errors.New("user dont exists")
+		uc.logger.Error("error finding user by id: ", err)
+		return errors.New("user dont exists")
 	}
 
 	user.PushNotificationsEnabled = &userPushNotificationEnabled.PushNotificationEnabled
@@ -171,10 +171,9 @@ func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, 
 	err = uc.repo.Update(userID, *user)
 
 	if err != nil {
-			uc.logger.Error("error updating user by id: ", err)
-			return errors.New("error on updating push notification")
+		uc.logger.Error("error updating user by id: ", err)
+		return errors.New("error on updating push notification")
 	}
 
 	return nil
-
 }
