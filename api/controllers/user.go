@@ -207,15 +207,10 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// csrfToken, err := r.Cookie("g_csrf_token")
-	// if err != nil {
-	// 	uc.logger.Error("error getting csrf token: ", err)
-	// 	http.Error(w, "Error getting csrf token ", http.StatusBadRequest)
-	// 	return
-	// }
-
 	var body struct {
+		ClientId   string `json:"clientId"`
 		Credential string `json:"credential"`
+		SelectBy   string `json:"select_by"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
@@ -231,21 +226,19 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uc.logger.Info("body.Credential: ", body.Credential)
+	token, err := uc.usecase.GoogleLogin(body.Credential)
+	if err != nil {
+		uc.logger.Error("error logging in with google: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	// token, err := uc.usecase.GoogleLogin(body.IdToken)
-	// if err != nil {
-	// 	uc.logger.Error("error logging in with google: ", err)
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// w.Header().Add("Authorization", token)
-	// json.NewEncoder(w).Encode(struct {
-	// 	Token string `json:"token"`
-	// }{
-	// 	Token: token,
-	// })
+	w.Header().Add("Authorization", token)
+	json.NewEncoder(w).Encode(struct {
+		Token string `json:"token"`
+	}{
+		Token: token,
+	})
 
 	w.WriteHeader(http.StatusOK)
 }
