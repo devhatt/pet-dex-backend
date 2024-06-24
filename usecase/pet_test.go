@@ -3,16 +3,46 @@ package usecase
 import (
 	"errors"
 	"time"
-  
-	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
-  "pet-dex-backend/v2/entity/dto"
+
+	"pet-dex-backend/v2/entity/dto"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 )
+
+type MockPetRepository struct {
+	mock.Mock
+}
+
+func (m *MockPetRepository) Save(pet *entity.Pet) error {
+	args := m.Called(pet)
+	return args.Error(0)
+}
+
+func (m *MockPetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
+	args := m.Called(ID)
+	return args.Get(0).(*entity.Pet), args.Error(1)
+}
+
+func (m *MockPetRepository) Update(petID string, userID string, petToUpdate *entity.Pet) error {
+	args := m.Called(petID, userID, petToUpdate)
+	return args.Error(0)
+}
+
+func (m *MockPetRepository) ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
+	args := m.Called(userID)
+	return args.Get(0).([]*entity.Pet), args.Error(1)
+}
+
+func (m *MockPetRepository) ListAllByPage(page int) ([]*entity.Pet, error) {
+	args := m.Called(page)
+	return args.Get(0).([]*entity.Pet), args.Error(1)
+}
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
@@ -20,7 +50,7 @@ func TestUpdateUseCaseDo(t *testing.T) {
 	Birthdate, _ := time.Parse(time.DateTime, "2023-09-20")
 	userID := uniqueEntityId.NewID()
 	petUpdateDto := dto.PetUpdateDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID.String(), entity.PetToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
 
@@ -34,7 +64,7 @@ func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
 	userID := uniqueEntityId.NewID()
 	petUpdateDto := dto.PetUpdateDto{Size: "Invalid Size"}
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID.String(), entity.PetToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
 
@@ -49,7 +79,7 @@ func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
 	userID := "321"
 	petUpdateDto := dto.PetUpdateDto{Size: "small", Weight: 4.53, WeightMeasure: "kg"}
 	repoError := errors.New("error updating pet")
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.PetToEntity(&petUpdateDto)).Return(repoError)
 	usecase := NewPetUseCase(mockRepo)
 
@@ -78,7 +108,7 @@ func TestUpdateUseCaseDoVaccines(t *testing.T) {
 		{Name: "Distemper", Date: time.Now(), DoctorCRM: "123456"},
 	}
 	petUpdateDto := dto.PetUpdateDto{Size: "medium", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.PetToEntity(&petUpdateDto)).Return(nil)
 	usecase := NewPetUseCase(mockRepo)
 
@@ -97,7 +127,7 @@ func TestUpdateUseCaseDoVaccinesError(t *testing.T) {
 	}
 	petUpdateDto := dto.PetUpdateDto{Size: "small", Vaccines: vaccines, Weight: 4.53, WeightMeasure: "kg"}
 	repoError := errors.New("error updating vaccines")
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	mockRepo.On("Update", id, userID, entity.PetToEntity(&petUpdateDto)).Return(repoError)
 	usecase := NewPetUseCase(mockRepo)
 
@@ -125,7 +155,7 @@ func TestListUserPets(t *testing.T) {
 		{ID: uniqueEntityId.NewID(), UserID: userID, Name: "Thor", AvailableToAdoption: &availableToAdoption},
 	}
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("ListByUser", userID).Return(expectedPets, nil)
@@ -140,7 +170,7 @@ func TestListUserPets(t *testing.T) {
 func TestListUserPetsNoPetsFound(t *testing.T) {
 	userID := uniqueEntityId.NewID()
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, nil)
@@ -155,7 +185,7 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 func TestListUserPetsErrorOnRepo(t *testing.T) {
 	userID := uniqueEntityId.NewID()
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("ListByUser", userID).Return([]*entity.Pet{}, errors.New("this is a repository error"))
@@ -174,7 +204,7 @@ func TestFindByID(t *testing.T) {
 	var availabelToAdoption = true
 	expectedPet := &entity.Pet{ID: ID, UserID: uniqueEntityId.NewID(), Name: "Rex", AvailableToAdoption: &availabelToAdoption}
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("FindByID", ID).Return(expectedPet, nil)
@@ -191,7 +221,7 @@ func TestFindByIDNilResult(t *testing.T) {
 	petID := uniqueEntityId.NewID()
 	var pet *entity.Pet
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("FindByID", petID).Return(pet, errors.New("sql: no rows in result set"))
@@ -208,7 +238,7 @@ func TestFindByIDErrorOnRepo(t *testing.T) {
 	petID := uniqueEntityId.NewID()
 	var pet *entity.Pet
 
-	mockRepo := mockInterfaces.NewMockPetRepository(t)
+	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("FindByID", petID).Return(pet, errors.New("this is a repository error"))
@@ -236,6 +266,9 @@ func TestPetUseCase_Save(t *testing.T) {
 		Birthdate:    &birthDate,
 		AdoptionDate: &adoptDate,
 	}
+
+	mockRepo := new(MockPetRepository)
+	defer mockRepo.AssertExpectations(t)
 
 	mockRepo.On("Save", mock.AnythingOfType("*entity.Pet")).Return(nil)
 
@@ -265,7 +298,6 @@ func TestPetUseCase_SaveErrorOnRepo(t *testing.T) {
 	}
 
 	repoError := errors.New("error saving pet")
-
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
 	
