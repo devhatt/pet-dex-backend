@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
@@ -89,6 +90,48 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 
 	return nil
 
+}
+
+func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
+	user, err := uc.repo.FindByID(ID)
+
+	if err != nil {
+		uc.logger.Error("error finding user by id:", err)
+		return nil, err
+	}
+
+	address, err := uc.repo.FindAddressByUserID(user.ID)
+
+	if err != nil {
+		uc.logger.Error("error finding user address:", err)
+		return nil, err
+	}
+
+	user.Adresses = *address
+
+	return user, nil
+}
+
+func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
+	err := uc.repo.Delete(userID)
+
+	if err != nil {
+		uc.logger.Error(fmt.Errorf("#UserUsecase.Delete error: %w", err))
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
+	user, err := uc.repo.FindByEmail(email)
+
+	if err != nil {
+		uc.logger.Error("error finding user by email:", err)
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {

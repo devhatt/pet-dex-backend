@@ -41,11 +41,12 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 			private.Route("/user", func(r chi.Router) {
 				r.Get("/{id}/my-pets", controllers.PetController.ListUserPets)
-				r.Post("/change-password", controllers.UserController.ChangePassword)
 				r.Patch("/{id}", controllers.UserController.Update)
 				r.Get("/{id}", controllers.UserController.FindByID)
 				r.Delete("/{id}", controllers.UserController.Delete)
-
+			})
+			private.Route("/settings", func(r chi.Router) {
+				r.Patch("/push-notifications", controllers.UserController.UpdatePushNotificationSettings)
 			})
 		})
 
@@ -54,5 +55,6 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			public.Post("/user/token", controllers.UserController.GenerateToken)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
 		})
+
 	})
 }
