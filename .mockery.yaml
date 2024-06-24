@@ -11,3 +11,4 @@ packages:
       AdressRepo:
       SingleSignOnProvider:
       SingleSignOnGateway:
+      BreedRepository:
