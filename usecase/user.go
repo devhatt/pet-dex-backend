@@ -6,6 +6,7 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
+	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"time"
 
@@ -69,7 +70,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 	}
 	token, _ := uc.encoder.NewAccessToken(interfaces.UserClaims{
 		Id:    user.ID.String(),
-		Name:  user.Email,
+		Name:  user.Name,
 		Email: user.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
@@ -158,7 +159,11 @@ func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswo
 	return nil
 }
 
-func (uc *UserUsecase) GoogleLogin(idToken string) (string, error) {
-
-	return "", errors.New("not implemented")
+func (uc *UserUsecase) GoogleLogin(accessToken string) (*sso.UserDetails, error) {
+	userDetails, err := sso.GetGoogleUserDetails(accessToken)
+	if err != nil {
+		uc.logger.Error("error on google login: ", err)
+		return nil, err
+	}
+	return userDetails, nil
 }

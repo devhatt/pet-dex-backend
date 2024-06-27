@@ -5,10 +5,13 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
+	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/golang-jwt/jwt"
 )
 
 type UserController struct {
@@ -208,9 +211,7 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var body struct {
-		ClientId   string `json:"clientId"`
-		Credential string `json:"credential"`
-		SelectBy   string `json:"select_by"`
+		AccessToken string `json:"accessToken"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
@@ -220,25 +221,53 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if body.Credential == "" {
-		uc.logger.Error("empty credential: ", err)
-		http.Error(w, "Error empty credential ", http.StatusBadRequest)
+	if body.AccessToken == "" {
+		uc.logger.Error("empty access token: ", err)
+		http.Error(w, "error empty access token ", http.StatusBadRequest)
 		return
 	}
 
-	token, err := uc.usecase.GoogleLogin(body.Credential)
+	googleUserDetails, err := uc.usecase.GoogleLogin(body.AccessToken)
 	if err != nil {
 		uc.logger.Error("error logging in with google: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Add("Authorization", token)
-	json.NewEncoder(w).Encode(struct {
-		Token string `json:"token"`
-	}{
-		Token: token,
+	user, _ := uc.usecase.FindByEmail(googleUserDetails.Email)
+	if user == nil {
+		// Return name, lastname and email to create the new user at the frontend
+		json.NewEncoder(w).Encode(struct {
+			Name     string `json:"name"`
+			LastName string `json:"last_name"`
+			Email    string `json:"email"`
+		}{
+			Name:     googleUserDetails.Name,
+			LastName: googleUserDetails.LastName,
+			Email:    googleUserDetails.Email,
+		})
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	//Generate Token for the user
+
+	token, _ := uc.usecase.encoder.NewAccessToken(interfaces.UserClaims{
+		Id:    user.ID.String(),
+		Name:  user.Name,
+		Email: user.Email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		},
 	})
+
+	// w.Header().Add("Authorization", token)
+
+	// json.NewEncoder(w).Encode(struct {
+	// 	Token string `json:"token"`
+	// }{
+	// 	Token: token,
+	// })
 
 	w.WriteHeader(http.StatusOK)
 }
