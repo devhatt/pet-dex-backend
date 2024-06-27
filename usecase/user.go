@@ -69,7 +69,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 	}
 	token, _ := uc.encoder.NewAccessToken(interfaces.UserClaims{
 		Id:    user.ID.String(),
-		Name:  user.Email,
+		Name:  user.Name,
 		Email: user.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
