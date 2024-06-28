@@ -11,6 +11,7 @@ import (
 
 	"pet-dex-backend/v2/entity"
 	"pet-dex-backend/v2/infra/config"
+	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 )
@@ -48,33 +49,73 @@ func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
 	Data, _ := time.Parse(time.DateTime, "2023-09-20")
 	Birthdate, _ := time.Parse(time.DateTime, "2023-09-20")
-	userID := uniqueEntityId.NewID()
+	userId := uniqueEntityId.NewID()
 	petUpdateDto := dto.PetUpdateDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
-	mockRepo := new(MockPetRepository)
-	mockRepo.On("Update", id, userID.String(), entity.PetToEntity(&petUpdateDto)).Return(nil)
-	usecase := NewPetUseCase(mockRepo)
+	
+	tcases := map[string]struct {
+		repo          *mockInterfaces.MockPetRepository
+		input dto.PetUpdateDto
+		petId string
+		userId string
+		expectOutput  error
+	}{
+		"success": {
+			repo: mockInterfaces.NewMockPetRepository(t),
+			input: petUpdateDto,
+			petId: id,
+			userId: userId.String(),
+			expectOutput: nil,
+		},
+	}
 
-	err := usecase.Update(id, userID.String(), petUpdateDto)
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Update", tcase.petId, tcase.userId, entity.PetToEntity((&tcase.input))).Return(tcase.expectOutput)
 
-	assert.NoError(t, err)
-	mockRepo.AssertExpectations(t)
+			usecase := NewPetUseCase(tcase.repo)
+			err := usecase.Update(tcase.petId, tcase.userId, tcase.input)
+
+			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
+		})
+	}
 }
 
 func TestUseCaseDoInvalidSize(t *testing.T) {
 	id := "123"
-	userID := uniqueEntityId.NewID()
-	petUpdateDto := dto.PetUpdateDto{Size: "Invalid Size"}
-	mockRepo := new(MockPetRepository)
-	mockRepo.On("Update", id, userID.String(), entity.PetToEntity(&petUpdateDto)).Return(nil)
-	usecase := NewPetUseCase(mockRepo)
+	Data, _ := time.Parse(time.DateTime, "2023-09-20")
+	Birthdate, _ := time.Parse(time.DateTime, "2023-09-20")
+	userId := uniqueEntityId.NewID()
+	petUpdateDto := dto.PetUpdateDto{Size: "Invalid Size", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
+	
+	tcases := map[string]struct {
+		repo          *mockInterfaces.MockPetRepository
+		input dto.PetUpdateDto
+		petId string
+		userId string
+		expectOutput  error
+	}{
+		"error": {
+			repo: mockInterfaces.NewMockPetRepository(t),
+			input: petUpdateDto,
+			petId: id,
+			userId: userId.String(),
+			expectOutput: nil,
+		},
+	}
 
-	err := usecase.Update(id, userID.String(), petUpdateDto)
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
 
-	assert.EqualError(t, err, "the animal size is invalid")
-	mockRepo.AssertNotCalled(t, "Update")
+			usecase := NewPetUseCase(tcase.repo)
+			err := usecase.Update(tcase.petId, tcase.userId, tcase.input)
+
+			assert.EqualError(t, err, "the animal size is invalid")
+			tcase.repo.AssertNotCalled(t, "Update")
+		})
+	}
 }
 
-func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
+func x(t *testing.T) {
 	id := "123"
 	userID := "321"
 	petUpdateDto := dto.PetUpdateDto{Size: "small", Weight: 4.53, WeightMeasure: "kg"}
@@ -87,6 +128,42 @@ func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
 
 	assert.EqualError(t, err, "failed to update pet with ID 123: error updating pet")
 	mockRepo.AssertExpectations(t)
+}
+
+func TestUpdateUseCaseDoRepositoryError(t *testing.T) {
+	id := "123"
+	Data, _ := time.Parse(time.DateTime, "2023-09-20")
+	Birthdate, _ := time.Parse(time.DateTime, "2023-09-20")
+	userId := uniqueEntityId.NewID()
+	petUpdateDto := dto.PetUpdateDto{Size: "small", AdoptionDate: Data, Birthdate: Birthdate, Weight: 4.53, WeightMeasure: "kg"}
+	repoError := errors.New("error updating pet")
+
+	tcases := map[string]struct {
+		repo          *mockInterfaces.MockPetRepository
+		input dto.PetUpdateDto
+		petId string
+		userId string
+		expectOutput  error
+	}{
+		"error": {
+			repo: mockInterfaces.NewMockPetRepository(t),
+			input: petUpdateDto,
+			petId: id,
+			userId: userId.String(),
+			expectOutput: repoError,
+		},
+	}
+
+	for name, tcase := range tcases {
+		t.Run(name, func(t *testing.T) {
+			tcase.repo.On("Update", tcase.petId, tcase.userId, entity.PetToEntity((&tcase.input))).Return(tcase.expectOutput)
+
+			usecase := NewPetUseCase(tcase.repo)
+			err := usecase.Update(tcase.petId, tcase.userId, tcase.input)
+
+			assert.EqualError(t, err, "failed to update pet with ID 123: error updating pet")
+		})
+	}
 }
 
 func TestUpdateUseCaseisValidSize(t *testing.T) {
@@ -300,7 +377,7 @@ func TestPetUseCase_SaveErrorOnRepo(t *testing.T) {
 	repoError := errors.New("error saving pet")
 	mockRepo := new(MockPetRepository)
 	defer mockRepo.AssertExpectations(t)
-	
+
 	mockRepo.On("Save", mock.AnythingOfType("*entity.Pet")).Return(repoError)
 	usecase := NewPetUseCase(mockRepo)
 
