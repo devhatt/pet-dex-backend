@@ -46,7 +46,7 @@ func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state 
 	}
 }
 
-func UserToUpdate(dtoUpdate dto.UserUpdateDto) User {
+func UserToUpdate(dtoUpdate *dto.UserUpdateDto) User {
 	user := User{
 		Name:      dtoUpdate.Name,
 		Document:  dtoUpdate.Document,
@@ -60,5 +60,5 @@ func UserToUpdate(dtoUpdate dto.UserUpdateDto) User {
 		user.BirthDate = nil
 	}
 
-	return *user
+	return user
 }
