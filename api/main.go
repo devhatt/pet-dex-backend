@@ -21,8 +21,9 @@ func main() {
 		panic(err)
 	}
 
-	config.InitConfigs()
-	sqlxDb := sqlx.MustConnect("mysql", config.GetEnvConfig().DBUrl)
+	// config.InitConfigs()
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	sqlxDb := sqlx.MustConnect("mysql", databaseUrl)
 
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
@@ -48,6 +49,6 @@ func main() {
 	}
 	router := routes.InitializeRouter(controllers)
 
-	fmt.Printf("running on port %v \n", env.PORT)
-	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
+	fmt.Printf("running on port %v \n", env.API_PORT)
+	log.Fatal(http.ListenAndServe(":"+env.API_PORT, router))
 }

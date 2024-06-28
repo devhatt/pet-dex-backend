@@ -5,9 +5,12 @@ import "github.com/spf13/viper"
 var env *envconfig
 
 type envconfig struct {
-	DBUrl                      string `mapstructure:"DATABASE_URL"`
-	DBUrl_Migration            string `mapstructure:"MIGRATION_DATABASE_URL"`
-	PORT                       string `mapstructure:"PORT"`
+	DB_USER                    string `mapstructure:"DB_USER"`
+	DB_PASSWORD                string `mapstructure:"DB_PASSWORD"`
+	DB_DATABASE                string `mapstructure:"DB_DATABASE"`
+	DB_HOST                    string `mapstructure:"DB_HOST"`
+	DB_PORT                    string `mapstructure:"DB_PORT"`
+	API_PORT                   string `mapstructure:"API_PORT"`
 	ENV                        string `mapstructure:"ENVIRONMENT"`
 	MIGRATIONS_PATH            string `mapstructure:"MIGRATIONS_PATH"`
 	JWT_SECRET                 string `mapstructure:"JWT_SECRET"`
