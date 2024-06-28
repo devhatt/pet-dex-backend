@@ -3,7 +3,7 @@ package dto
 import "errors"
 
 type UserLoginDto struct {
-	Email    string `json:"Email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
