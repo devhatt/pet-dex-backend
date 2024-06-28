@@ -117,7 +117,7 @@ func TestBreedFindByIDErrorOnRepo(t *testing.T) {
 		mockInput error
 		expectedError error
 	}{
-		"success": {
+		"error": {
 			repo:          mockInterfaces.NewMockBreedRepository(t),
 			expectOutput:  nil,
 			mockInput: fmt.Errorf("error retrieving breed"),
