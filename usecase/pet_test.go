@@ -5,46 +5,17 @@ import (
 	"time"
 
 	"pet-dex-backend/v2/entity/dto"
+	"pet-dex-backend/v2/infra/config"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
 	"pet-dex-backend/v2/entity"
-	"pet-dex-backend/v2/infra/config"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
 )
-
-type MockPetRepository struct {
-	mock.Mock
-}
-
-func (m *MockPetRepository) Save(pet *entity.Pet) error {
-	args := m.Called(pet)
-	return args.Error(0)
-}
-
-func (m *MockPetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
-	args := m.Called(ID)
-	return args.Get(0).(*entity.Pet), args.Error(1)
-}
-
-func (m *MockPetRepository) Update(petID string, userID string, petToUpdate *entity.Pet) error {
-	args := m.Called(petID, userID, petToUpdate)
-	return args.Error(0)
-}
-
-func (m *MockPetRepository) ListByUser(userID uniqueEntityId.ID) ([]*entity.Pet, error) {
-	args := m.Called(userID)
-	return args.Get(0).([]*entity.Pet), args.Error(1)
-}
-
-func (m *MockPetRepository) ListAllByPage(page int) ([]*entity.Pet, error) {
-	args := m.Called(page)
-	return args.Get(0).([]*entity.Pet), args.Error(1)
-}
 
 func TestUpdateUseCaseDo(t *testing.T) {
 	id := "123"
@@ -332,14 +303,13 @@ func TestListUserPets(t *testing.T) {
 
 	tcases := map[string]struct {
 		repo          *mockInterfaces.MockPetRepository
-		petId         string
-		userId        string
+		userId        uuid.UUID
 		expectOutput  []*entity.Pet
 		expectedError error
 	}{
 		"success": {
 			repo:          mockInterfaces.NewMockPetRepository(t),
-			userId:        userId.String(),
+			userId:        userId,
 			expectOutput:  expectedPets,
 			expectedError: nil,
 		},

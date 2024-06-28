@@ -132,8 +132,9 @@ func TestBreedFindByIDErrorOnRepo(t *testing.T) {
 			usecase := NewBreedUseCase(tcase.repo)
 			list, err := usecase.FindByID(ID)
 
-			assert.Equal(t, tcase.expectOutput, list, "expected output mismatch")
-			assert.Equal(t, tcase.expectedError, err, "expected error mismatch")
+			assert.EqualError(t, err, "failed to retrieve breed: error retrieving breed")
+			assert.Equal(t, list, tcase.expectOutput)
+			assert.Error(t, err, tcase.expectedError)
 		})
 	}
 }
