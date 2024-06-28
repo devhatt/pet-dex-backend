@@ -3,14 +3,15 @@ package migration
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
 	"os"
 	"pet-dex-backend/v2/infra/config"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func Up() {
@@ -18,8 +19,8 @@ func Up() {
 	if err != nil {
 		log.Fatalf("Failed to load .env file: %v\n", err)
 	}
-	fmt.Println(env.DBUrl_Migration)
-	db, err := sql.Open("mysql", env.DBUrl_Migration)
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	db, err := sql.Open("mysql", databaseUrl)
 	if err != nil {
 		log.Fatalf("Failed connecting to the database: %v\n", err)
 	}
@@ -49,8 +50,8 @@ func Down() {
 	if err != nil {
 		log.Fatalf("Failed to load .env file: %v\n", err)
 	}
-	fmt.Println(env.DBUrl_Migration)
-	db, err := sql.Open("mysql", env.DBUrl_Migration)
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	db, err := sql.Open("mysql", databaseUrl)
 	if err != nil {
 		log.Fatalf("Failed connecting to the database: %v\n", err)
 	}
