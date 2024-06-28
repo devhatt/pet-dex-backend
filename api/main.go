@@ -22,11 +22,7 @@ func main() {
 	}
 
 	config.InitConfigs()
-	sqlxDb, err := sqlx.Open("mysql", env.DBUrl)
-
-	if err != nil {
-		panic(err)
-	}
+	sqlxDb := sqlx.MustConnect("mysql", config.GetEnvConfig().DBUrl)
 
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)

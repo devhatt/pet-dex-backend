@@ -70,11 +70,11 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	w.Header().Add("Authorization", token)
-	json.NewEncoder(w).Encode(struct {
-		Token string `json:"token"`
-	}{
-		Token: token,
-	})
+	// json.NewEncoder(w).Encode(struct {
+	// 	Token string `json:"token"`
+	// }{
+	// 	Token: token,
+	// })
 	w.WriteHeader(201)
 }
 
@@ -248,12 +248,5 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 	token, _ := uc.usecase.NewAccessToken(user.ID.String(), user.Name, user.Email)
 
 	w.Header().Add("Authorization", token)
-
-	json.NewEncoder(w).Encode(struct {
-		Token string `json:"token"`
-	}{
-		Token: token,
-	})
-
 	w.WriteHeader(http.StatusOK)
 }
