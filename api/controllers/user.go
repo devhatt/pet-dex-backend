@@ -5,13 +5,10 @@ import (
 	"net/http"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
-	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
-	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/golang-jwt/jwt"
 )
 
 type UserController struct {
@@ -54,7 +51,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
-func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	var userLoginDto dto.UserLoginDto
 	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
 
@@ -68,7 +65,7 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	token, err := uc.usecase.GenerateToken(&userLoginDto)
+	token, err := uc.usecase.Login(&userLoginDto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -238,7 +235,6 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 }
 
 func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
-	uc.logger.Info("GoogleLogin")
 	userId := r.Header.Get("UserId")
 	if userId != "" {
 		w.WriteHeader(http.StatusOK)
@@ -271,38 +267,28 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 
 	user, _ := uc.usecase.FindByEmail(googleUserDetails.Email)
 	if user == nil {
-		// Return name, lastname and email to create the new user at the frontend
+		// Return name, lastname and email to create the new user in the frontend
 		json.NewEncoder(w).Encode(struct {
-			Name     string `json:"name"`
-			LastName string `json:"last_name"`
-			Email    string `json:"email"`
+			Name  string `json:"name"`
+			Email string `json:"email"`
 		}{
-			Name:     googleUserDetails.Name,
-			LastName: googleUserDetails.LastName,
-			Email:    googleUserDetails.Email,
+			Name:  googleUserDetails.Name,
+			Email: googleUserDetails.Email,
 		})
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
 	//Generate Token for the user
+	token, _ := uc.usecase.NewAccessToken(user.ID.String(), user.Name, user.Email)
 
-	token, _ := uc.usecase.encoder.NewAccessToken(interfaces.UserClaims{
-		Id:    user.ID.String(),
-		Name:  user.Name,
-		Email: user.Email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour).Unix(),
-		},
+	w.Header().Add("Authorization", token)
+
+	json.NewEncoder(w).Encode(struct {
+		Token string `json:"token"`
+	}{
+		Token: token,
 	})
-
-	// w.Header().Add("Authorization", token)
-
-	// json.NewEncoder(w).Encode(struct {
-	// 	Token string `json:"token"`
-	// }{
-	// 	Token: token,
-	// })
 
 	w.WriteHeader(http.StatusOK)
 }
