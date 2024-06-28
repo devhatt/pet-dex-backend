@@ -11,9 +11,8 @@ import (
 )
 
 type UserDetails struct {
-	Name     string
-	LastName string
-	Email    string
+	Name  string
+	Email string
 }
 
 type GoogleUserDetals struct {
@@ -63,9 +62,8 @@ func GetGoogleUserDetails(accessToken string) (*UserDetails, error) {
 	}
 
 	userDetails := UserDetails{
-		Name:     googleUserDetails.GivenName,
-		LastName: googleUserDetails.FamilyName,
-		Email:    googleUserDetails.Email,
+		Name:  googleUserDetails.Name,
+		Email: googleUserDetails.Email,
 	}
 	return &userDetails, nil
 }

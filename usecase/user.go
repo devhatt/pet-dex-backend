@@ -53,10 +53,9 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 	}
 
 	return nil
-
 }
 
-func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
+func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 	user, err := uc.FindByEmail(loginDto.Email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
@@ -89,7 +88,6 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 	}
 
 	return nil
-
 }
 
 func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
@@ -166,4 +164,15 @@ func (uc *UserUsecase) GoogleLogin(accessToken string) (*sso.UserDetails, error)
 		return nil, err
 	}
 	return userDetails, nil
+}
+
+func (uc *UserUsecase) NewAccessToken(id string, name string, email string) (string, error) {
+	return uc.encoder.NewAccessToken(interfaces.UserClaims{
+		Id:    id,
+		Name:  name,
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		},
+	})
 }
