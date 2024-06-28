@@ -7,14 +7,14 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
 	"pet-dex-backend/v2/entity"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
+
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestUpdateUseCaseDo(t *testing.T) {
@@ -323,6 +323,7 @@ func TestListUserPets(t *testing.T) {
 			pets, err := usecase.ListUserPets(userId)
 
 			assert.NoError(t, err)
+			assert.Len(t, pets, 2)
 			assert.Equal(t, tcase.expectOutput, pets, "expected error mismatch")
 		})
 	}
@@ -354,6 +355,7 @@ func TestListUserPetsNoPetsFound(t *testing.T) {
 			pets, err := usecase.ListUserPets(tcase.userId)
 
 			assert.NoError(t, err)
+			assert.Len(t, pets, 0)
 			assert.Equal(t, tcase.expectOutput, pets, "expected error mismatch")
 		})
 	}
@@ -419,6 +421,7 @@ func TestFindByID(t *testing.T) {
 			pet, err := usecase.FindByID(tcase.petId)
 
 			assert.NoError(t, err)
+			assert.NotNil(t, pet)
 			assert.Equal(t, tcase.expectOutput, pet, "expected error mismatch")
 		})
 	}

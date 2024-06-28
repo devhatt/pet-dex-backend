@@ -1,11 +1,24 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"pet-dex-backend/v2/pkg/migration"
 )
 
 func main() {
+
+	upFlag := flag.Bool("up", false, "Run migrations UP")
+	flag.Parse()
+
+	if *upFlag {
+		fmt.Println("Running Migrations UP...")
+		migration.Up()
+		fmt.Println("Migrations executed!")
+		return
+	}
+
+
 	var number string
 	fmt.Println("Migrations CLI")
 	fmt.Println("Type the number of the command desired:\n1-Migrations UP\n2-Migrations DOWN\n3-Create a new migration")
@@ -13,6 +26,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error while reading the values", err)
 	}
+
 
 	if number == "1" {
 		fmt.Println("Running Migrations UP...")
