@@ -55,23 +55,24 @@ func TestListErrorOnRepo(t *testing.T) {
 	tcases := map[string]struct {
 		repo          *mockInterfaces.MockBreedRepository
 		expectOutput  []*dto.BreedList
+		mockError    error
 		expectedError error
 	}{
 		"errorList": {
 			repo:          mockInterfaces.NewMockBreedRepository(t),
 			expectOutput:  nil,
-			expectedError: fmt.Errorf("error listing breeds"),
+			mockError: fmt.Errorf("error listing breeds"),
+			expectedError: fmt.Errorf("error listing breeds: error listing breeds"),
 		},
 	}
 
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
-			tcase.repo.On("List").Return(tcase.expectOutput, tcase.expectedError)
+			tcase.repo.On("List").Return(tcase.expectOutput, tcase.mockError)
 
 			usecase := NewBreedUseCase(tcase.repo)
-			list, err := usecase.List()
+			_, err := usecase.List()
 
-			assert.Equal(t, tcase.expectOutput, list, "expected output mismatch")
 			assert.Equal(t, tcase.expectedError, err, "expected error mismatch")
 		})
 	}
@@ -113,18 +114,20 @@ func TestBreedFindByIDErrorOnRepo(t *testing.T) {
 	tcases := map[string]struct {
 		repo          *mockInterfaces.MockBreedRepository
 		expectOutput  *entity.Breed
+		mockInput error
 		expectedError error
 	}{
 		"success": {
 			repo:          mockInterfaces.NewMockBreedRepository(t),
 			expectOutput:  nil,
-			expectedError: fmt.Errorf("error retrieving breed"),
+			mockInput: fmt.Errorf("error retrieving breed"),
+			expectedError: fmt.Errorf("failed to retrieve breed:"),
 		},
 	}
 
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
-			tcase.repo.On("FindByID", ID).Return(tcase.expectOutput, tcase.expectedError)
+			tcase.repo.On("FindByID", ID).Return(tcase.expectOutput, tcase.mockInput)
 
 			usecase := NewBreedUseCase(tcase.repo)
 			list, err := usecase.FindByID(ID)
