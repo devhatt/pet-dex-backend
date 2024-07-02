@@ -1,7 +1,7 @@
 package sso
 
 import (
-	"errors"
+	"fmt"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/interfaces"
 )
@@ -9,8 +9,6 @@ import (
 type Provider struct {
 	gateways map[string]interfaces.SingleSignOnGateway
 }
-
-var ErrProviderNotFound = errors.New("Provider not found")
 
 func NewProvider(gateways ...interfaces.SingleSignOnGateway) *Provider {
 	p := &Provider{
@@ -28,7 +26,7 @@ func (p *Provider) GetUserDetails(provider, accessToken string) (*dto.UserSSODto
 
 	g, ok := p.gateways[provider]
 	if !ok {
-		return nil, ErrProviderNotFound
+		return nil, fmt.Errorf("Provider %s not found", provider)
 	}
 
 	return g.GetUserDetails(accessToken)
