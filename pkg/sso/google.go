@@ -3,17 +3,14 @@ package sso
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
-
-type UserDetails struct {
-	Name  string
-	Email string
-}
 
 type GoogleUserDetals struct {
 	Id            string `json:"id"`
@@ -25,9 +22,22 @@ type GoogleUserDetals struct {
 	Picture       string `json:"picture"`
 }
 
-func GetGoogleUserDetails(accessToken string) (*UserDetails, error) {
+type GoogleSSO struct {
+}
+
+func NewGoogleGateway() *GoogleSSO {
+	return &GoogleSSO{}
+}
+
+func (g *GoogleSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error) {
 	env := config.GetEnvConfig()
-	conf := &oauth2.Config{
+	if env.GOOGLE_OAUTH_CLIENT_ID == "" || env.GOOGLE_OAUTH_CLIENT_SECRET == "" {
+		return nil, errors.New("google client id or secret missing")
+	}
+	if env.GOOGLE_REDIRECT_URL == "" {
+		return nil, errors.New("google redirect url missing")
+	}
+	conf := oauth2.Config{
 		ClientID:     env.GOOGLE_OAUTH_CLIENT_ID,
 		ClientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
 		Scopes: []string{
@@ -61,9 +71,13 @@ func GetGoogleUserDetails(accessToken string) (*UserDetails, error) {
 		return nil, err
 	}
 
-	userDetails := UserDetails{
+	userDetails := dto.UserSSODto{
 		Name:  googleUserDetails.Name,
 		Email: googleUserDetails.Email,
 	}
 	return &userDetails, nil
+}
+
+func (f *GoogleSSO) Name() string {
+	return "google"
 }

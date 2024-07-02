@@ -6,7 +6,6 @@ import (
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
-	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"time"
 
@@ -14,18 +13,20 @@ import (
 )
 
 type UserUsecase struct {
-	repo    interfaces.UserRepository
-	hasher  interfaces.Hasher
-	encoder interfaces.Encoder
-	logger  config.Logger
+	repo        interfaces.UserRepository
+	hasher      interfaces.Hasher
+	encoder     interfaces.Encoder
+	logger      config.Logger
+	ssoProvider interfaces.SingleSignOnProvider
 }
 
-func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder, ssoProvider interfaces.SingleSignOnProvider) *UserUsecase {
 	return &UserUsecase{
-		repo:    repo,
-		hasher:  hasher,
-		encoder: encoder,
-		logger:  *config.GetLogger("user-usecase"),
+		repo:        repo,
+		hasher:      hasher,
+		encoder:     encoder,
+		logger:      *config.GetLogger("user-usecase"),
+		ssoProvider: ssoProvider,
 	}
 }
 
@@ -157,13 +158,16 @@ func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswo
 	return nil
 }
 
-func (uc *UserUsecase) GoogleLogin(accessToken string) (*sso.UserDetails, error) {
-	userDetails, err := sso.GetGoogleUserDetails(accessToken)
+func (uc *UserUsecase) ProviderLogin(accessToken string, provider string) (*entity.User, bool, error) {
+	userInfo, err := uc.ssoProvider.GetUserDetails(provider, accessToken)
 	if err != nil {
-		uc.logger.Error("error on google login: ", err)
-		return nil, err
+		return nil, false, err
 	}
-	return userDetails, nil
+
+	user, _ := uc.FindByEmail(userInfo.Email)
+
+	return user, user == nil, nil
+
 }
 
 func (uc *UserUsecase) NewAccessToken(id string, name string, email string) (string, error) {

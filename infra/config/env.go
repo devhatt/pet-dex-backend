@@ -17,6 +17,8 @@ type envconfig struct {
 	GOOGLE_OAUTH_CLIENT_ID     string `mapstructure:"GOOGLE_OAUTH_CLIENT_ID"`
 	GOOGLE_OAUTH_CLIENT_SECRET string `mapstructure:"GOOGLE_OAUTH_CLIENT_SECRET"`
 	GOOGLE_REDIRECT_URL        string `mapstructure:"GOOGLE_REDIRECT_URL"`
+	FACEBOOK_APP_ID            string `mapstructure:"FACEBOOK_APP_ID"`
+	FACEBOOK_APP_SECRET        string `mapstructure:"FACEBOOK_APP_SECRET"`
 }
 
 func GetEnvConfig() *envconfig {
