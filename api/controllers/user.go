@@ -234,7 +234,9 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
-func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) {
+	provider := chi.URLParam(r, "provider")
+
 	userId := r.Header.Get("UserId")
 	if userId != "" {
 		w.WriteHeader(http.StatusOK)
@@ -258,22 +260,21 @@ func (uc *UserController) GoogleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	googleUserDetails, err := uc.usecase.GoogleLogin(body.AccessToken)
+	user, isNew, err := uc.usecase.ProviderLogin(body.AccessToken, provider)
 	if err != nil {
-		uc.logger.Error("error logging in with google: ", err)
+		uc.logger.Error("error logging in with provider: ", provider, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	user, _ := uc.usecase.FindByEmail(googleUserDetails.Email)
-	if user == nil {
+	if isNew {
 		// Return name, lastname and email to create the new user in the frontend
 		json.NewEncoder(w).Encode(struct {
 			Name  string `json:"name"`
 			Email string `json:"email"`
 		}{
-			Name:  googleUserDetails.Name,
-			Email: googleUserDetails.Email,
+			Name:  user.Name,
+			Email: user.Email,
 		})
 		w.WriteHeader(http.StatusOK)
 		return

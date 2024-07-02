@@ -13,18 +13,20 @@ import (
 )
 
 type UserUsecase struct {
-	repo    interfaces.UserRepository
-	hasher  interfaces.Hasher
-	encoder interfaces.Encoder
-	logger  config.Logger
+	repo        interfaces.UserRepository
+	hasher      interfaces.Hasher
+	encoder     interfaces.Encoder
+	logger      config.Logger
+	ssoProvider interfaces.SingleSignOnProvider
 }
 
-func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder, ssoProvider interfaces.SingleSignOnProvider) *UserUsecase {
 	return &UserUsecase{
-		repo:    repo,
-		hasher:  hasher,
-		encoder: encoder,
-		logger:  *config.GetLogger("user-usecase"),
+		repo:        repo,
+		hasher:      hasher,
+		encoder:     encoder,
+		logger:      *config.GetLogger("user-usecase"),
+		ssoProvider: ssoProvider,
 	}
 }
 
@@ -174,6 +176,19 @@ func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, 
 	}
 
 	return nil
+
+}
+
+func (uc *UserUsecase) ProviderLogin(accessToken string, provider string) (*entity.User, bool, error) {
+	userInfo, err := uc.ssoProvider.GetUserDetails(provider, accessToken)
+	if err != nil {
+		return nil, false, err
+	}
+
+	user, _ := uc.FindByEmail(userInfo.Email)
+
+	return user, user == nil, nil
+
 }
 
 func (uc *UserUsecase) NewAccessToken(id string, name string, email string) (string, error) {

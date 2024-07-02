@@ -10,6 +10,7 @@ import (
 	"pet-dex-backend/v2/infra/db"
 	"pet-dex-backend/v2/pkg/encoder"
 	"pet-dex-backend/v2/pkg/hasher"
+	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/usecase"
 
 	"github.com/jmoiron/sqlx"
@@ -33,8 +34,13 @@ func main() {
 
 	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
 
+	googleSsoGt := sso.NewGoogleGateway()
+	facebookSsoGt := sso.NewFacebookGateway()
+
+	ssoProvider := sso.NewProvider(googleSsoGt, facebookSsoGt)
+
 	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
-	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
+	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder, ssoProvider)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	ongUsecase := usecase.NewOngUseCase(dbOngRepo, dbUserRepo, hash)
 	breedController := controllers.NewBreedController(breedUsecase)
