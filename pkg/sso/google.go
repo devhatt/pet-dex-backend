@@ -23,29 +23,38 @@ type GoogleUserDetals struct {
 }
 
 type GoogleSSO struct {
+	name     string
+	client   string
+	secret   string
+	redirect string
 }
 
 func NewGoogleGateway() *GoogleSSO {
-	return &GoogleSSO{}
+	env := config.GetEnvConfig()
+	return &GoogleSSO{
+		name:     "google",
+		client:   env.GOOGLE_OAUTH_CLIENT_ID,
+		secret:   env.GOOGLE_OAUTH_CLIENT_SECRET,
+		redirect: env.GOOGLE_REDIRECT_URL,
+	}
 }
 
 func (g *GoogleSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error) {
-	env := config.GetEnvConfig()
-	if env.GOOGLE_OAUTH_CLIENT_ID == "" || env.GOOGLE_OAUTH_CLIENT_SECRET == "" {
+	if g.client == "" || g.secret == "" {
 		return nil, errors.New("google client id or secret missing")
 	}
-	if env.GOOGLE_REDIRECT_URL == "" {
+	if g.redirect == "" {
 		return nil, errors.New("google redirect url missing")
 	}
 	conf := oauth2.Config{
-		ClientID:     env.GOOGLE_OAUTH_CLIENT_ID,
-		ClientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
+		ClientID:     g.client,
+		ClientSecret: g.secret,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile",
 		},
 		Endpoint:    google.Endpoint,
-		RedirectURL: env.GOOGLE_REDIRECT_URL,
+		RedirectURL: g.redirect,
 	}
 
 	ctx := context.Background()
@@ -78,6 +87,6 @@ func (g *GoogleSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error) 
 	return &userDetails, nil
 }
 
-func (f *GoogleSSO) Name() string {
-	return "google"
+func (g *GoogleSSO) Name() string {
+	return g.name
 }
