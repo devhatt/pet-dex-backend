@@ -9,3 +9,5 @@ packages:
       OngRepository:
       BreedRepository:
       AdressRepo:
+      SingleSignOnProvider:
+      SingleSignOnGateway:
