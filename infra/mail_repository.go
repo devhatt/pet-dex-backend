@@ -1,8 +1,8 @@
 package db
 
 import (
-	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/mail"
 )
@@ -10,41 +10,48 @@ import (
 type MailRepository struct {
 	mailPkg     mail.IMail
 	mailMessage mail.Message
+	logger      config.Logger
 }
 
 func NewMailRepository(mpkg mail.IMail, msg mail.Message) interfaces.Emailrepository {
 	return &MailRepository{
 		mailPkg:     mpkg,
 		mailMessage: msg,
+		logger:      *config.GetLogger("mail-repository"),
 	}
 }
 
-/*
-	compor msg com nome e email do user
-	-  como confirmações de cadastro
-	-  notificações e recuperação de senha
-*/
-
-// confirmação de cadastro
 func (mr *MailRepository) SendConfirmationEmail(user *entity.User) error {
 
 	to := []string{user.Email}
 
-	msg := MailRepository{
-		mailMessage: *mail.NewMessage(to, "olaaaa este é um email de confirmação!!!"),
-	}
+	message := mail.NewMessage(to, "olaaaa este é um email de confirmação!!!")
 
-	err := mr.mailPkg.Send(&msg.mailMessage)
+	err := mr.mailPkg.Send(message)
 
 	if err != nil {
-		fmt.Println("Error, login or password is wrong!") // msg teste
+		mr.logger.Error("error on mail repository: ", err)
+		return err
 	}
 
 	return nil
 }
 
-// notification e reset de senhas
 func (mr *MailRepository) SendNotificationEmail(message string, recipient string) error {
+
+	to := []string{recipient}
+
+	msg := mail.NewMessage(to, message)
+
+	err := mr.mailPkg.Send(msg)
+
+	if err != nil {
+		mr.logger.Error("error on mail repository: ", err)
+		return err
+	}
 
 	return nil
 }
+
+//TODO:
+//ler testes
