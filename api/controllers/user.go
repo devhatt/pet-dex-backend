@@ -163,6 +163,41 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func (uc *UserController) UpdatePushNotificationSettings(w http.ResponseWriter, r *http.Request) {
+	userIdStr := r.Header.Get("userId")
+
+	if userIdStr == "" {
+		uc.logger.Error("Error to get id from header on user controller push notification")
+		http.Error(w, "User dont exist", http.StatusBadRequest)
+	}
+
+	userId, err := uniqueEntityId.ParseID(userIdStr)
+	if err != nil {
+		uc.logger.Error("Error on user controller push notification: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var userPushNotificationEnabled dto.UserPushNotificationEnabled
+
+	err = json.NewDecoder(r.Body).Decode(&userPushNotificationEnabled)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.userPushNotificationEnabled] Error decoding request -> Error: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.UpdatePushNotificationSettings(userId, userPushNotificationEnabled)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.PushNotificationSettings] Error trying to update push notification user -> Error: ", err)
+		http.Error(w, "Error trying to update push notification User ", http.StatusBadRequest)
+		return
+	}
+
 	w.WriteHeader(http.StatusNoContent)
 }
 
