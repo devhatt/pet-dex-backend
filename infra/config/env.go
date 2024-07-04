@@ -2,9 +2,9 @@ package config
 
 import "github.com/spf13/viper"
 
-var env *envconfig
+var env *Envconfig
 
-type envconfig struct {
+type Envconfig struct {
 	DB_USER                    string `mapstructure:"DB_USER"`
 	DB_PASSWORD                string `mapstructure:"DB_PASSWORD"`
 	DB_DATABASE                string `mapstructure:"DB_DATABASE"`
@@ -21,11 +21,11 @@ type envconfig struct {
 	FACEBOOK_APP_SECRET        string `mapstructure:"FACEBOOK_APP_SECRET"`
 }
 
-func GetEnvConfig() *envconfig {
+func GetEnvConfig() *Envconfig {
 	return env
 }
 
-func LoadEnv(path string) (*envconfig, error) {
+func LoadEnv(path string) (*Envconfig, error) {
 	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
