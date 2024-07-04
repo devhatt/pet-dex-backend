@@ -8,19 +8,26 @@ import (
 	fb "github.com/huandu/facebook/v2"
 )
 
-type FacebookSSO struct{}
+type FacebookSSO struct {
+	name   string
+	id     string
+	secret string
+}
 
-func NewFacebookGateway() *FacebookSSO {
-	return &FacebookSSO{}
+func NewFacebookGateway(env *config.Envconfig) *FacebookSSO {
+	return &FacebookSSO{
+		name:   "facebook",
+		id:     env.FACEBOOK_APP_ID,
+		secret: env.FACEBOOK_APP_SECRET,
+	}
 }
 
 func (f *FacebookSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error) {
-	env := config.GetEnvConfig()
-	if env.FACEBOOK_APP_ID == "" || env.FACEBOOK_APP_SECRET == "" {
+	if f.id == "" || f.secret == "" {
 		return nil, errors.New("facebook app id or secret missing")
 	}
 
-	var globalApp = fb.New(env.FACEBOOK_APP_ID, env.FACEBOOK_APP_SECRET)
+	var globalApp = fb.New(f.id, f.secret)
 	session := globalApp.Session(accessToken)
 	err := session.Validate()
 
@@ -46,5 +53,5 @@ func (f *FacebookSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error
 }
 
 func (f *FacebookSSO) Name() string {
-	return "facebook"
+	return f.name
 }

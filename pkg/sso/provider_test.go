@@ -18,7 +18,7 @@ func TestNewProvider(t *testing.T) {
 		mock                  func(*testing.T, []interfaces.SingleSignOnGateway)
 		expectedCompareReturn []string
 	}{
-		"New Provider": {
+		"New Providers": {
 			signInGateways: []interfaces.SingleSignOnGateway{
 				mockInterfaces.NewMockSingleSignOnGateway(t),
 				mockInterfaces.NewMockSingleSignOnGateway(t),

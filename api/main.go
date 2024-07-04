@@ -32,10 +32,10 @@ func main() {
 	hash := hasher.NewHasher()
 	bdBreedRepo := db.NewBreedRepository(sqlxDb)
 
-	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
+	encoder := encoder.NewEncoderAdapter(env.JWT_SECRET)
 
-	googleSsoGt := sso.NewGoogleGateway()
-	facebookSsoGt := sso.NewFacebookGateway()
+	googleSsoGt := sso.NewGoogleGateway(env)
+	facebookSsoGt := sso.NewFacebookGateway(env)
 
 	ssoProvider := sso.NewProvider(googleSsoGt, facebookSsoGt)
 

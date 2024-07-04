@@ -29,8 +29,7 @@ type GoogleSSO struct {
 	redirect string
 }
 
-func NewGoogleGateway() *GoogleSSO {
-	env := config.GetEnvConfig()
+func NewGoogleGateway(env *config.Envconfig) *GoogleSSO {
 	return &GoogleSSO{
 		name:     "google",
 		client:   env.GOOGLE_OAUTH_CLIENT_ID,
