@@ -117,6 +117,11 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 		values = append(values, userToUpdate.BirthDate)
 	}
 
+	if userToUpdate.PushNotificationsEnabled != nil {
+		query = query + " pushNotificationsEnabled =?,"
+		values = append(values, userToUpdate.PushNotificationsEnabled)
+	}
+
 	query = query + " updated_at =?,"
 	values = append(values, time.Now())
 
