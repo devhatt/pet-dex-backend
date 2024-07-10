@@ -157,3 +157,24 @@ func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswo
 	}
 	return nil
 }
+
+func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, userPushNotificationEnabled dto.UserPushNotificationEnabled) error {
+	user, err := uc.repo.FindByID(userID)
+
+	if err != nil {
+			uc.logger.Error("error finding user by id: ", err)
+			return errors.New("user dont exists")
+	}
+
+	user.PushNotificationsEnabled = &userPushNotificationEnabled.PushNotificationEnabled
+
+	err = uc.repo.Update(userID, *user)
+
+	if err != nil {
+			uc.logger.Error("error updating user by id: ", err)
+			return errors.New("error on updating push notification")
+	}
+
+	return nil
+
+}
