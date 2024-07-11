@@ -17,13 +17,13 @@ import (
 )
 
 func main() {
-	env, err := config.LoadEnv(".")
+	envVariables, err := config.LoadEnv(".")
 	if err != nil {
 		panic(err)
 	}
 
 	// config.InitConfigs()
-	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", envVariables.DB_USER, envVariables.DB_PASSWORD, envVariables.DB_HOST, envVariables.DB_PORT, envVariables.DB_DATABASE)
 	sqlxDb := sqlx.MustConnect("mysql", databaseUrl)
 
 	dbPetRepo := db.NewPetRepository(sqlxDb)
@@ -32,10 +32,10 @@ func main() {
 	hash := hasher.NewHasher()
 	bdBreedRepo := db.NewBreedRepository(sqlxDb)
 
-	encoder := encoder.NewEncoderAdapter(env.JWT_SECRET)
+	encoder := encoder.NewEncoderAdapter(envVariables.JWT_SECRET)
 
-	googleSsoGt := sso.NewGoogleGateway(env)
-	facebookSsoGt := sso.NewFacebookGateway(env)
+	googleSsoGt := sso.NewGoogleGateway(envVariables)
+	facebookSsoGt := sso.NewFacebookGateway(envVariables)
 
 	ssoProvider := sso.NewProvider(googleSsoGt, facebookSsoGt)
 
@@ -55,6 +55,6 @@ func main() {
 	}
 	router := routes.InitializeRouter(controllers)
 
-	fmt.Printf("running on port %v \n", env.API_PORT)
-	log.Fatal(http.ListenAndServe(":"+env.API_PORT, router))
+	fmt.Printf("running on port %v \n", envVariables.API_PORT)
+	log.Fatal(http.ListenAndServe(":"+envVariables.API_PORT, router))
 }
