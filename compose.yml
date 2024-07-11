@@ -18,11 +18,11 @@ services:
     working_dir: /app
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
+      - PORT=${API_PORT}
       - ENVIRONMENT=${ENVIRONMENT}
       - MIGRATIONS_PATH=${MIGRATIONS_PATH}
     ports:
-      - "${PORT}:${PORT}"
+      - "${API_PORT}:${API_PORT}"
     volumes:
       - ./:/app
     depends_on:
@@ -84,7 +84,7 @@ services:
     hostname: api-tests
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      PORT: ${PORT}
+      PORT: ${API_PORT}
       ENVIRONMENT: ${ENVIRONMENT}
       MIGRATIONS_PATH: ${MIGRATIONS_PATH}
       INTEGRATION: true
