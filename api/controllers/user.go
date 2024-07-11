@@ -269,13 +269,18 @@ func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) 
 
 	if isNew {
 		// Return name, lastname and email to create the new user in the frontend
-		json.NewEncoder(w).Encode(struct {
+		err := json.NewEncoder(w).Encode(struct {
 			Name  string `json:"name"`
 			Email string `json:"email"`
 		}{
 			Name:  user.Name,
 			Email: user.Email,
 		})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		w.WriteHeader(http.StatusOK)
 		return
 	}
