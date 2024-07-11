@@ -43,7 +43,11 @@ func (f *FacebookSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error
 
 	var userDetails dto.UserSSODto
 
-	res.Decode(&userDetails)
+	err = res.Decode(&userDetails)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if userDetails.Email == "" {
 		return nil, errors.New("email scope not authorized at facebook app")
