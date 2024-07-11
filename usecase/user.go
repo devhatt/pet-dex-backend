@@ -81,7 +81,7 @@ func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 }
 
 func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
-	user := entity.UserToUpdate(&userDto)
+	user := entity.UserToUpdate(userDto)
 
 	err := uc.repo.Update(userID, user)
 	if err != nil {
@@ -128,48 +128,6 @@ func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
 
 	if err != nil {
 		uc.logger.Error(fmt.Errorf("#UserUsecase.Delete error: %w", err))
-		return err
-	}
-
-	return nil
-}
-
-func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
-	user, err := uc.repo.FindByEmail(email)
-
-	if err != nil {
-		uc.logger.Error("error finding user by email:", err)
-		return nil, err
-	}
-
-	return user, nil
-}
-
-func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
-	user, err := uc.repo.FindByID(ID)
-
-	if err != nil {
-		uc.logger.Error("error finding user by id:", err)
-		return nil, err
-	}
-
-	address, err := uc.repo.FindAddressByUserID(user.ID)
-
-	if err != nil {
-		uc.logger.Error("error finding user address:", err)
-		return nil, err
-	}
-
-	user.Adresses = *address
-
-	return user, nil
-}
-
-func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
-	err := uc.repo.Delete(userID)
-
-	if err != nil {
-		uc.logger.Error("#UserUsecase.Delete error:", err)
 		return err
 	}
 
