@@ -12,7 +12,7 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-type GoogleUserDetals struct {
+type GoogleUserDetails struct {
 	Id            string `json:"id"`
 	Email         string `json:"email"`
 	VerifiedEmail bool   `json:"verified_email"`
@@ -73,7 +73,7 @@ func (g *GoogleSSO) GetUserDetails(accessToken string) (*dto.UserSSODto, error) 
 		return nil, err
 	}
 
-	var googleUserDetails GoogleUserDetals
+	var googleUserDetails GoogleUserDetails
 	err = json.Unmarshal(client, &googleUserDetails)
 	if err != nil {
 		return nil, err
