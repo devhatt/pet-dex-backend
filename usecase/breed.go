@@ -25,7 +25,7 @@ func (useCase *BreedUseCase) List() ([]*dto.BreedList, error) {
 	breed, err := useCase.repo.List()
 	if err != nil {
 		loggerBreed.Error("error listing breeds", err)
-		err = fmt.Errorf("error listing breeds: %w", err)
+		err = fmt.Errorf("error listing breeds: %s", err)
 		return nil, err
 	}
 	return breed, nil
@@ -34,7 +34,7 @@ func (useCase *BreedUseCase) List() ([]*dto.BreedList, error) {
 func (useCase *BreedUseCase) FindByID(ID uniqueEntityId.ID) (*entity.Breed, error) {
 	breed, err := useCase.repo.FindByID(ID)
 	if err != nil {
-		err = fmt.Errorf("failed to retrieve breed: %w", err)
+		err = fmt.Errorf("failed to retrieve breed: %s", err)
 		return nil, err
 	}
 	return breed, nil
