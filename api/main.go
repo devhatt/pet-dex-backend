@@ -22,6 +22,10 @@ func main() {
 	}
 
 	config.InitConfigs()
+	if err != nil {
+		panic(err)
+	}
+	
 	sqlxDb, err := sqlx.Open("mysql", env.DBUrl)
 
 	if err != nil {
