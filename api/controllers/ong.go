@@ -84,7 +84,11 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(ongs)
+	err = json.NewEncoder(w).Encode(ongs)
+	if err != nil {
+		logger.Error("error encoding json", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {

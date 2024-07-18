@@ -44,8 +44,11 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
+		json_err := json.NewEncoder(w).Encode(err)
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	}
 
 	err = pc.Usecase.Update(petID, userID, petUpdateDto)
