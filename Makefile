@@ -20,4 +20,4 @@ migration-up:
 	go run cmd/main.go -up 
 
 lint:
-	docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.59.1 golangci-lint run -v
+	docker run --rm -v ./:/app -w /app golangci/golangci-lint:v1.59.1 golangci-lint run -v
