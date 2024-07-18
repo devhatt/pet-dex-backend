@@ -21,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	config.InitConfigs()
+	err = config.InitConfigs()
 	if err != nil {
 		panic(err)
 	}
