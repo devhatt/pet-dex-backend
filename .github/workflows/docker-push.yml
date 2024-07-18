@@ -1,0 +1,28 @@
+name: Docker Push
+
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types:
+      - completed
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          SHA=${{ github.sha }}
+          docker build -t devhatt/pet-dex-backend:$SHA .
+          docker push devhatt/pet-dex-backend:$SHA
+          docker tag devhatt/pet-dex-backend:$SHA devhatt/pet-dex-backend:latest
+          docker push devhatt/pet-dex-backend:latest
