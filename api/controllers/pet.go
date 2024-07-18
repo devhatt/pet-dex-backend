@@ -44,8 +44,11 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
+		json_err := json.NewEncoder(w).Encode(err)
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	}
 
 	err = pc.Usecase.Update(petID, userID, petUpdateDto)
@@ -58,7 +61,11 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
+		json_err := json.NewEncoder(w).Encode(err)
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 }
@@ -119,9 +126,13 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Invalid request: could not decode pet data from request body %s", err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errors.ErrInvalidBody{
+		json_err := json.NewEncoder(w).Encode(errors.ErrInvalidBody{
 			Description: "The body is invalid",
 		})
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -130,7 +141,11 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Invalid request: could not validate pet data from request body %s", err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
+		json_err := json.NewEncoder(w).Encode(err)
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -142,7 +157,11 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 		err := err.Error()
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
+		json_err := json.NewEncoder(w).Encode(err)
+		if json_err != nil {
+			logger.Error("error encoding json", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 

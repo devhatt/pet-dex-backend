@@ -31,7 +31,11 @@ func (cntrl *BreedController) List(responseWriter http.ResponseWriter, request *
 	}
 
 	responseWriter.WriteHeader(http.StatusOK)
-	json.NewEncoder(responseWriter).Encode(breeds)
+	err = json.NewEncoder(responseWriter).Encode(breeds)
+	if err != nil {
+		logger.Error("error encoding json", err)
+		responseWriter.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func (cntrl *BreedController) FindBreed(w http.ResponseWriter, r *http.Request) {
