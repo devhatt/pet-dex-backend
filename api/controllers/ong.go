@@ -48,7 +48,7 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 
 
 func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
-	pageStr := r.URL.Query().Get("page")
+	// pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
 	sortBy := r.URL.Query().Get("sortBy")
 	order := r.URL.Query().Get("order")
@@ -63,10 +63,10 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 		order = "asc"
 	}
 
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 1 {
-		page = 1
-	}
+	// page, err := strconv.Atoi(pageStr)
+	// if err != nil || page < 1 {
+	// 	page = 1
+	// }
 
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil || limit < 1 {
