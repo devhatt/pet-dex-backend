@@ -49,3 +49,14 @@ jobs:
       - name: Up migrations
         run: |
           go run cmd/main.go -up
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t devhatt/pet-dex-backend:latest .
+          docker push devhatt/pet-dex-backend:latest
