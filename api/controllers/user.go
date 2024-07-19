@@ -112,6 +112,16 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// FindByID retrieves user information based on the provided user ID.
+// @Summary Find User by ID
+// @Description Retrieves user details based on the user ID provided as a parameter.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /users/{id} [get]
 func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 

@@ -10,5 +10,22 @@ info:
     url: https://github.com/devhatt/pet-dex-backend?tab=MIT-1-ov-file#readme
   title: 'PetDex: Documentação API'
   version: "1.0"
-paths: {}
+paths:
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves user details based on the user ID provided as a parameter.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Find User by ID
+      tags:
+      - User
 swagger: "2.0"
