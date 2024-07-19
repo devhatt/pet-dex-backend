@@ -13,9 +13,23 @@ import (
 	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/usecase"
 
+	_ "pet-dex-backend/v2/docs/api"
+
 	"github.com/jmoiron/sqlx"
 )
 
+// @title PetDex: Documentação API
+// @version 1.0
+// @description Essa página se destina a documentação da API
+
+// @contact.name DevHatt
+// @contact.url https://github.com/devhatt
+
+// @license.name MIT license
+// @license.url https://github.com/devhatt/pet-dex-backend?tab=MIT-1-ov-file#readme
+
+// @host localhost:3000/api/swagger
+// @BasePath /
 func main() {
 	envVariables, err := config.LoadEnv(".")
 	if err != nil {

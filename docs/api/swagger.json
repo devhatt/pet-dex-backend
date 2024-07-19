@@ -1,0 +1,19 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Essa página se destina a documentação da API",
+        "title": "PetDex: Documentação API",
+        "contact": {
+            "name": "DevHatt",
+            "url": "https://github.com/devhatt"
+        },
+        "license": {
+            "name": "MIT license",
+            "url": "https://github.com/devhatt/pet-dex-backend?tab=MIT-1-ov-file#readme"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:3000/api/swagger",
+    "basePath": "/",
+    "paths": {}
+}
