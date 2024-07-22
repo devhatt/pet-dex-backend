@@ -16,6 +16,11 @@ type MockOngRepository struct {
 	mock.Mock
 }
 
+// Delete implements interfaces.OngRepository.
+func (_m *MockOngRepository) Delete(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
 type MockOngRepository_Expecter struct {
 	mock *mock.Mock
 }
