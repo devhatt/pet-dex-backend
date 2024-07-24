@@ -1,13 +1,11 @@
 package config
 
 import (
-	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	db                 *sql.DB
+	// db                 *sql.DB
 	logger             *Logger
 	StandardDateLayout = "2006-01-02"
 )
