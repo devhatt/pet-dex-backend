@@ -19,7 +19,7 @@ func Up() {
 	if err != nil {
 		log.Fatalf("Failed to load .env file: %v\n", err)
 	}
-	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.MIGRATION_HOST, env.DB_PORT, env.DB_DATABASE)
 	db, err := sql.Open("mysql", databaseUrl)
 	if err != nil {
 		log.Fatalf("Failed connecting to the database: %v\n", err)
@@ -29,15 +29,21 @@ func Up() {
 			log.Fatal(err)
 		}
 	}()
-	driver, _ := mysql.WithInstance(db, &mysql.Config{})
+
+	driver, err := mysql.WithInstance(db, &mysql.Config{})
+	if err != nil {
+		log.Fatalf("Failed to create MySQL driver instance: %v\n", err)
+	}
+
 	migration, err := migrate.NewWithDatabaseInstance(
 		"file://migrations",
 		"mysql",
 		driver,
 	)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to create migration instance: %v\n", err)
 	}
+
 	err = migration.Up()
 	if err != nil {
 		log.Fatalf("Failed on running migrations up: %v\n", err)
@@ -50,7 +56,7 @@ func Down() {
 	if err != nil {
 		log.Fatalf("Failed to load .env file: %v\n", err)
 	}
-	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.DB_HOST, env.DB_PORT, env.DB_DATABASE)
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", env.DB_USER, env.DB_PASSWORD, env.MIGRATION_HOST, env.DB_PORT, env.DB_DATABASE)
 	db, err := sql.Open("mysql", databaseUrl)
 	if err != nil {
 		log.Fatalf("Failed connecting to the database: %v\n", err)
@@ -60,7 +66,12 @@ func Down() {
 			log.Fatal(err)
 		}
 	}()
-	driver, _ := mysql.WithInstance(db, &mysql.Config{})
+
+	driver, err := mysql.WithInstance(db, &mysql.Config{})
+	if err != nil {
+		log.Fatalf("Failed to create MySQL driver instance: %v\n", err)
+	}
+
 	migration, err := migrate.NewWithDatabaseInstance(
 		"file://migrations",
 		"mysql",

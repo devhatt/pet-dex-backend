@@ -19,6 +19,7 @@ type Envconfig struct {
 	GOOGLE_REDIRECT_URL        string `mapstructure:"GOOGLE_REDIRECT_URL"`
 	FACEBOOK_APP_ID            string `mapstructure:"FACEBOOK_APP_ID"`
 	FACEBOOK_APP_SECRET        string `mapstructure:"FACEBOOK_APP_SECRET"`
+	MIGRATION_HOST             string `mapstructure:"MIGRATION_HOST"`
 }
 
 func GetEnvConfig() *Envconfig {
