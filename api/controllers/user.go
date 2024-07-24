@@ -70,11 +70,16 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	w.Header().Add("Authorization", token)
-	// json.NewEncoder(w).Encode(struct {
-	// 	Token string `json:"token"`
-	// }{
-	// 	Token: token,
-	// })
+	json_err := json.NewEncoder(w).Encode(struct {
+		Token string `json:"token"`
+	}{
+		Token: token,
+	})
+	if json_err != nil {
+		logger.Error("error encoding json", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(201)
 }
 

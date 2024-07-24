@@ -25,7 +25,6 @@ func main() {
 	// config.InitConfigs()
 	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", envVariables.DB_USER, envVariables.DB_PASSWORD, envVariables.DB_HOST, envVariables.DB_PORT, envVariables.DB_DATABASE)
 	sqlxDb := sqlx.MustConnect("mysql", databaseUrl)
-
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
 	dbOngRepo := db.NewOngRepository(sqlxDb)

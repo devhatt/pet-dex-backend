@@ -88,6 +88,8 @@ services:
       ENVIRONMENT: ${ENVIRONMENT}
       MIGRATIONS_PATH: ${MIGRATIONS_PATH}
       INTEGRATION: true
+    ports:
+      - "${PORT}:${PORT}"
     depends_on:
       cache-test:
         condition: service_healthy
