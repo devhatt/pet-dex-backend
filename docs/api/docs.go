@@ -22,9 +22,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/users/{id}": {
-            "get": {
-                "description": "Retrieves user details based on the user ID provided as a parameter.",
+        "/pets/": {
+            "post": {
+                "description": "Sends the Pet's registration data via the request body for persistence in the database.",
                 "consumes": [
                     "application/json"
                 ],
@@ -32,19 +32,58 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Pet"
                 ],
-                "summary": "Find User by ID",
+                "summary": "Create Pet by petDto",
+                "parameters": [
+                    {
+                        "description": "Pet object information for registration",
+                        "name": "petDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PetInsertDto"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Ok"
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad Request: Invalid ID"
                     },
                     "500": {
-                        "description": "Internal Server Error"
+                        "description": "error on user controller: err"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.PetInsertDto": {
+            "type": "object",
+            "properties": {
+                "adoption_date": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "breed_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
                 }
             }
         }
@@ -54,7 +93,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000/api/swagger",
+	Host:             "localhost:3000/api",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "PetDex: Documentação API",

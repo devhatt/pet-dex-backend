@@ -28,7 +28,7 @@ import (
 // @license.name MIT license
 // @license.url https://github.com/devhatt/pet-dex-backend?tab=MIT-1-ov-file#readme
 
-// @host localhost:3000/api/swagger
+// @host localhost:3000/api
 // @BasePath /
 func main() {
 	envVariables, err := config.LoadEnv(".")
