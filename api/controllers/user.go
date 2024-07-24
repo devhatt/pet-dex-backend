@@ -51,7 +51,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
-func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	var userLoginDto dto.UserLoginDto
 	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
 
@@ -65,7 +65,7 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	token, err := uc.usecase.GenerateToken(&userLoginDto)
+	token, err := uc.usecase.Login(&userLoginDto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -236,5 +236,63 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+}
+
+func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) {
+	provider := chi.URLParam(r, "provider")
+
+	userId := r.Header.Get("UserId")
+	if userId != "" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var body struct {
+		AccessToken string `json:"accessToken"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	if body.AccessToken == "" {
+		uc.logger.Error("empty access token: ", err)
+		http.Error(w, "error empty access token ", http.StatusBadRequest)
+		return
+	}
+
+	user, isNew, err := uc.usecase.ProviderLogin(body.AccessToken, provider)
+	if err != nil {
+		uc.logger.Error("error logging in with provider: ", provider, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if isNew {
+		// Return name, lastname and email to create the new user in the frontend
+		err := json.NewEncoder(w).Encode(struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		}{
+			Name:  user.Name,
+			Email: user.Email,
+		})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	//Generate Token for the user
+	token, _ := uc.usecase.NewAccessToken(user.ID.String(), user.Name, user.Email)
+
+	w.Header().Add("Authorization", token)
 	w.WriteHeader(http.StatusOK)
 }

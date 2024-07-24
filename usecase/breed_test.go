@@ -55,13 +55,13 @@ func TestListErrorOnRepo(t *testing.T) {
 	tcases := map[string]struct {
 		repo          *mockInterfaces.MockBreedRepository
 		expectOutput  []*dto.BreedList
-		mockError    error
+		mockError     error
 		expectedError error
 	}{
 		"errorList": {
 			repo:          mockInterfaces.NewMockBreedRepository(t),
 			expectOutput:  nil,
-			mockError: fmt.Errorf("error listing breeds"),
+			mockError:     fmt.Errorf("error listing breeds"),
 			expectedError: fmt.Errorf("error listing breeds: error listing breeds"),
 		},
 	}
@@ -114,13 +114,13 @@ func TestBreedFindByIDErrorOnRepo(t *testing.T) {
 	tcases := map[string]struct {
 		repo          *mockInterfaces.MockBreedRepository
 		expectOutput  *entity.Breed
-		mockInput error
+		mockInput     error
 		expectedError error
 	}{
 		"error": {
 			repo:          mockInterfaces.NewMockBreedRepository(t),
 			expectOutput:  nil,
-			mockInput: fmt.Errorf("error retrieving breed"),
+			mockInput:     fmt.Errorf("error retrieving breed"),
 			expectedError: fmt.Errorf("failed to retrieve breed:"),
 		},
 	}

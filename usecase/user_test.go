@@ -32,7 +32,7 @@ func TestNewUserUseCase(t *testing.T) {
 
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 
 			assert.IsTypef(t, tcase.expectOutput, usecase, "error: New Hasher not returns a *Hasher{} struct", nil)
 		})
@@ -72,7 +72,7 @@ func TestSave(t *testing.T) {
 			tcase.repo.On("Save", mock.Anything).Return(tcase.expectOutput)
 			tcase.repo.On("SaveAddress", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -112,7 +112,7 @@ func TestErrorSave(t *testing.T) {
 			tcase.hasher.On("Hash", tcase.input.Pass).Return("hashedPass", nil)
 			tcase.repo.On("Save", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -151,7 +151,7 @@ func TestErrorHash(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tcase.hasher.On("Hash", tcase.input.Pass).Return("hashedPass", tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -192,7 +192,7 @@ func TestErrorSaveAddress(t *testing.T) {
 			tcase.repo.On("Save", mock.Anything).Return(nil)
 			tcase.repo.On("SaveAddress", mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 			err := usecase.Save(tcase.input)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -223,7 +223,7 @@ func TestUpdate(t *testing.T) {
 	for name, tcase := range tcases {
 		t.Run(name, func(t *testing.T) {
 			tcase.repo.On("Update", mock.Anything, mock.Anything).Return(tcase.expectOutput)
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, nil)
 			err := usecase.Update(tcase.inputID, tcase.inputDto)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -235,6 +235,7 @@ func TestErrorUpdate(t *testing.T) {
 	tcases := map[string]struct {
 		repo         *mockInterfaces.MockUserRepository
 		hasher       *mockInterfaces.MockHasher
+		ssoProvider  interfaces.SingleSignOnProvider
 		inputID      uniqueEntityId.ID
 		inputDto     dto.UserUpdateDto
 		encoder      interfaces.Encoder
@@ -255,7 +256,7 @@ func TestErrorUpdate(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tcase.repo.On("Update", mock.Anything, mock.Anything).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder)
+			usecase := NewUserUsecase(tcase.repo, tcase.hasher, tcase.encoder, tcase.ssoProvider)
 			err := usecase.Update(tcase.inputID, tcase.inputDto)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -280,7 +281,7 @@ func TestDelete(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tcase.repo.On("Delete", tcase.inputID).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, nil, nil)
+			usecase := NewUserUsecase(tcase.repo, nil, nil, nil)
 			err := usecase.Delete(tcase.inputID)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -305,7 +306,7 @@ func TestErrorDelete(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tcase.repo.On("Delete", tcase.inputID).Return(tcase.expectOutput)
 
-			usecase := NewUserUsecase(tcase.repo, nil, nil)
+			usecase := NewUserUsecase(tcase.repo, nil, nil, nil)
 			err := usecase.Delete(tcase.inputID)
 
 			assert.Equal(t, tcase.expectOutput, err, "expected error mismatch")
@@ -361,7 +362,7 @@ func TestChangePassword(t *testing.T) {
 			mockedHasher.On("Hash", tcase.inputDto.NewPassword).Return(newHashPassword, nil)
 			mockedRepo.On("FindByID", userId).Return(tcase.expectOutputFindById, nil)
 			mockedRepo.On("ChangePassword", mock.Anything, mock.Anything).Return(tcase.expectOutputChangePassword)
-			usecase := NewUserUsecase(mockedRepo, mockedHasher, tcase.encoder)
+			usecase := NewUserUsecase(mockedRepo, mockedHasher, tcase.encoder, nil)
 			err := usecase.ChangePassword(tcase.inputDto, userId)
 
 			assert.Equal(t, tcase.expectOutputChangePassword, err, "expected error mismatch")

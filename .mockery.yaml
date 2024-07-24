@@ -7,5 +7,10 @@ packages:
       PetRepository:
       UserRepository:
       OngRepository:
+      SingleSignOnProvider:
+      SingleSignOnGateway:
       BreedRepository:
       AdressRepo:
+      SingleSignOnProvider:
+      SingleSignOnGateway:
+      BreedRepository:

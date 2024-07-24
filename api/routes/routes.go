@@ -18,6 +18,7 @@ type Controllers struct {
 func InitRoutes(controllers Controllers, c *chi.Mux) {
 
 	c.Route("/api", func(r chi.Router) {
+		r.Use(middlewares.CorsMiddleware())
 		r.Use(middleware.AllowContentType("application/json"))
 
 		r.Group(func(private chi.Router) {
@@ -51,8 +52,9 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Group(func(public chi.Router) {
-			public.Post("/user", controllers.UserController.Insert)
-			public.Post("/user/token", controllers.UserController.GenerateToken)
+			public.Post("/user/create-account", controllers.UserController.Insert)
+			public.Post("/user/{provider}/login", controllers.UserController.ProviderLogin)
+			public.Post("/user/login", controllers.UserController.Login)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
 		})
 

@@ -17,28 +17,28 @@ services:
     hostname: api
     working_dir: /app
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
+      - PORT=${API_PORT}
       - ENVIRONMENT=${ENVIRONMENT}
-      - MIGRATIONS_PATH=${MIGRATIONS_PATH}
     ports:
-      - "${PORT}:${PORT}"
+      - "${API_PORT}:${API_PORT}"
     volumes:
       - ./:/app
     depends_on:
       cache:
         condition: service_started
       db:
-        condition: service_started
+        condition: service_healthy
     env_file:
+      - .env.example
       - .env
     networks:
       - pet-dex-dev
 
-  db: &db
+  db: &db # TODO: Quando subir dev se não tiver migration tem q rodar
     image: mariadb:11.4.1-rc-jammy
     profiles:
       - development
+    hostname: db
     environment:
       - MARIADB_DATABASE=${DB_DATABASE}
       - MARIADB_USER=${DB_USER}
@@ -50,9 +50,16 @@ services:
     depends_on:
       cache:
         condition: service_started
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 20s
+      interval: 20s
+      timeout: 10s
+      retries: 3
     volumes:
       - ./data:/var/lib/mysql
     env_file:
+      - .env.example
       - .env
     networks:
       - pet-dex-dev
@@ -71,6 +78,7 @@ services:
     volumes:
       - ./cache:/data
     env_file:
+      - .env.example
       - .env
     networks:
       - pet-dex-dev
@@ -83,13 +91,12 @@ services:
       - integration-tests
     hostname: api-tests
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      PORT: ${PORT}
+      PORT: ${API_PORT}
       ENVIRONMENT: ${ENVIRONMENT}
       MIGRATIONS_PATH: ${MIGRATIONS_PATH}
       INTEGRATION: true
     ports:
-      - "${PORT}:${PORT}"
+      - "${API_PORT}:${API_PORT}"
     depends_on:
       cache-test:
         condition: service_healthy
@@ -97,6 +104,7 @@ services:
         condition: service_healthy
     env_file:
       - .env.example
+      - .env
     networks:
       - pet-dex-integration-tests
 
@@ -125,16 +133,16 @@ services:
         condition: service_healthy
     profiles:
       - integration-tests
-    hostname: db-test
+    volumes:
+      - ./data-teste:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 1m
       interval: 1m
       timeout: 10s
       retries: 3
-    volumes:
-      - ./data-teste:/var/lib/mysql
     env_file:
       - .env.example
+      - .env
     networks:
       - pet-dex-integration-tests
