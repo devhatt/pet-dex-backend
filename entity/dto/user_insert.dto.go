@@ -49,6 +49,4 @@ func (u *UserInsertDto) Validate() error {
 		return fmt.Errorf("invalid password format")
 	}
 	return nil
-
-	//add validation for role
 }

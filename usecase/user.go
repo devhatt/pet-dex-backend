@@ -72,6 +72,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 		Id:    user.ID.String(),
 		Name:  user.Email,
 		Email: user.Email,
+		Role:  user.Role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
 		},

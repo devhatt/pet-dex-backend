@@ -58,6 +58,7 @@ func TestSave(t *testing.T) {
 				BirthDate: &time.Time{},
 				City:      "teste",
 				State:     "teste",
+				Role:      "teste",
 			},
 			expectOutput: nil,
 		},
