@@ -84,7 +84,7 @@ func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
 	user := entity.UserToUpdate(userDto)
 
-	err := uc.repo.Update(userID, user)
+	err := uc.repo.Update(userID, *user)
 	if err != nil {
 		uc.logger.Error("error updating user: ", err)
 		return err

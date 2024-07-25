@@ -48,7 +48,7 @@ func NewUser(user dto.UserInsertDto) *User {
 	}
 }
 
-func UserToUpdate(dto *dto.UserUpdateDto) User {
+func UserToUpdate(dto dto.UserUpdateDto) *User {
 	user := &User{
 		Name:      dto.Name,
 		Document:  dto.Document,
@@ -59,7 +59,7 @@ func UserToUpdate(dto *dto.UserUpdateDto) User {
 		Role:      dto.Role,
 	}
 
-	if dtoUpdate.BirthDate == nil {
+	if dto.BirthDate == nil {
 		user.BirthDate = nil
 	}
 
