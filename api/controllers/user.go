@@ -51,7 +51,7 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
-func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	var userLoginDto dto.UserLoginDto
 	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
 
@@ -66,17 +66,22 @@ func (uc *UserController) GenerateToken(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	token, err := uc.usecase.GenerateToken(&userLoginDto)
+	token, err := uc.usecase.Login(&userLoginDto)
 	if err != nil {
 		uc.logger.Error("error on user controller: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	w.Header().Add("Authorization", token)
-	json.NewEncoder(w).Encode(struct {
+	json_err := json.NewEncoder(w).Encode(struct {
 		Token string `json:"token"`
 	}{
 		Token: token,
 	})
+	if json_err != nil {
+		logger.Error("error encoding json", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(201)
 }
 
@@ -165,5 +170,131 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func (uc *UserController) UpdatePushNotificationSettings(w http.ResponseWriter, r *http.Request) {
+	userIdStr := r.Header.Get("userId")
+
+	if userIdStr == "" {
+		uc.logger.Error("Error to get id from header on user controller push notification")
+		http.Error(w, "User dont exist", http.StatusBadRequest)
+	}
+
+	userId, err := uniqueEntityId.ParseID(userIdStr)
+	if err != nil {
+		uc.logger.Error("Error on user controller push notification: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var userPushNotificationEnabled dto.UserPushNotificationEnabled
+
+	err = json.NewDecoder(r.Body).Decode(&userPushNotificationEnabled)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.userPushNotificationEnabled] Error decoding request -> Error: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.UpdatePushNotificationSettings(userId, userPushNotificationEnabled)
+
+	if err != nil {
+		uc.logger.Error("[#UserController.PushNotificationSettings] Error trying to update push notification user -> Error: ", err)
+		http.Error(w, "Error trying to update push notification User ", http.StatusBadRequest)
+		return
+	}
+
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	parsedId, err := uniqueEntityId.ParseID(r.Header.Get("UserId"))
+	if err != nil {
+		uc.logger.Error("error parsing user id: ", err)
+		http.Error(w, "Bad Request: Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var userChangePasswordDto dto.UserChangePasswordDto
+	err = json.NewDecoder(r.Body).Decode(&userChangePasswordDto)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	err = userChangePasswordDto.Validate()
+	if err != nil {
+		uc.logger.Error(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = uc.usecase.ChangePassword(userChangePasswordDto, parsedId)
+	if err != nil {
+		uc.logger.Error("error changing password: ", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) {
+	provider := chi.URLParam(r, "provider")
+
+	userId := r.Header.Get("UserId")
+	if userId != "" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var body struct {
+		AccessToken string `json:"accessToken"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		uc.logger.Error("error decoding request: ", err)
+		http.Error(w, "Error decoding request ", http.StatusBadRequest)
+		return
+	}
+
+	if body.AccessToken == "" {
+		uc.logger.Error("empty access token: ", err)
+		http.Error(w, "error empty access token ", http.StatusBadRequest)
+		return
+	}
+
+	user, isNew, err := uc.usecase.ProviderLogin(body.AccessToken, provider)
+	if err != nil {
+		uc.logger.Error("error logging in with provider: ", provider, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if isNew {
+		// Return name, lastname and email to create the new user in the frontend
+		err := json.NewEncoder(w).Encode(struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		}{
+			Name:  user.Name,
+			Email: user.Email,
+		})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	//Generate Token for the user
+	token, _ := uc.usecase.NewAccessToken(user.ID.String(), user.Name, user.Email)
+
+	w.Header().Add("Authorization", token)
+	w.WriteHeader(http.StatusOK)
 }

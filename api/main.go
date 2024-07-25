@@ -10,33 +10,35 @@ import (
 	"pet-dex-backend/v2/infra/db"
 	"pet-dex-backend/v2/pkg/encoder"
 	"pet-dex-backend/v2/pkg/hasher"
+	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/usecase"
 
 	"github.com/jmoiron/sqlx"
 )
 
 func main() {
-	env, err := config.LoadEnv(".")
+	envVariables, err := config.LoadEnv(".")
 	if err != nil {
 		panic(err)
 	}
 
-	config.InitConfigs()
-	sqlxDb, err := sqlx.Open("mysql", env.DBUrl)
-	if err != nil {
-		panic(err)
-	}
-
+	databaseUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", envVariables.DB_USER, envVariables.DB_PASSWORD, envVariables.DB_HOST, envVariables.DB_PORT, envVariables.DB_DATABASE)
+	sqlxDb := sqlx.MustConnect("mysql", databaseUrl)
 	dbPetRepo := db.NewPetRepository(sqlxDb)
 	dbUserRepo := db.NewUserRepository(sqlxDb)
 	dbOngRepo := db.NewOngRepository(sqlxDb)
 	hash := hasher.NewHasher()
 	bdBreedRepo := db.NewBreedRepository(sqlxDb)
 
-	encoder := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
+	encoder := encoder.NewEncoderAdapter(envVariables.JWT_SECRET)
+
+	googleSsoGt := sso.NewGoogleGateway(envVariables)
+	facebookSsoGt := sso.NewFacebookGateway(envVariables)
+
+	ssoProvider := sso.NewProvider(googleSsoGt, facebookSsoGt)
 
 	breedUsecase := usecase.NewBreedUseCase(bdBreedRepo)
-	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder)
+	uusercase := usecase.NewUserUsecase(dbUserRepo, hash, encoder, ssoProvider)
 	petUsecase := usecase.NewPetUseCase(dbPetRepo)
 	ongUsecase := usecase.NewOngUseCase(dbOngRepo, dbUserRepo, hash)
 	breedController := controllers.NewBreedController(breedUsecase)
@@ -51,6 +53,6 @@ func main() {
 	}
 	router := routes.InitializeRouter(controllers)
 
-	fmt.Printf("running on port %v \n", env.PORT)
-	log.Fatal(http.ListenAndServe(":"+env.PORT, router))
+	fmt.Printf("running on port %v \n", envVariables.API_PORT)
+	log.Fatal(http.ListenAndServe(":"+envVariables.API_PORT, router))
 }

@@ -1,10 +1,16 @@
 with-expecter: true
 packages:
-    pet-dex-backend/v2/interfaces:
-        all: true
-        interfaces:
-          Hasher:
-          PetRepository:
-          UserRepository:
-          OngRepository:
-          AdressRepo:
+  pet-dex-backend/v2/interfaces:
+    all: true
+    interfaces:
+      Hasher:
+      PetRepository:
+      UserRepository:
+      OngRepository:
+      SingleSignOnProvider:
+      SingleSignOnGateway:
+      BreedRepository:
+      AdressRepo:
+      SingleSignOnProvider:
+      SingleSignOnGateway:
+      BreedRepository:

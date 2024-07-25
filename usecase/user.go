@@ -14,18 +14,20 @@ import (
 )
 
 type UserUsecase struct {
-	repo    interfaces.UserRepository
-	hasher  interfaces.Hasher
-	encoder interfaces.Encoder
-	logger  config.Logger
+	repo        interfaces.UserRepository
+	hasher      interfaces.Hasher
+	encoder     interfaces.Encoder
+	logger      config.Logger
+	ssoProvider interfaces.SingleSignOnProvider
 }
 
-func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder) *UserUsecase {
+func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, encoder interfaces.Encoder, ssoProvider interfaces.SingleSignOnProvider) *UserUsecase {
 	return &UserUsecase{
-		repo:    repo,
-		hasher:  hasher,
-		encoder: encoder,
-		logger:  *config.GetLogger("user-usecase"),
+		repo:        repo,
+		hasher:      hasher,
+		encoder:     encoder,
+		logger:      *config.GetLogger("user-usecase"),
+		ssoProvider: ssoProvider,
 	}
 }
 
@@ -53,10 +55,9 @@ func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
 	}
 
 	return nil
-
 }
 
-func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error) {
+func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 	user, err := uc.FindByEmail(loginDto.Email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
@@ -70,7 +71,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 	}
 	token, _ := uc.encoder.NewAccessToken(interfaces.UserClaims{
 		Id:    user.ID.String(),
-		Name:  user.Email,
+		Name:  user.Name,
 		Email: user.Email,
 		Role:  user.Role,
 		StandardClaims: jwt.StandardClaims{
@@ -81,7 +82,7 @@ func (uc *UserUsecase) GenerateToken(loginDto *dto.UserLoginDto) (string, error)
 }
 
 func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
-	user := entity.UserToUpdate(&userDto)
+	user := entity.UserToUpdate(userDto)
 
 	err := uc.repo.Update(userID, user)
 	if err != nil {
@@ -90,7 +91,17 @@ func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDt
 	}
 
 	return nil
+}
 
+func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
+	user, err := uc.repo.FindByEmail(email)
+
+	if err != nil {
+		uc.logger.Error("error finding user by email:", err)
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (uc *UserUsecase) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
@@ -124,13 +135,71 @@ func (uc *UserUsecase) Delete(userID uniqueEntityId.ID) error {
 	return nil
 }
 
-func (uc *UserUsecase) FindByEmail(email string) (*entity.User, error) {
-	user, err := uc.repo.FindByEmail(email)
-
+func (uc *UserUsecase) ChangePassword(userChangePasswordDto dto.UserChangePasswordDto, userId uniqueEntityId.ID) error {
+	user, err := uc.repo.FindByID(userId)
 	if err != nil {
-		uc.logger.Error("error finding user by email:", err)
-		return nil, err
+		uc.logger.Error("error finding user by id: ", err)
+		return errors.New("") // Don't show the user the reason for secure reasons
 	}
 
-	return user, nil
+	if !uc.hasher.Compare(userChangePasswordDto.OldPassword, user.Pass) {
+		uc.logger.Error("old password does not match")
+		return errors.New("old password does not match")
+	}
+
+	newPassword, err := uc.hasher.Hash(userChangePasswordDto.NewPassword)
+	if err != nil {
+		uc.logger.Error("error hashing: ", err)
+		return err
+	}
+	err = uc.repo.ChangePassword(userId, newPassword)
+	if err != nil {
+		uc.logger.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, userPushNotificationEnabled dto.UserPushNotificationEnabled) error {
+	user, err := uc.repo.FindByID(userID)
+
+	if err != nil {
+		uc.logger.Error("error finding user by id: ", err)
+		return errors.New("user dont exists")
+	}
+
+	user.PushNotificationsEnabled = &userPushNotificationEnabled.PushNotificationEnabled
+
+	err = uc.repo.Update(userID, *user)
+
+	if err != nil {
+		uc.logger.Error("error updating user by id: ", err)
+		return errors.New("error on updating push notification")
+	}
+
+	return nil
+
+}
+
+func (uc *UserUsecase) ProviderLogin(accessToken string, provider string) (*entity.User, bool, error) {
+	userInfo, err := uc.ssoProvider.GetUserDetails(provider, accessToken)
+	if err != nil {
+		return nil, false, err
+	}
+
+	user, _ := uc.FindByEmail(userInfo.Email)
+
+	return user, user == nil, nil
+
+}
+
+func (uc *UserUsecase) NewAccessToken(id string, name string, email string) (string, error) {
+	return uc.encoder.NewAccessToken(interfaces.UserClaims{
+		Id:    id,
+		Name:  name,
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		},
+	})
 }

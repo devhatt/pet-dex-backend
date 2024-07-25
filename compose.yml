@@ -1,0 +1,148 @@
+volumes:
+  cache:
+    driver: local
+  cache-test:
+    driver: local
+networks:
+  pet-dex-dev:
+    driver: bridge
+  pet-dex-integration-tests:
+    driver: bridge
+
+services:
+  api:
+    image: cosmtrek/air
+    profiles:
+      - development
+    hostname: api
+    working_dir: /app
+    environment:
+      - PORT=${API_PORT}
+      - ENVIRONMENT=${ENVIRONMENT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+      - ./:/app
+    depends_on:
+      cache:
+        condition: service_started
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.example
+      - .env
+    networks:
+      - pet-dex-dev
+
+  db: &db # TODO: Quando subir dev se não tiver migration tem q rodar
+    image: mariadb:11.4.1-rc-jammy
+    profiles:
+      - development
+    hostname: db
+    environment:
+      - MARIADB_DATABASE=${DB_DATABASE}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - PORT=${DB_PORT}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    depends_on:
+      cache:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 20s
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./data:/var/lib/mysql
+    env_file:
+      - .env.example
+      - .env
+    networks:
+      - pet-dex-dev
+
+  cache: &cache
+    image: redis:7.2.4-alpine
+    profiles:
+      - development
+    hostname: pet-dex-cache
+    restart: always
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    command: redis-server --save "" --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - ./cache:/data
+    env_file:
+      - .env.example
+      - .env
+    networks:
+      - pet-dex-dev
+
+  api-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles:
+      - integration-tests
+    hostname: api-tests
+    environment:
+      PORT: ${API_PORT}
+      ENVIRONMENT: ${ENVIRONMENT}
+      MIGRATIONS_PATH: ${MIGRATIONS_PATH}
+      INTEGRATION: true
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      cache-test:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+    env_file:
+      - .env.example
+      - .env
+    networks:
+      - pet-dex-integration-tests
+
+  cache-test:
+    <<: *cache
+    profiles:
+      - integration-tests
+    hostname: cache-test
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      start_period: 1m
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./cache:/data-teste
+    env_file:
+      - .env.example
+    networks:
+      - pet-dex-integration-tests
+
+  db-test:
+    <<: *db
+    depends_on:
+      cache-test:
+        condition: service_healthy
+    profiles:
+      - integration-tests
+    volumes:
+      - ./data-teste:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 1m
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    env_file:
+      - .env.example
+      - .env
+    networks:
+      - pet-dex-integration-tests

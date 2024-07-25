@@ -118,8 +118,13 @@ func (ur *UserRepository) Update(userID uniqueEntityId.ID, userToUpdate entity.U
 	}
 
 	if userToUpdate.Role != "" {
-		query = query + " birthdate =?,"
+		query = query + " role =?,"
 		values = append(values, userToUpdate.Role)
+	}
+
+	if userToUpdate.PushNotificationsEnabled != nil {
+		query = query + " pushNotificationsEnabled =?,"
+		values = append(values, userToUpdate.PushNotificationsEnabled)
 	}
 
 	query = query + " updated_at =?,"
@@ -153,7 +158,8 @@ func (ur *UserRepository) FindByID(ID uniqueEntityId.ID) (*entity.User, error) {
 		u.avatarUrl,
 		u.email,
 		u.phone,
-		u.role
+		u.role,
+		u.pass
 	FROM
 		users u
 	WHERE
@@ -195,4 +201,30 @@ func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 
 func (ur *UserRepository) List() (users []entity.User, err error) {
 	return nil, nil
+}
+
+func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
+
+	query := "UPDATE users SET pass = ?,"
+	var values []interface{}
+
+	values = append(values, newPassword)
+
+	query = query + " updated_at =?,"
+	values = append(values, time.Now())
+
+	n := len(query)
+	query = query[:n-1] + " WHERE id =?"
+	values = append(values, userId)
+
+	fmt.Printf("Query to update: %s", query)
+
+	_, err := ur.dbconnection.Exec(query, values...)
+
+	if err != nil {
+		ur.logger.Error(fmt.Errorf("#UserRepository.ChangePassword error: %w", err))
+		return fmt.Errorf("error on changing user password")
+	}
+
+	return nil
 }

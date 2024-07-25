@@ -3,12 +3,10 @@ package dto
 import (
 	"fmt"
 	"net/mail"
-	"regexp"
+	"pet-dex-backend/v2/pkg/utils"
 	"slices"
 	"time"
 )
-
-var regex = regexp.MustCompile(`^[A-Za-z\d\W]{6,}$`)
 
 var userTypes = []string{"juridica", "fisica"}
 
@@ -45,7 +43,7 @@ func (u *UserInsertDto) Validate() error {
 		return fmt.Errorf("password cannot be empty")
 	}
 
-	if !regex.MatchString(u.Pass) {
+	if !utils.IsValidPassword(u.Pass) {
 		return fmt.Errorf("invalid password format")
 	}
 	return nil

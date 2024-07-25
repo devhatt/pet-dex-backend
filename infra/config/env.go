@@ -2,22 +2,31 @@ package config
 
 import "github.com/spf13/viper"
 
-var env *envconfig
+var env *Envconfig
 
-type envconfig struct {
-	DBUrl           string `mapstructure:"DATABASE_URL"`
-	DBUrl_Migration string `mapstructure:"MIGRATION_DATABASE_URL"`
-	PORT            string `mapstructure:"PORT"`
-	ENV             string `mapstructure:"ENVIRONMENT"`
-	MIGRATIONS_PATH string `mapstructure:"MIGRATIONS_PATH"`
-	JWT_SECRET      string `mapstructure:"JWT_SECRET"`
+type Envconfig struct {
+	DB_USER                    string `mapstructure:"DB_USER"`
+	DB_PASSWORD                string `mapstructure:"DB_PASSWORD"`
+	DB_DATABASE                string `mapstructure:"DB_DATABASE"`
+	DB_HOST                    string `mapstructure:"DB_HOST"`
+	DB_PORT                    string `mapstructure:"DB_PORT"`
+	API_PORT                   string `mapstructure:"API_PORT"`
+	ENV                        string `mapstructure:"ENVIRONMENT"`
+	MIGRATIONS_PATH            string `mapstructure:"MIGRATIONS_PATH"`
+	JWT_SECRET                 string `mapstructure:"JWT_SECRET"`
+	GOOGLE_OAUTH_CLIENT_ID     string `mapstructure:"GOOGLE_OAUTH_CLIENT_ID"`
+	GOOGLE_OAUTH_CLIENT_SECRET string `mapstructure:"GOOGLE_OAUTH_CLIENT_SECRET"`
+	GOOGLE_REDIRECT_URL        string `mapstructure:"GOOGLE_REDIRECT_URL"`
+	FACEBOOK_APP_ID            string `mapstructure:"FACEBOOK_APP_ID"`
+	FACEBOOK_APP_SECRET        string `mapstructure:"FACEBOOK_APP_SECRET"`
+	MIGRATION_HOST             string `mapstructure:"MIGRATION_HOST"`
 }
 
-func GetEnvConfig() *envconfig {
+func GetEnvConfig() *Envconfig {
 	return env
 }
 
-func LoadEnv(path string) (*envconfig, error) {
+func LoadEnv(path string) (*Envconfig, error) {
 	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
