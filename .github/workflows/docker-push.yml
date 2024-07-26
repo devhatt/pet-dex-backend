@@ -19,19 +19,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: TesteJAJAJAJ
-        run: echo "Teste"
+      - name: Log into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # - name: Log into Docker Hub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      # - name: Build and push Docker image
-      #   run: |
-      #     SHA=${{ github.sha }}
-      #     docker build -t devhatt/pet-dex-backend:$SHA .
-      #     docker push devhatt/pet-dex-backend:$SHA
-      #     docker tag devhatt/pet-dex-backend:$SHA devhatt/pet-dex-backend:latest
-      #     docker push devhatt/pet-dex-backend:latest
+      - name: Build and push Docker image
+        run: |
+          SHA=${{ github.sha }}
+          docker build -t devhatt/pet-dex-backend:$SHA .
+          docker push devhatt/pet-dex-backend:$SHA
+          docker tag devhatt/pet-dex-backend:$SHA devhatt/pet-dex-backend:latest
+          docker push devhatt/pet-dex-backend:latest
