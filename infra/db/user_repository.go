@@ -1,8 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -193,10 +195,6 @@ func (ur *UserRepository) FindByEmail(email string) (*entity.User, error) {
 	return &user, nil
 }
 
-func (ur *UserRepository) List() (users []entity.User, err error) {
-	return nil, nil
-}
-
 func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword string) error {
 
 	query := "UPDATE users SET pass = ?,"
@@ -221,4 +219,54 @@ func (ur *UserRepository) ChangePassword(userId uniqueEntityId.ID, newPassword s
 	}
 
 	return nil
+}
+
+
+func (ur *UserRepository) List(input *dto.UserListInput) (output *dto.UserListOutput, err error) {
+	var users []dto.UserList
+	query := `SELECT 
+				u.id, 
+				u.name, 
+				u.type, 
+				u.document, 
+				u.avatar_url, 
+				u.email, 
+				u.phone, 
+				u.birthdate, 
+				u.pushNotificationsEnabled, 
+			  FROM users u`
+	if input.Search != "" {
+		query += " WHERE u.name LIKE ?"
+	}
+
+	offset := (input.Page - 1) * input.Limit
+	query += fmt.Sprintf(" LIMIT %d OFFSET %d", input.Limit, offset)
+
+	rows, err := ur.dbconnection.Queryx(query, "%"+input.Search+"%")
+	if err != nil {
+		ur.logger.Error("error retrieving user list: ", err)
+		return nil, errors.New("error retrieving user list")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user dto.UserList
+		if err := rows.StructScan(&user); err != nil {
+			ur.logger.Error("error scanning user: ", err)
+			return nil, errors.New("error retrieving users")
+		}
+		users = append(users, user)
+	}
+
+	var total int
+	err = ur.dbconnection.Get(&total, `SELECT COUNT(*) FROM users WHERE name LIKE ?`, "%"+input.Search+"%")
+	if err != nil {
+		ur.logger.Error("error counting users: ", err)
+		return nil, errors.New("error counting users")
+	}
+
+	return &dto.UserListOutput{
+		Users: users,
+		Total: total,
+	}, nil
 }
