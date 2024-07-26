@@ -178,3 +178,15 @@ func (uc *UserUsecase) UpdatePushNotificationSettings(userID uniqueEntityId.ID, 
 	return nil
 
 }
+
+
+func (uc *UserUsecase) RetrieveUserList(input *dto.UserListInput) (*dto.UserListOutput, error) {
+	output, err := uc.repo.List(input)
+
+	if err != nil {
+		uc.logger.Error("error listing users", err)
+		return nil, errors.New("error retrieving users")
+	}
+
+	return output, nil
+}
