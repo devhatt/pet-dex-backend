@@ -51,4 +51,4 @@ jobs:
           go run cmd/main.go -up
 
       - name: Check Docker Containers
-        run: docker-compose ps --services | xargs -I {} sh -c 'docker-compose ps {} | grep "Up" || exit 1'
+        run: docker compose ps --services | xargs -I {} sh -c 'docker compose ps {} | grep "Up" || exit 1'
