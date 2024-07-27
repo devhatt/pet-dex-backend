@@ -30,7 +30,7 @@ Também é necessário ter o GNU Make instalado para executar os comandos das mi
 Para gerar a documentação da API, depois documentado o endpoint, execute o comando a seguir:
 
 ```bash
-make swago
+make swag
 ```
 
 Esse comando irá atualizar os arquivos swagger disponíveis no diretório `docs/api`
