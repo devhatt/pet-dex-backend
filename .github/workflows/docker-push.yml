@@ -1,0 +1,31 @@
+name: Docker Push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ["Go CI"]
+    types:
+      - completed
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          SHA=${{ github.sha }}
+          docker build -t devhatt/pet-dex-backend:$SHA .
+          docker push devhatt/pet-dex-backend:$SHA
+          docker tag devhatt/pet-dex-backend:$SHA devhatt/pet-dex-backend:latest
+          docker push devhatt/pet-dex-backend:latest
