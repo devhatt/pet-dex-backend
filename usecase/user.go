@@ -32,7 +32,7 @@ func NewUserUsecase(repo interfaces.UserRepository, hasher interfaces.Hasher, en
 }
 
 func (uc *UserUsecase) Save(userDto dto.UserInsertDto) error {
-	user := entity.NewUser(userDto.Name, userDto.Type, userDto.Document, userDto.AvatarURL, userDto.Email, userDto.Phone, userDto.Pass, userDto.City, userDto.State, userDto.BirthDate)
+	user := entity.NewUser(userDto)
 
 	hashedPass, err := uc.hasher.Hash(user.Pass)
 	if err != nil {
@@ -73,6 +73,7 @@ func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 		Id:    user.ID.String(),
 		Name:  user.Name,
 		Email: user.Email,
+		Role:  user.Role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
 		},
@@ -83,7 +84,7 @@ func (uc *UserUsecase) Login(loginDto *dto.UserLoginDto) (string, error) {
 func (uc *UserUsecase) Update(userID uniqueEntityId.ID, userDto dto.UserUpdateDto) error {
 	user := entity.UserToUpdate(userDto)
 
-	err := uc.repo.Update(userID, user)
+	err := uc.repo.Update(userID, *user)
 	if err != nil {
 		uc.logger.Error("error updating user: ", err)
 		return err

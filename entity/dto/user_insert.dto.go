@@ -21,6 +21,7 @@ type UserInsertDto struct {
 	BirthDate *time.Time `json:"birthdate"`
 	City      string     `json:"city"`
 	State     string     `json:"state"`
+	Role      string     `json:"role"`
 }
 
 func (u *UserInsertDto) Validate() error {
