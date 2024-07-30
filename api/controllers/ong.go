@@ -46,7 +46,6 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-
 func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	// pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
@@ -80,7 +79,7 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Error("error listing ongs", err)
 		w.WriteHeader(http.StatusInternalServerError)
-	return
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -143,4 +142,23 @@ func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
+}
+
+func (oc *OngController) Delete(w http.ResponseWriter, r *http.Request) {
+	IDStr := chi.URLParam(r, "id")
+	ID, err := uniqueEntityId.ParseID(IDStr)
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = oc.usecase.Delete(ID)
+	if err != nil {
+		oc.logger.Error("error on ong controller: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

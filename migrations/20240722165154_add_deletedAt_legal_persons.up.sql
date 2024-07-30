@@ -1,0 +1,1 @@
+ALTER TABLE legal_persons ADD COLUMN deletedAt TIMESTAMP;
