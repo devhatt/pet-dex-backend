@@ -22,7 +22,8 @@ type UserList struct {
 	AvatarURL                string            `json:"avatar_url" db:"avatarUrl"`
 	Email                    string            `json:"email" db:"email"`
 	Phone                    string            `json:"phone" db:"phone"`
-	Birthdate           time.Time         `json:"birthdate"`
+	Birthdate          		*time.Time         `json:"birthdate"`
+	PushNotificationsEnabled *bool             `json:"pushNotificationsEnabled" db:"pushNotificationsEnabled"`
 }
 
 type UserListOutput struct {

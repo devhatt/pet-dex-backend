@@ -229,20 +229,21 @@ func (ur *UserRepository) List(input *dto.UserListInput) (output *dto.UserListOu
 				u.name, 
 				u.type, 
 				u.document, 
-				u.avatar_url, 
 				u.email, 
 				u.phone, 
 				u.birthdate, 
-				u.pushNotificationsEnabled, 
+				u.pushNotificationsEnabled 
 			  FROM users u`
+	var args []interface{}
 	if input.Search != "" {
 		query += " WHERE u.name LIKE ?"
+		args = append(args, "%"+input.Search+"%")
 	}
 
 	offset := (input.Page - 1) * input.Limit
 	query += fmt.Sprintf(" LIMIT %d OFFSET %d", input.Limit, offset)
 
-	rows, err := ur.dbconnection.Queryx(query, "%"+input.Search+"%")
+	rows, err := ur.dbconnection.Queryx(query, args...)
 	if err != nil {
 		ur.logger.Error("error retrieving user list: ", err)
 		return nil, errors.New("error retrieving user list")
@@ -259,7 +260,14 @@ func (ur *UserRepository) List(input *dto.UserListInput) (output *dto.UserListOu
 	}
 
 	var total int
-	err = ur.dbconnection.Get(&total, `SELECT COUNT(*) FROM users WHERE name LIKE ?`, "%"+input.Search+"%")
+	countQuery := `SELECT COUNT(*) FROM users`
+	if input.Search != "" {
+		countQuery += " WHERE name LIKE ?"
+		err = ur.dbconnection.Get(&total, countQuery, "%"+input.Search+"%")
+	} else {
+		err = ur.dbconnection.Get(&total, countQuery)
+	}
+
 	if err != nil {
 		ur.logger.Error("error counting users: ", err)
 		return nil, errors.New("error counting users")
@@ -270,3 +278,4 @@ func (ur *UserRepository) List(input *dto.UserListInput) (output *dto.UserListOu
 		Total: total,
 	}, nil
 }
+
