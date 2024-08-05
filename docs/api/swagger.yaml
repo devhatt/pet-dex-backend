@@ -45,12 +45,12 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: Ok
+        "201":
+          description: Created
         "400":
-          description: 'Bad Request: Invalid ID'
+          description: Bad Request
         "500":
-          description: 'error on user controller: err'
+          description: Internal Server Error
       summary: Create Pet by petDto
       tags:
       - Pet

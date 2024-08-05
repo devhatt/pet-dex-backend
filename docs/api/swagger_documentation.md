@@ -1,7 +1,7 @@
 
 # Swag 
 
-Pacote responsável pela geração automática de documentação API RESTful com Swagger 2.0 para Go. 
+Pacote responsável pela geração automática da documentação API RESTful com Swagger 2.0 para Go. 
 
 ## Sumário
 
@@ -13,7 +13,7 @@ Pacote responsável pela geração automática de documentação API RESTful com
 
 ### Dependências
 
-Para habilitar a geração automática de documentação via Swago, é necessário a sua instalação. Execute o comando a seguir para disponibilizar os recursos dessa feramenta pré configurados via Makefile.
+Para habilitar a geração automática de documentação via Swag, é necessário a sua instalação. Execute o comando a seguir para disponibilizar os recursos dessa feramenta pré configurados via Makefile.
 
 ```bash
 go install github.com/swaggo/swag/cmd/swag@latest

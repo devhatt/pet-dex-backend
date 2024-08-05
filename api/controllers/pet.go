@@ -123,9 +123,9 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 // @Accept json
 // @Produce json
 // @Param petDto body dto.PetInsertDto true "Pet object information for registration"
-// @Success 200 "Ok"
-// @Failure 400 "Bad Request: Invalid ID"
-// @Failure 500 "error on user controller: err"
+// @Success 201
+// @Failure 400
+// @Failure 500
 // @Router /pets/ [post]
 func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	var petToSave dto.PetInsertDto

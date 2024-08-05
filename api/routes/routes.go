@@ -57,11 +57,10 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			public.Post("/user/{provider}/login", controllers.UserController.ProviderLogin)
 			public.Post("/user/login", controllers.UserController.Login)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
+			public.Get("/swagger/*", httpSwagger.Handler(
+				httpSwagger.URL("doc.json"), //The url endpoint to API definition
+			))
 		})
-
-		r.Get("/swagger/*", httpSwagger.Handler(
-			httpSwagger.URL("doc.json"), //The url pointing to API definition
-		))
 
 	})
 }
