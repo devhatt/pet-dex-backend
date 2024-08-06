@@ -21,3 +21,6 @@ migration-up:
 
 lint:
 	docker run --rm -v ./:/app -w /app golangci/golangci-lint:v1.59.1 golangci-lint run -v
+
+swag:
+	swag init -g api/main.go -o docs/api/

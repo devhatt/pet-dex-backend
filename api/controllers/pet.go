@@ -116,6 +116,17 @@ func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
+// Add Pet to the database.
+// @Summary Create Pet by petDto
+// @Description Sends the Pet's registration data via the request body for persistence in the database.
+// @Tags Pet
+// @Accept json
+// @Produce json
+// @Param petDto body dto.PetInsertDto true "Pet object information for registration"
+// @Success 201
+// @Failure 400
+// @Failure 500
+// @Router /pets/ [post]
 func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	var petToSave dto.PetInsertDto
 
