@@ -38,6 +38,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 				r.Get("/", controllers.OngController.List)
 				r.Get("/{ongID}", controllers.OngController.FindByID)
 				r.Patch("/{ongID}", controllers.OngController.Update)
+				r.Delete("{ongID}", controllers.OngController.Delete)
 			})
 
 			private.Route("/user", func(r chi.Router) {
