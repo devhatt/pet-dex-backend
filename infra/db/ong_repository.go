@@ -152,3 +152,15 @@ func (or *OngRepository) FindById(id uniqueEntityId.ID) (*entity.Ong, error) {
 	return nil, nil
 }
 
+func (or *OngRepository) Delete(id uniqueEntityId.ID) error {
+	query := "UPDATE legal_persons SET deleted_at = ? WHERE id = ?"
+	_, err := or.dbconnection.Exec(query, time.Now(), id)
+
+	if err != nil {
+		or.logger.Error("error on ong repository: ", err)
+		err = fmt.Errorf("error on soft deleting ong")
+		return err
+	}
+
+	return nil
+}
