@@ -13,14 +13,14 @@ import (
 	"pet-dex-backend/v2/pkg/sso"
 	"pet-dex-backend/v2/usecase"
 
-	_ "pet-dex-backend/v2/docs/api"
+	_ "pet-dex-backend/v2/swagger"
 
 	"github.com/jmoiron/sqlx"
 )
 
 // @title PetDex: Documentação API
 // @version 1.0
-// @description Essa página se destina a documentação da API
+// @description Esta página se destina a documentação da API do projeto PetDex Backend
 
 // @contact.name DevHatt
 // @contact.url https://github.com/devhatt

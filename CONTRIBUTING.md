@@ -1,4 +1,4 @@
-# Diretrizes de Contribuição para o Repositório da PetDex
+# 1. Diretrizes de Contribuição para o Repositório da PetDex
 
 Bem-vindo à PetDex! Agradecemos pelo seu interesse em contribuir para este projeto open source. Suas contribuições são fundamentais para o sucesso e a melhoria contínua deste projeto. Antes de começar, por favor, leia e siga estas diretrizes para garantir um processo de contribuição harmonioso e eficaz.
 
@@ -74,3 +74,43 @@ Os arquivos .sql deverão ser criados com o comando abaixo:
 Ao executar o comando, serão criados dois arquivos na pasta /migrations com sufixos `.up` e `.down`. Os arquivos `.up` representam as alterações desejadas que serão aplicados no banco de dados, enquantos os arquivos `.down`, representa a ação de rollback referente ao que foi executado no arquivos `.up` de mesma versão.
 
 Obs.: crie os script SQL de forma idempotente e caso o seu script tenha vários comando ou consultas, considere colocar isso em uma transação.
+
+# 2. Diretrizes de Documentação da API PetDex-Backend com Swag 
+
+Swag, é o pacote responsável pela geração automática da documentação API RESTful. O mesmo documenta códigos em Go com Swagger 2.0. 
+
+## Sumário
+
+1. [Dependências](#dependências)
+
+2. [Nova documentação](#executando-o-Swago)
+
+3. [Acesso](#acessando-documentação)
+
+### Dependências
+
+Para habilitar a geração automática de documentação via Swag, é necessário a sua instalação. Execute o comando a seguir para disponibilizar os recursos dessa feramenta pré configurados via Makefile.
+
+```bash
+go install github.com/swaggo/swag/cmd/swag@latest
+```
+
+Em caso de dúvidas na instalação e na sintaxe da documentação, consulte o repositório oficial da documentação através do link a seguir
+* [swag](https://github.com/swaggo/swag)
+
+Também é necessário ter o GNU Make instalado para executar os comandos definidos em Makefile:
+
+* [Make](https://www.gnu.org/software/make/)
+
+### Executando o Swag
+
+Para gerar a documentação da API, depois documentado o endpoint, execute o comando a seguir:
+
+```bash
+make swag
+```
+Esse comando irá atualizar os arquivos swagger disponíveis no diretório `swagger/`
+
+### Acessando Documentação
+
+A documentação estará disponívei para acesso através da rota `api/swagger/`
