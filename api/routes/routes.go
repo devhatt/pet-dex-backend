@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Controllers struct {
@@ -38,7 +39,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 				r.Get("/", controllers.OngController.List)
 				r.Get("/{ongID}", controllers.OngController.FindByID)
 				r.Patch("/{ongID}", controllers.OngController.Update)
-				r.Delete("{ongID}", controllers.OngController.Delete)
+				r.Delete("/{ongID}", controllers.OngController.Delete)
 			})
 
 			private.Route("/user", func(r chi.Router) {
@@ -57,6 +58,9 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			public.Post("/user/{provider}/login", controllers.UserController.ProviderLogin)
 			public.Post("/user/login", controllers.UserController.Login)
 			public.Get("/pets/", controllers.PetController.ListAllPets)
+			public.Get("/swagger/*", httpSwagger.Handler(
+				httpSwagger.URL("doc.json"), //The url endpoint to API definition
+			))
 		})
 
 	})
