@@ -62,11 +62,13 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	err = userLoginDto.Validate()
 	if err != nil {
+		uc.logger.Error("error on user controller: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	token, err := uc.usecase.Login(&userLoginDto)
 	if err != nil {
+		uc.logger.Error("error on user controller: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	w.Header().Add("Authorization", token)
@@ -125,12 +127,12 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 	user, err := uc.usecase.FindByID(ID)
 
 	if err != nil {
-		logger.Error("error on user controller: ", err)
+		uc.logger.Error("error on user controller: ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = json.NewEncoder(w).Encode(&user); err != nil {
-		logger.Error("error on user controller: ", err)
+		uc.logger.Error("error on user controller: ", err)
 		http.Error(w, "Failed to encode user", http.StatusInternalServerError)
 		return
 	}
@@ -142,7 +144,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	userIDFromTokenStr := r.Header.Get("UserId")
 	userIDFromToken, err := uniqueEntityId.ParseID(userIDFromTokenStr)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar receber o ID do token -> Erro: ", err)
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar receber o ID do token -> Erro: ", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
@@ -150,20 +152,20 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "id")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: ", err)
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: ", err)
 		http.Error(w, "Erro ao converter a requisição ", http.StatusBadRequest)
 		return
 	}
 
 	if userIDFromToken != ID {
-		logger.Error("[#UserController.Delete] Erro ao tentar excluir outro usuário -> Erro: ", err)
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar excluir outro usuário -> Erro: ", err)
 		http.Error(w, "Usuário não autorizado a excluir este usuário", http.StatusUnauthorized)
 		return
 	}
 
 	err = uc.usecase.Delete(ID)
 	if err != nil {
-		logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: ", err)
+		uc.logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: ", err)
 		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
 		return
 	}

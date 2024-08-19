@@ -15,48 +15,51 @@ type User struct {
 	Email                    string            `json:"email" db:"email"`
 	Phone                    string            `json:"phone" db:"phone"`
 	Pass                     string            `json:"pass" db:"pass"`
-	BirthDate                *time.Time        `json:"birthdate"`
 	PushNotificationsEnabled *bool             `json:"pushNotificationsEnabled" db:"pushNotificationsEnabled"`
+	BirthDate                *time.Time        `json:"birthdate"`
+	Role                     string            `json:"role" db:"role"`
 	CreatedAt                *time.Time        `json:"createdAt" db:"created_at"`
 	UpdatedAt                *time.Time        `json:"updatedAt" db:"updated_at"`
 	Adresses                 Address           `json:"addresses"`
 }
 
-func NewUser(name, uType, document, avatar_url, email, phone, pass, city, state string, birthdate *time.Time) *User {
+func NewUser(user dto.UserInsertDto) *User {
 	userId := uniqueEntityId.NewID()
 
 	var addressDto dto.AddressInsertDto
 	addressDto.UserId = userId
-	addressDto.City = city
-	addressDto.State = state
+	addressDto.City = user.City
+	addressDto.State = user.State
 
 	address := NewAddress(addressDto)
 
 	return &User{
 		ID:        userId,
-		Name:      name,
-		Type:      uType,
-		Document:  document,
-		AvatarURL: avatar_url,
-		Email:     email,
-		Phone:     phone,
-		Pass:      pass,
-		BirthDate: birthdate,
+		Name:      user.Name,
+		Type:      user.Type,
+		Document:  user.Document,
+		AvatarURL: user.AvatarURL,
+		Email:     user.Email,
+		Phone:     user.Phone,
+		Pass:      user.Pass,
+		BirthDate: user.BirthDate,
+		Role:      user.Role,
 		Adresses:  *address,
 	}
 }
 
-func UserToUpdate(dtoUpdate dto.UserUpdateDto) User {
-	user := User{
-		Name:      dtoUpdate.Name,
-		Document:  dtoUpdate.Document,
-		AvatarURL: dtoUpdate.AvatarURL,
-		Email:     dtoUpdate.Email,
-		Phone:     dtoUpdate.Phone,
-		BirthDate: dtoUpdate.BirthDate,
+func UserToUpdate(dto dto.UserUpdateDto) *User {
+	user := &User{
+		Name:      dto.Name,
+		Document:  dto.Document,
+		AvatarURL: dto.AvatarURL,
+		Email:     dto.Email,
+		Phone:     dto.Phone,
+		BirthDate: dto.BirthDate,
+		Role:      dto.Role,
 	}
 
-	if dtoUpdate.BirthDate == nil {
+	if dto.BirthDate == nil {
 		user.BirthDate = nil
 	}
 

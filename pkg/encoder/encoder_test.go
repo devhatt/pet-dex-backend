@@ -22,6 +22,7 @@ func TestCreateNewAccessToken(t *testing.T) {
 		Id:    "any_user_id",
 		Name:  "any_user_name",
 		Email: "any_user_email",
+		Role:  "any_user_role",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
 		},
@@ -38,6 +39,7 @@ func TestParseNewAccessToken(t *testing.T) {
 		Id:    "any_user_id",
 		Name:  "any_user_name",
 		Email: "any_user_email",
+		Role:  "any_user_role",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
 		},
