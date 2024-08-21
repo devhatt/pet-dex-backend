@@ -71,7 +71,7 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "petID")
 
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
