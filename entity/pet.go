@@ -40,20 +40,14 @@ type SpecialCare struct {
 	Description string `json:"description"`
 }
 
-type PetDetails struct {
-	Breed string
-	Age   int
-	Size  string
-}
-
 func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
 	petId := uniqueEntityId.NewID()
 
 	return &Pet{
 		ID:           petId,
 		UserID:       userId,
-		BreedID: breedId,
-		Size: size,
+		BreedID:      breedId,
+		Size:         size,
 		Name:         name,
 		Weight:       weight,
 		AdoptionDate: *adoptionDate,
