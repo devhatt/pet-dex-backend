@@ -52,6 +52,44 @@
                     }
                 }
             }
+        },
+        "/pets/{petID}": {
+            "get": {
+                "description": "Retrieves Pet details based on the pet ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "Find Pet by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the Pet to be retrieved",
+                        "name": "petID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Pet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -85,6 +123,96 @@
                 "weight": {
                     "type": "number",
                     "example": 4.1
+                }
+            }
+        },
+        "entity.Pet": {
+            "type": "object",
+            "properties": {
+                "adoption_date": {
+                    "type": "string"
+                },
+                "available_to_adoption": {
+                    "type": "boolean"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "breed_id": {
+                    "type": "string"
+                },
+                "breed_name": {
+                    "type": "string"
+                },
+                "castrated": {
+                    "type": "boolean"
+                },
+                "comorbidity": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "special_care": {
+                    "$ref": "#/definitions/entity.SpecialCare"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "vaccines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Vaccines"
+                    }
+                },
+                "weight": {
+                    "type": "number"
+                },
+                "weight_measure": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SpecialCare": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "needed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entity.Vaccines": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "doctor_crm": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pet_id": {
+                    "type": "string"
                 }
             }
         }
