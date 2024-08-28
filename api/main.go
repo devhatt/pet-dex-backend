@@ -67,6 +67,9 @@ func main() {
 	}
 	router := routes.InitializeRouter(controllers)
 
+	fmt.Println("wordi")
+	foo(b)
+
 	fmt.Printf("running on port %v \n", envVariables.API_PORT)
 	log.Fatal(http.ListenAndServe(":"+envVariables.API_PORT, router))
 }
