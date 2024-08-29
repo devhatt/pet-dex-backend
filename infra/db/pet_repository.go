@@ -27,7 +27,6 @@ func NewPetRepository(dbconn *sqlx.DB) interfaces.PetRepository {
 func (pr *PetRepository) Save(petToSave *entity.Pet) error {
 	_, err := pr.dbconnection.NamedExec("INSERT INTO pets (name, weight, size, adoptionDate, birthdate, breedId, userId) VALUES (:name, :weight, :size, :adoptionDate, :birthdate, :breedId, :userId)", &petToSave)
 
-
 	if err != nil {
 		err = fmt.Errorf("error saving pet: %w", err)
 		fmt.Println(err)
@@ -51,8 +50,8 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
         p.castrated,
         p.availableToAdoption,
         p.userId,
-		p.needed,
-		p.description,
+		p.neededSpecialCare,
+		p.descriptionSpecialCare,
         b.name AS breed_name,
         pi.url AS pet_image_url
     FROM
@@ -66,6 +65,7 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving pet %d: %w", ID, err)
 	}
+
 	defer row.Close()
 
 	if !row.Next() {
@@ -89,6 +89,8 @@ func (pr *PetRepository) FindByID(ID uniqueEntityId.ID) (*entity.Pet, error) {
 		&pet.Castrated,
 		&pet.AvailableToAdoption,
 		&pet.UserID,
+		&pet.NeedSpecialCare.Needed,
+		&pet.NeedSpecialCare.Description,
 		&pet.BreedName,
 		&pet.ImageUrl,
 	); err != nil {
