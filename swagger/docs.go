@@ -96,6 +96,57 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/{userID}/pets/{petID}": {
+            "patch": {
+                "description": "Update the Pet's registration data via the request body for persistence in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update an Pet existing.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pet ID",
+                        "name": "petID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Pet object information for update of data",
+                        "name": "petDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PetUpdateDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -129,6 +180,94 @@ const docTemplate = `{
                 "weight": {
                     "type": "number",
                     "example": 4.1
+                }
+            }
+        },
+        "dto.PetUpdateDto": {
+            "type": "object",
+            "properties": {
+                "adoption_date": {
+                    "type": "string",
+                    "example": "2008-01-02T00:00:00Z"
+                },
+                "available_to_adoption": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "birthdate": {
+                    "type": "string",
+                    "example": "2006-01-02T00:00:00Z"
+                },
+                "breed_id": {
+                    "type": "string",
+                    "example": "0e0b8399-1bf1-4ed5-a2f4-b5789ddf5df0"
+                },
+                "castrated": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "comorbidity": {
+                    "type": "string",
+                    "example": "asma"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Spike"
+                },
+                "size": {
+                    "type": "string",
+                    "example": "small"
+                },
+                "special_care": {
+                    "$ref": "#/definitions/dto.SpecialCareDto"
+                },
+                "tags": {
+                    "type": "string",
+                    "example": "Dog"
+                },
+                "vaccines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.VaccinesDto"
+                    }
+                },
+                "weight": {
+                    "type": "number",
+                    "example": 4.8
+                },
+                "weight_measure": {
+                    "type": "string",
+                    "example": "kg"
+                }
+            }
+        },
+        "dto.SpecialCareDto": {
+            "type": "object",
+            "properties": {
+                "descriptionSpecialCare": {
+                    "type": "string",
+                    "example": "obesity"
+                },
+                "neededSpecialCare": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "dto.VaccinesDto": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "example": "2007-01-02T00:00:00Z"
+                },
+                "doctor_crm": {
+                    "type": "string",
+                    "example": "000000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "PetVax"
                 }
             }
         },
@@ -194,10 +333,10 @@ const docTemplate = `{
         "entity.SpecialCare": {
             "type": "object",
             "properties": {
-                "description": {
+                "descriptionSpecialCare": {
                     "type": "string"
                 },
-                "needed": {
+                "neededSpecialCare": {
                     "type": "boolean"
                 }
             }

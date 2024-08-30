@@ -171,9 +171,9 @@ func (pr *PetRepository) Update(petID string, userID string, petToUpdate *entity
 	}
 
 	if petToUpdate.NeedSpecialCare.Needed != nil {
-		query = query + " needed = ?,"
+		query = query + " neededSpecialCare = ?,"
 		values = append(values, petToUpdate.NeedSpecialCare.Needed)
-		query = query + " description = ?,"
+		query = query + " descriptionSpecialCare = ?,"
 		values = append(values, petToUpdate.NeedSpecialCare.Description)
 	}
 
@@ -218,8 +218,8 @@ func (pr *PetRepository) ListByUser(userID uniqueEntityId.ID) (pets []*entity.Pe
 		p.castrated,
 		p.availableToAdoption,
 		p.userId,
-		p.needed,
-		p.description,
+		p.neededSpecialCare,
+		p.descriptionSpecialCare,
 		b.name AS breed_name,
 		pi.url AS pet_image_url
 	FROM
@@ -256,8 +256,8 @@ func (pr *PetRepository) ListByUser(userID uniqueEntityId.ID) (pets []*entity.Pe
 			&pet.AvailableToAdoption,
 			&pet.UserID,
 			&pet.BreedName,
-			&needed,
-			&description,
+			&pet.NeedSpecialCare.Needed,
+			&pet.NeedSpecialCare.Description,
 			&pet.ImageUrl,
 		); err != nil {
 			return nil, fmt.Errorf("error scanning pet row: %w", err)
