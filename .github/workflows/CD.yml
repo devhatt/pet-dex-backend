@@ -1,4 +1,4 @@
-name: Docker Push
+name: Go CD
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - completed
 
 jobs:
-  push:
+  push-image:
     runs-on: ubuntu-latest
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     steps:

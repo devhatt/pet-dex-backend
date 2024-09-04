@@ -11,18 +11,26 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup deps
+        uses: devhatt/workflows/.github/actions/go-setup@main
+
+      - name: run go lint
+        uses: golangci/golangci-lint-action@v6
+
   test:
     runs-on: ubuntu-latest
+    needs:
+      - golangci-lint
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-
-      - name: Create .env
-        run: cp .env.example .env
+      - name: Setup deps
+        uses: devhatt/workflows/.github/actions/go-setup@main
 
       - name: Test
         run: go test ./...
@@ -34,13 +42,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-
-      - name: Create .env
-        run: cp .env.example .env
+      - name: Setup deps
+        uses: devhatt/workflows/.github/actions/go-setup@main
 
       - name: Run Docker Compose Prod
         run: |
