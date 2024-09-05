@@ -22,6 +22,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ongs/{ongID}": {
+            "patch": {
+                "description": "Retrieves Ong details based on the ong ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Update Ong By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ong id to be retrieved",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update information of the ong",
+                        "name": "ongDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngUpdateDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/pets/": {
             "post": {
                 "description": "Sends the Pet's registration data via the request body for persistence in the database.",
@@ -61,6 +102,45 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.Link": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "example": "Facebook da Ong"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngUpdateDto": {
+            "type": "object",
+            "properties": {
+                "adoptionPolicy": {
+                    "type": "string",
+                    "example": "não pode rato"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Link"
+                    }
+                },
+                "openingHours": {
+                    "type": "string",
+                    "example": "08:00"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "119596995887"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.UserUpdateDto"
+                }
+            }
+        },
         "dto.PetInsertDto": {
             "type": "object",
             "properties": {
@@ -91,6 +171,35 @@ const docTemplate = `{
                 "weight": {
                     "type": "number",
                     "example": 4.1
+                }
+            }
+        },
+        "dto.UserUpdateDto": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         }

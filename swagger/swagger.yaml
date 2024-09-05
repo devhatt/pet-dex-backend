@@ -1,5 +1,32 @@
 basePath: /
 definitions:
+  dto.Link:
+    properties:
+      text:
+        example: Facebook da Ong
+        type: string
+      url:
+        example: https://www.facebook.com/
+        type: string
+    type: object
+  dto.OngUpdateDto:
+    properties:
+      adoptionPolicy:
+        example: não pode rato
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.Link'
+        type: array
+      openingHours:
+        example: "08:00"
+        type: string
+      phone:
+        example: "119596995887"
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserUpdateDto'
+    type: object
   dto.PetInsertDto:
     properties:
       adoption_date:
@@ -24,6 +51,25 @@ definitions:
         example: 4.1
         type: number
     type: object
+  dto.UserUpdateDto:
+    properties:
+      avatar_url:
+        type: string
+      birthdate:
+        type: string
+      document:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      pushNotificationsEnabled:
+        type: boolean
+      role:
+        type: string
+    type: object
 host: localhost:3000/api
 info:
   contact:
@@ -36,6 +82,33 @@ info:
   title: 'PetDex: Documentação API'
   version: "1.0"
 paths:
+  /ongs/{ongID}:
+    patch:
+      consumes:
+      - application/json
+      description: Retrieves Ong details based on the ong ID provided as a parameter.
+      parameters:
+      - description: Ong id to be retrieved
+        in: path
+        name: ongID
+        required: true
+        type: string
+      - description: Update information of the ong
+        in: body
+        name: ongDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OngUpdateDto'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Update Ong By ID
+      tags:
+      - Ong
   /pets/:
     post:
       consumes:
