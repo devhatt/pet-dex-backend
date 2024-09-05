@@ -204,7 +204,7 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 }
 
 // ListAllPets Retrieves the list of all pets.
-// @Summary View list of all pets
+// @Summary View list of all pets.
 // @Description Public route for viewing all pets.
 // @Tags Pet
 // @Produce json
