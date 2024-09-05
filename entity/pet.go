@@ -36,14 +36,8 @@ type Vaccines struct {
 }
 
 type SpecialCare struct {
-	Needed      *bool  `json:"needed"`
-	Description string `json:"description"`
-}
-
-type PetDetails struct {
-	Breed string
-	Age   int
-	Size  string
+	Needed      *bool  `json:"neededSpecialCare"`
+	Description string `json:"descriptionSpecialCare"`
 }
 
 func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {
@@ -52,8 +46,8 @@ func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64
 	return &Pet{
 		ID:           petId,
 		UserID:       userId,
-		BreedID: breedId,
-		Size: size,
+		BreedID:      breedId,
+		Size:         size,
 		Name:         name,
 		Weight:       weight,
 		AdoptionDate: *adoptionDate,

@@ -29,6 +29,19 @@ func NewPetController(usecase *usecase.PetUseCase) *PetController {
 	}
 }
 
+// Update Pet to the database.
+// @Summary Update an Pet existing.
+// @Description Update the Pet's registration data via the request body for persistence in the database.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userID path string true "User ID"
+// @Param petID path string true "Pet ID"
+// @Param petDto body dto.PetUpdateDto true "Pet object information for update of data"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /user/{userID}/pets/{petID} [patch]
 func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 	petID := chi.URLParam(r, "petID")
@@ -70,8 +83,19 @@ func (pc *PetController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// FindPet Retrieves Pet information from its provided ID.
+// @Summary Find Pet by ID
+// @Description Retrieves Pet details based on the pet ID provided as a parameter.
+// @Tags Pet
+// @Accept json
+// @Produce json
+// @Param petID path string true "ID of the Pet to be retrieved"
+// @Success 200 {object} entity.Pet
+// @Failure 400
+// @Failure 500
+// @Router /pets/{petID} [get]
 func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "petID")
 
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
