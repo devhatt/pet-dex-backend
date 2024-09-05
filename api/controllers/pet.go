@@ -203,6 +203,15 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// ListAllPets Retrieves the list of all pets.
+// @Summary View list of all pets
+// @Description Public route for viewing all pets.
+// @Tags Pet
+// @Produce json
+// @Success 200 {object} entity.Pet
+// @Failure 400
+// @Failure 500
+// @Router /pets/ [get]
 func (cntrl *PetController) ListAllPets(w http.ResponseWriter, r *http.Request) {
 	encoderAdapter := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
 	var pageNumber int
