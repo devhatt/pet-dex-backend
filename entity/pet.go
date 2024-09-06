@@ -36,8 +36,8 @@ type Vaccines struct {
 }
 
 type SpecialCare struct {
-	Needed      *bool  `json:"neededSpecialCare"`
-	Description string `json:"descriptionSpecialCare"`
+	Needed      *bool  `json:"needed"`
+	Description string `json:"description"`
 }
 
 func NewPet(userId, breedId uniqueEntityId.ID, size, name string, weight float64, adoptionDate, birthdate *time.Time) *Pet {

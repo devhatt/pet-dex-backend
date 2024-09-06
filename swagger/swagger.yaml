@@ -24,69 +24,6 @@ definitions:
         example: 4.1
         type: number
     type: object
-  dto.PetUpdateDto:
-    properties:
-      adoption_date:
-        example: "2008-01-02T00:00:00Z"
-        type: string
-      available_to_adoption:
-        example: true
-        type: boolean
-      birthdate:
-        example: "2006-01-02T00:00:00Z"
-        type: string
-      breed_id:
-        example: 0e0b8399-1bf1-4ed5-a2f4-b5789ddf5df0
-        type: string
-      castrated:
-        example: true
-        type: boolean
-      comorbidity:
-        example: asma
-        type: string
-      name:
-        example: Spike
-        type: string
-      size:
-        example: small
-        type: string
-      special_care:
-        $ref: '#/definitions/dto.SpecialCareDto'
-      tags:
-        example: Dog
-        type: string
-      vaccines:
-        items:
-          $ref: '#/definitions/dto.VaccinesDto'
-        type: array
-      weight:
-        example: 4.8
-        type: number
-      weight_measure:
-        example: kg
-        type: string
-    type: object
-  dto.SpecialCareDto:
-    properties:
-      descriptionSpecialCare:
-        example: obesity
-        type: string
-      neededSpecialCare:
-        example: true
-        type: boolean
-    type: object
-  dto.VaccinesDto:
-    properties:
-      date:
-        example: "2007-01-02T00:00:00Z"
-        type: string
-      doctor_crm:
-        example: "000000"
-        type: string
-      name:
-        example: PetVax
-        type: string
-    type: object
   entity.Pet:
     properties:
       adoption_date:
@@ -128,9 +65,9 @@ definitions:
     type: object
   entity.SpecialCare:
     properties:
-      descriptionSpecialCare:
+      description:
         type: string
-      neededSpecialCare:
+      needed:
         type: boolean
     type: object
   entity.Vaccines:
@@ -208,39 +145,4 @@ paths:
       summary: Find Pet by ID
       tags:
       - Pet
-  /user/{userID}/pets/{petID}:
-    patch:
-      consumes:
-      - application/json
-      description: Update the Pet's registration data via the request body for persistence
-        in the database.
-      parameters:
-      - description: User ID
-        in: path
-        name: userID
-        required: true
-        type: string
-      - description: Pet ID
-        in: path
-        name: petID
-        required: true
-        type: string
-      - description: Pet object information for update of data
-        in: body
-        name: petDto
-        required: true
-        schema:
-          $ref: '#/definitions/dto.PetUpdateDto'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      summary: Update an Pet existing.
-      tags:
-      - User
 swagger: "2.0"
