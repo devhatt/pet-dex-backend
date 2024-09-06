@@ -42,7 +42,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 			})
 
 			private.Route("/user", func(r chi.Router) {
-				r.Get("/{userID}/my-pets", controllers.PetController.ListUserPets)
+				r.Get("/{id}/my-pets", controllers.PetController.ListUserPets)
 				r.Patch("/{userID}/pets/{petID}", controllers.PetController.Update)
 				r.Patch("/{id}", controllers.UserController.Update)
 				r.Get("/{id}", controllers.UserController.FindByID)
