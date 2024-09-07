@@ -1,14 +1,5 @@
 basePath: /
 definitions:
-  dto.Link:
-    properties:
-      text:
-        example: Facebook da Ong
-        type: string
-      url:
-        example: https://www.facebook.com/
-        type: string
-    type: object
   dto.OngUpdateDto:
     properties:
       adoptionPolicy:
@@ -16,7 +7,7 @@ definitions:
         type: string
       links:
         items:
-          $ref: '#/definitions/dto.Link'
+          $ref: '#/definitions/entity.Link'
         type: array
       openingHours:
         example: "08:00"
@@ -51,23 +42,6 @@ definitions:
         example: 4.1
         type: number
     type: object
-  dto.UserUpdateDto:
-    properties:
-      avatar_url:
-        type: string
-      birthdate:
-        type: string
-      document:
-        type: string
-      email:
-        type: string
-      name:
-        type: string
-      phone:
-        type: string
-      pushNotificationsEnabled:
-        type: boolean
-      role:
   dto.PetUpdateDto:
     properties:
       adoption_date:
@@ -119,6 +93,25 @@ definitions:
         example: true
         type: boolean
     type: object
+  dto.UserUpdateDto:
+    properties:
+      avatar_url:
+        type: string
+      birthdate:
+        type: string
+      document:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      pushNotificationsEnabled:
+        type: boolean
+      role:
+        type: string
+    type: object
   dto.VaccinesDto:
     properties:
       date:
@@ -129,6 +122,15 @@ definitions:
         type: string
       name:
         example: PetVax
+        type: string
+    type: object
+  entity.Link:
+    properties:
+      text:
+        example: Facebook da Ong
+        type: string
+      url:
+        example: https://www.facebook.com/
         type: string
     type: object
   entity.Pet:

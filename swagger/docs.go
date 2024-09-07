@@ -191,19 +191,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.Link": {
-            "type": "object",
-            "properties": {
-                "text": {
-                    "type": "string",
-                    "example": "Facebook da Ong"
-                },
-                "url": {
-                    "type": "string",
-                    "example": "https://www.facebook.com/"
-                }
-            }
-        },
         "dto.OngUpdateDto": {
             "type": "object",
             "properties": {
@@ -214,7 +201,7 @@ const docTemplate = `{
                 "links": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.Link"
+                        "$ref": "#/definitions/entity.Link"
                     }
                 },
                 "openingHours": {
@@ -263,21 +250,6 @@ const docTemplate = `{
                 }
             }
         },
-
-        "dto.UserUpdateDto": {
-            "type": "object",
-            "properties": {
-                "avatar_url": {
-                    "type": "string"
-                },
-                "birthdate": {
-                    "type": "string"
-                },
-                "document": {
-                    "type": "string"
-                },
-                "email": {
-
         "dto.PetUpdateDto": {
             "type": "object",
             "properties": {
@@ -349,6 +321,35 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UserUpdateDto": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.VaccinesDto": {
             "type": "object",
             "properties": {
@@ -363,6 +364,19 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "PetVax"
+                }
+            }
+        },
+        "entity.Link": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "example": "Facebook da Ong"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.facebook.com/"
                 }
             }
         },
@@ -399,13 +413,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "phone": {
-                    "type": "string"
-                },
-                "pushNotificationsEnabled": {
-                    "type": "boolean"
-                },
-                "role": {
                 "size": {
                     "type": "string"
                 },
