@@ -79,14 +79,14 @@
         },
         "/pets/breeds/": {
             "get": {
-                "description": "Retrieves list of information of all pet breeds",
+                "description": "Retrieves list of all pet breeds",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Pet"
                 ],
-                "summary": "View list of all Breed",
+                "summary": "View list of all Breeds",
                 "responses": {
                     "200": {
                         "description": "OK",

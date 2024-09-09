@@ -238,7 +238,7 @@ paths:
       - Pet
   /pets/breeds/:
     get:
-      description: Retrieves list of information of all pet breeds
+      description: Retrieves list of all pet breeds
       produces:
       - application/json
       responses:
@@ -250,7 +250,7 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: View list of all Breed
+      summary: View list of all Breeds
       tags:
       - Pet
   /user/{userID}/pets/{petID}:
