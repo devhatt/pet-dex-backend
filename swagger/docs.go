@@ -85,7 +85,7 @@ const docTemplate = `{
         },
         "/pets/breeds/": {
             "get": {
-                "description": "// List retrieves list of information of all pet breeds",
+                "description": "Retrieves list of information of all pet breeds",
                 "produces": [
                     "application/json"
                 ],
