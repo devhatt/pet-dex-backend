@@ -124,7 +124,7 @@ func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Param userID path string true "ID of the User"
-// @Success 200
+// @Success 200 {object} entity.Pet
 // @Failure 400
 // @Failure 500
 // @Router /user/{userID}/my-pets [get]
