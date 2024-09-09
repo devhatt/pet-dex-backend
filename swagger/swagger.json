@@ -17,6 +17,30 @@
     "basePath": "/",
     "paths": {
         "/pets/": {
+            "get": {
+                "description": "Public route for viewing all pets.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "View list of all pets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Pet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "description": "Sends the Pet's registration data via the request body for persistence in the database.",
                 "consumes": [

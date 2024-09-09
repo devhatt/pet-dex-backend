@@ -159,6 +159,22 @@ info:
   version: "1.0"
 paths:
   /pets/:
+    get:
+      description: Public route for viewing all pets.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Pet'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: View list of all pets
+      tags:
+      - Pet
     post:
       consumes:
       - application/json
