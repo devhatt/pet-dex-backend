@@ -22,6 +22,15 @@ func NewBreedController(usecase *usecase.BreedUseCase) *BreedController {
 	}
 }
 
+// // List retrieves list of breed information for all pets.
+// @Summary View list of all Breed
+// @Description // List retrieves list of information of all pet breeds
+// @Tags Pet
+// @Produce json
+// @Success 200 {object} dto.BreedList
+// @Failure 400
+// @Failure 500
+// @Router /pets/breeds/ [get]
 func (cntrl *BreedController) List(responseWriter http.ResponseWriter, request *http.Request) {
 	breeds, err := cntrl.Usecase.List()
 	if err != nil {
