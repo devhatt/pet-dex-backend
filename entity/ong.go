@@ -2,6 +2,7 @@ package entity
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
@@ -15,7 +16,7 @@ type Ong struct {
 	Phone          string            `json:"phone" db:"phone"`
 	OpeningHours   string            `json:"openingHours" db:"openingHours"`
 	AdoptionPolicy string            `json:"adoptionPolicy" db:"adoptionPolicy"`
-	Links          *json.RawMessage  `json:"links"`
+	Links          *json.RawMessage	 `json:"links"`
 
 	CreatedAt *time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time `json:"updatedAt" db:"updated_at"`
@@ -44,7 +45,7 @@ func NewOng(ong dto.OngInsertDto) *Ong {
 	}
 }
 
-func OngToUpdate(ong dto.OngUpdateDto) *Ong {
+func OngToUpdate(ong dto.OngUpdateDto) (*Ong, error) {
 	user := User{
 		Name:      ong.User.Name,
 		Document:  ong.User.Document,
@@ -54,11 +55,18 @@ func OngToUpdate(ong dto.OngUpdateDto) *Ong {
 		BirthDate: ong.User.BirthDate,
 	}
 
+	linksJson, err := json.Marshal(ong.Links)
+	if err != nil {
+		return nil, fmt.Errorf("serializing links error: %w", err)
+	}
+
+	linksRawMessage := json.RawMessage(linksJson)
+
 	return &Ong{
 		User:           user,
 		Phone:          user.Phone,
-		Links:          ong.Links,
+		Links:          &linksRawMessage,
 		OpeningHours:   ong.OpeningHours,
 		AdoptionPolicy: ong.AdoptionPolicy,
-	}
+	}, nil
 }
