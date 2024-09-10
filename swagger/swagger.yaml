@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  dto.BreedList:
+    properties:
+      id:
+        example: 0e0b8399-1bf1-4ed5-a2f4-b5789ddf5df0
+        type: string
+      img_url:
+        example: https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+        type: string
+      name:
+        example: Pastor Alemão
+        type: string
+    type: object
   dto.Link:
     properties:
       text:
@@ -296,6 +308,23 @@ paths:
         "500":
           description: Internal Server Error
       summary: Find Pet by ID
+      tags:
+      - Pet
+  /pets/breeds/:
+    get:
+      description: Retrieves list of all pet breeds
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BreedList'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: View list of all Breeds
       tags:
       - Pet
   /user/{userID}/my-pets:
