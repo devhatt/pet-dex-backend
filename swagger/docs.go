@@ -121,6 +121,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{userID}/my-pets": {
+            "get": {
+                "description": "List all pets owned by the user corresponding to the provided user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "List pets by user id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the User",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Pet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/user/{userID}/pets/{petID}": {
             "patch": {
                 "description": "Update the Pet's registration data via the request body for persistence in the database.",
