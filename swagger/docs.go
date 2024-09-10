@@ -24,7 +24,7 @@ const docTemplate = `{
     "paths": {
         "/ongs/{ongID}": {
             "patch": {
-                "description": "Retrieves Ong details based on the ong ID provided as a parameter.",
+                "description": "Updates the details of an existing Ong based on the provided Ong ID.",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,13 +35,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Ong id to be retrieved",
+                        "description": "Ong id to be updated",
                         "name": "ongID",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Update information of the ong",
+                        "description": "Data to update of the Ong",
                         "name": "ongDto",
                         "in": "body",
                         "required": true,
@@ -72,7 +72,7 @@ const docTemplate = `{
                 "tags": [
                     "Pet"
                 ],
-                "summary": "View list of all pets",
+                "summary": "View list of all pets.",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -253,6 +253,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.Link": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "example": "Facebook da Ong"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.facebook.com/"
+                }
+            }
+        },
         "dto.OngUpdateDto": {
             "type": "object",
             "properties": {
@@ -263,7 +276,7 @@ const docTemplate = `{
                 "links": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Link"
+                        "$ref": "#/definitions/dto.Link"
                     }
                 },
                 "openingHours": {
@@ -426,19 +439,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "PetVax"
-                }
-            }
-        },
-        "entity.Link": {
-            "type": "object",
-            "properties": {
-                "text": {
-                    "type": "string",
-                    "example": "Facebook da Ong"
-                },
-                "url": {
-                    "type": "string",
-                    "example": "https://www.facebook.com/"
                 }
             }
         },

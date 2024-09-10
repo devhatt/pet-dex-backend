@@ -115,11 +115,11 @@ func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 
 // Update Ong to database.
 // @Summary Update Ong By ID
-// @Description Retrieves Ong details based on the ong ID provided as a parameter.
+// @Description Updates the details of an existing Ong based on the provided Ong ID.
 // @Tags Ong
 // @Accept json
-// @Param ongID path string true "Ong id to be retrieved"
-// @Param ongDto body dto.OngUpdateDto true "Update information of the ong"
+// @Param ongID path string true "Ong id to be updated"
+// @Param ongDto body dto.OngUpdateDto true "Data to update of the Ong"
 // @Success 201
 // @Failure 400
 // @Failure 500

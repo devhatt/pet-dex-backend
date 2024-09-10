@@ -16,7 +16,7 @@ type Ong struct {
 	Phone          string            `json:"phone" db:"phone"`
 	OpeningHours   string            `json:"openingHours" db:"openingHours"`
 	AdoptionPolicy string            `json:"adoptionPolicy" db:"adoptionPolicy"`
-	Links          *json.RawMessage					 `json:"links"`
+	Links          *json.RawMessage	 `json:"links"`
 
 	CreatedAt *time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt *time.Time `json:"updatedAt" db:"updated_at"`
