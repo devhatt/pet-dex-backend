@@ -64,6 +64,30 @@ const docTemplate = `{
             }
         },
         "/pets/": {
+            "get": {
+                "description": "Public route for viewing all pets.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pet"
+                ],
+                "summary": "View list of all pets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Pet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "description": "Sends the Pet's registration data via the request body for persistence in the database.",
                 "consumes": [
@@ -118,6 +142,44 @@ const docTemplate = `{
                         "type": "string",
                         "description": "ID of the Pet to be retrieved",
                         "name": "petID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Pet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{userID}/my-pets": {
+            "get": {
+                "description": "List all pets owned by the user corresponding to the provided user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "List pets by user id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the User",
+                        "name": "userID",
                         "in": "path",
                         "required": true
                     }

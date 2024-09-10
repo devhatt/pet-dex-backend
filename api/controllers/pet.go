@@ -117,8 +117,19 @@ func (cntrl *PetController) FindPet(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// List all pets from a provided user id.
+// @Summary List pets by user id
+// @Description List all pets owned by the user corresponding to the provided user ID
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userID path string true "ID of the User"
+// @Success 200 {object} entity.Pet
+// @Failure 400
+// @Failure 500
+// @Router /user/{userID}/my-pets [get]
 func (cntrl *PetController) ListUserPets(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 
 	userID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
@@ -203,6 +214,15 @@ func (cntrl *PetController) CreatePet(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// ListAllPets Retrieves the list of all pets.
+// @Summary View list of all pets.
+// @Description Public route for viewing all pets.
+// @Tags Pet
+// @Produce json
+// @Success 200 {object} entity.Pet
+// @Failure 400
+// @Failure 500
+// @Router /pets/ [get]
 func (cntrl *PetController) ListAllPets(w http.ResponseWriter, r *http.Request) {
 	encoderAdapter := encoder.NewEncoderAdapter(config.GetEnvConfig().JWT_SECRET)
 	var pageNumber int
