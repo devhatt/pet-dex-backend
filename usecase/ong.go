@@ -95,7 +95,7 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 }
 
 func (o *OngUsecase) Update(ongId uniqueEntityId.ID, ongDto *dto.OngUpdateDto) error {
-	ongToUpdate := entity.OngToUpdate(*ongDto)
+	ongToUpdate, _ := entity.OngToUpdate(*ongDto)
 
 	ong, err := o.repo.FindByID(ongId)
 	if err != nil {

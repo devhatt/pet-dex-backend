@@ -113,12 +113,23 @@ func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Update Ong to database.
+// @Summary Update Ong By ID
+// @Description Updates the details of an existing Ong based on the provided Ong ID.
+// @Tags Ong
+// @Accept json
+// @Param ongID path string true "Ong id to be updated"
+// @Param ongDto body dto.OngUpdateDto true "Data to update of the Ong"
+// @Success 201
+// @Failure 400
+// @Failure 500
+// @Router /ongs/{ongID} [patch]
 func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "ongID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
-		oc.logger.Error("error on ong controller: ", err)
+		oc.logger.Error("error on ong controller:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

@@ -22,6 +22,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ongs/{ongID}": {
+            "patch": {
+                "description": "Updates the details of an existing Ong based on the provided Ong ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Update Ong By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ong id to be updated",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data to update of the Ong",
+                        "name": "ongDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngUpdateDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/pets/": {
             "get": {
                 "description": "Public route for viewing all pets.",
@@ -31,7 +72,7 @@ const docTemplate = `{
                 "tags": [
                     "Pet"
                 ],
-                "summary": "View list of all pets",
+                "summary": "View list of all pets.",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -212,6 +253,45 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.Link": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "example": "Facebook da Ong"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngUpdateDto": {
+            "type": "object",
+            "properties": {
+                "adoptionPolicy": {
+                    "type": "string",
+                    "example": "não pode rato"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Link"
+                    }
+                },
+                "openingHours": {
+                    "type": "string",
+                    "example": "08:00"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "119596995887"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.UserUpdateDto"
+                }
+            }
+        },
         "dto.PetInsertDto": {
             "type": "object",
             "properties": {
@@ -313,6 +393,35 @@ const docTemplate = `{
                 "neededSpecialCare": {
                     "type": "boolean",
                     "example": true
+                }
+            }
+        },
+        "dto.UserUpdateDto": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
