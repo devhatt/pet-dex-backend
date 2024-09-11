@@ -23,6 +23,17 @@ func NewUserController(usecase *usecase.UserUsecase) *UserController {
 	}
 }
 
+// Create a user in database
+// @Summary Creates user
+// @Description Creates user and insert into the database
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userDto body dto.UserInsertDto true "User object information to create"
+// @Success 201
+// @Failure 400
+// @Failure 500
+// @Router /user/create-account [post]
 func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 	var userDto dto.UserInsertDto
 	err := json.NewDecoder(r.Body).Decode(&userDto)
