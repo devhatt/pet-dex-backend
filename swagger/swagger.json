@@ -311,9 +311,9 @@
                 }
             }
         },
-        "/user/login": {
-            "post": {
-                "description": "Logs in a user and returns a JWT token",
+        "/user/{userID}": {
+            "get": {
+                "description": "Retrieves User details based on the User ID provided as a parameter.",
                 "consumes": [
                     "application/json"
                 ],
@@ -323,68 +323,22 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "User login",
-                "parameters": [
-                    {
-                        "description": "User login information",
-                        "name": "userLoginDto",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserLoginDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/user/{provider}/login": {
-            "post": {
-                "description": "Logs in a user using a specified provider (SSO) and returns a JWT token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "User login with provider",
+                "summary": "Find User by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "The provider for Single Sign-On (e.g., google, facebook)",
-                        "name": "provider",
+                        "description": "ID of the User to be retrieved",
+                        "name": "userID",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "User login information with SSO",
-                        "name": "UserSSODto",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UserSSODto"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -798,6 +752,32 @@
                 }
             }
         },
+        "entity.Address": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Pet": {
             "type": "object",
             "properties": {
@@ -865,6 +845,53 @@
                 },
                 "neededSpecialCare": {
                     "type": "boolean"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "$ref": "#/definitions/entity.Address"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },

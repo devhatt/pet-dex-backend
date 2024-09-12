@@ -320,6 +320,9 @@ const docTemplate = `{
         "/user/login": {
             "post": {
                 "description": "Logs in a user and returns a JWT token",
+        "/user/{userID}": {
+            "get": {
+                "description": "Retrieves User details based on the User ID provided as a parameter.",
                 "consumes": [
                     "application/json"
                 ],
@@ -390,7 +393,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -804,6 +810,32 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Address": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Pet": {
             "type": "object",
             "properties": {
@@ -871,6 +903,53 @@ const docTemplate = `{
                 },
                 "neededSpecialCare": {
                     "type": "boolean"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "$ref": "#/definitions/entity.Address"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
