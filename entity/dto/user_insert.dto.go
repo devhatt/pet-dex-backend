@@ -12,12 +12,12 @@ var userTypes = []string{"juridica", "fisica"}
 
 type UserInsertDto struct {
 	Name      string     `json:"name" example:"Claúdio"`
-	Type      string     `json:"type" example:"física"`
+	Type      string     `json:"type" example:"fisica"`
 	Document  string     `json:"document" example:"12345678900"`
 	AvatarURL string     `json:"avatar_url" example:"https://example.com/avatar.jpg"`
 	Email     string     `json:"email" example:"claudio@example.com"`
 	Phone     string     `json:"phone" example:"21912345678"`
-	Pass      string     `json:"pass" example:"senhasegura123"`
+	Pass      string     `json:"pass" example:"Senhasegur@123"`
 	BirthDate *time.Time `json:"birthdate" example:"2006-01-02T15:04:05Z"`
 	City      string     `json:"city" example:"São Paulo"`
 	State     string     `json:"state" example:"São Paulo"`

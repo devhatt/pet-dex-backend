@@ -505,7 +505,7 @@ const docTemplate = `{
                 },
                 "pass": {
                     "type": "string",
-                    "example": "senhasegura123"
+                    "example": "Senhasegur@123"
                 },
                 "phone": {
                     "type": "string",
@@ -521,7 +521,7 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string",
-                    "example": "física"
+                    "example": "fisica"
                 }
             }
         },

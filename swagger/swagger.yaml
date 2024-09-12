@@ -135,7 +135,7 @@ definitions:
         example: Claúdio
         type: string
       pass:
-        example: senhasegura123
+        example: Senhasegur@123
         type: string
       phone:
         example: "21912345678"
@@ -147,7 +147,7 @@ definitions:
         example: São Paulo
         type: string
       type:
-        example: física
+        example: fisica
         type: string
     type: object
   dto.UserUpdateDto:
