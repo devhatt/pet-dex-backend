@@ -114,6 +114,42 @@ definitions:
         example: true
         type: boolean
     type: object
+  dto.UserInsertDto:
+    properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      birthdate:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      city:
+        example: São Paulo
+        type: string
+      document:
+        example: "12345678900"
+        type: string
+      email:
+        example: claudio@example.com
+        type: string
+      name:
+        example: Claúdio
+        type: string
+      pass:
+        example: Senhasegur@123
+        type: string
+      phone:
+        example: "21912345678"
+        type: string
+      role:
+        example: developer
+        type: string
+      state:
+        example: São Paulo
+        type: string
+      type:
+        example: fisica
+        type: string
+    type: object
   dto.UserUpdateDto:
     properties:
       avatar_url:
@@ -386,6 +422,30 @@ paths:
         "500":
           description: Internal Server Error
       summary: Update an Pet existing.
+      tags:
+      - User
+  /user/create-account:
+    post:
+      consumes:
+      - application/json
+      description: Creates user and insert into the database
+      parameters:
+      - description: User object information to create
+        in: body
+        name: userDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserInsertDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Creates user
       tags:
       - User
 swagger: "2.0"
