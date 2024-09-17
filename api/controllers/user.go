@@ -150,7 +150,7 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 // @Failure 500
 // @Router /user/{userID} [get]
 func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
