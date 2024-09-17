@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	mockInterfaces "pet-dex-backend/v2/mocks/pet-dex-backend/v2/interfaces"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"testing"
@@ -13,7 +13,7 @@ func TestOngDelete(t *testing.T) {
 	tcases := map[string]struct {
 		repo         *mockInterfaces.MockOngRepository
 		inputID      uniqueEntityId.ID
-		findByIDResp *entity.Ong
+		findByIDResp *dto.OngListMapper
 		findByIDErr  error
 		deleteResp   error
 		expectOutput error
@@ -21,7 +21,7 @@ func TestOngDelete(t *testing.T) {
 		"success": {
 			repo:         mockInterfaces.NewMockOngRepository(t),
 			inputID:      uniqueEntityId.NewID(),
-			findByIDResp: &entity.Ong{},
+			findByIDResp: &dto.OngListMapper{},
 			findByIDErr:  nil,
 			deleteResp:   nil,
 			expectOutput: nil,

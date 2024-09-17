@@ -71,7 +71,7 @@ func (o *OngUsecase) List(limit, offset int, sortBy, order string) ([]*dto.OngLi
 	return ong, nil
 }
 
-func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
+func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*dto.OngListMapper, error) {
 
 	ong, err := c.repo.FindByID(ID)
 
@@ -80,16 +80,6 @@ func (c *OngUsecase) FindByID(ID uniqueEntityId.ID) (*entity.Ong, error) {
 		err = fmt.Errorf("failed to retrieve ong: %w", err)
 		return nil, err
 	}
-
-	user, err := c.userRepo.FindByID(ong.UserID)
-
-	if err != nil {
-		c.logger.Error("error on ong repository: ", err)
-		err = fmt.Errorf("failed to retrieve ong: %w", err)
-		return nil, err
-	}
-
-	ong.User = *user
 
 	return ong, nil
 }
