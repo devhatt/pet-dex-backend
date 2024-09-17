@@ -46,6 +46,20 @@ func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// List List of Ong information retrieval from query parameters.
+// @Summary View list of Ong.
+// @Description This endpoint allows you to retrieve a list Ong organized according to query parameters..
+// @Description.markdown details
+// @Tags Ong
+// @Produce json
+// @Param limit query string false "Query limits the return of 10 data." example(10)
+// @Param sortBy query string false "Property used to sort and organize displayed data" example(name)
+// @Param order query string false "Data can be returned in ascending (asc) or descending (desc) order" example des" example(desc)
+// @Param offset query string false "Initial position of the offset that marks the beginning of the display of the next elements" default(0)
+// @Success 200 {object} dto.OngListMapper
+// @Failure 400
+// @Failure 500
+// @Router /ongs/ [get]
 func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	// pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")

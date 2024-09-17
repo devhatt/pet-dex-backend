@@ -22,6 +22,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ongs/": {
+            "get": {
+                "description": "This endpoint allows you to retrieve a list Ong organized according to query parameters..\n## Samples requests\n\n` + "`" + `` + "`" + `` + "`" + `\nGET /api/ongs/\nGET /api/ongs?limite=10\u0026offset=2\nGET /api/ongs?sortBy=name\u0026order=asc\n\n` + "`" + `` + "`" + `` + "`" + `",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "View list of Ong.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Query limits the return of 10 data.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "name",
+                        "description": "Property used to sort and organize displayed data",
+                        "name": "sortBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc",
+                        "description": "Data can be returned in ascending (asc) or descending (desc) order",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "0",
+                        "description": "Initial position of the offset that marks the beginning of the display of the next elements",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngListMapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/ongs/{ongID}": {
             "patch": {
                 "description": "Updates the details of an existing Ong based on the provided Ong ID.",
@@ -306,6 +362,41 @@ const docTemplate = `{
                 "url": {
                     "type": "string",
                     "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngListMapper": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adoptionPolicy": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "openingHours": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },
