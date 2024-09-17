@@ -150,6 +150,13 @@ definitions:
         example: fisica
         type: string
     type: object
+  dto.UserLoginDto:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   dto.UserUpdateDto:
     properties:
       avatar_url:
@@ -446,6 +453,32 @@ paths:
         "500":
           description: Internal Server Error
       summary: Creates user
+      tags:
+      - User
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user and returns a JWT token
+      parameters:
+      - description: User login information
+        in: body
+        name: userLoginDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: User login
       tags:
       - User
 swagger: "2.0"

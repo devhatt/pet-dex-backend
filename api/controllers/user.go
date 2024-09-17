@@ -62,6 +62,19 @@ func (uc *UserController) Insert(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
+
+// User login
+// @Summary User login
+// @Description Logs in a user and returns a JWT token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userLoginDto body dto.UserLoginDto true "User login information"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Failure 500
+// @Router /user/login [post]
 func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	var userLoginDto dto.UserLoginDto
 	err := json.NewDecoder(r.Body).Decode(&userLoginDto)
