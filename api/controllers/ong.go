@@ -90,6 +90,17 @@ func (oc *OngController) List(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// FindByID Retrieves ONG information from its provided ID.
+// @Summary Find ONG by ID
+// @Description Retrieves ONG details based on the ONG ID provided as a parameter.
+// @Tags Ong
+// @Accept json
+// @Produce json
+// @Param ongID path string true "ID of the ONG to be retrieved"
+// @Success 200 {object} dto.OngListMapper
+// @Failure 400
+// @Failure 500
+// @Router /ongs/{ongID} [get]
 func (oc *OngController) FindByID(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "ongID")
 

@@ -23,6 +23,42 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/ongs/{ongID}": {
+            "get": {
+                "description": "Retrieves ONG details based on the ONG ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Find ONG by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the ONG to be retrieved",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngListMapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates the details of an existing Ong based on the provided Ong ID.",
                 "consumes": [
@@ -373,7 +409,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.Link": {
+        "dto.LinkDto": {
             "type": "object",
             "properties": {
                 "text": {
@@ -383,6 +419,41 @@ const docTemplate = `{
                 "url": {
                     "type": "string",
                     "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngListMapper": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adoptionPolicy": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "openingHours": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },
@@ -396,7 +467,7 @@ const docTemplate = `{
                 "links": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.Link"
+                        "$ref": "#/definitions/dto.LinkDto"
                     }
                 },
                 "openingHours": {

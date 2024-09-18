@@ -12,13 +12,36 @@ definitions:
         example: Pastor Alemão
         type: string
     type: object
-  dto.Link:
+  dto.LinkDto:
     properties:
       text:
         example: Facebook da Ong
         type: string
       url:
         example: https://www.facebook.com/
+        type: string
+    type: object
+  dto.OngListMapper:
+    properties:
+      address:
+        type: string
+      adoptionPolicy:
+        type: string
+      city:
+        type: string
+      id:
+        type: string
+      links:
+        type: string
+      name:
+        type: string
+      openingHours:
+        type: string
+      phone:
+        type: string
+      state:
+        type: string
+      userId:
         type: string
     type: object
   dto.OngUpdateDto:
@@ -28,7 +51,7 @@ definitions:
         type: string
       links:
         items:
-          $ref: '#/definitions/dto.Link'
+          $ref: '#/definitions/dto.LinkDto'
         type: array
       openingHours:
         example: "08:00"
@@ -260,6 +283,30 @@ info:
   version: "1.0"
 paths:
   /ongs/{ongID}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves ONG details based on the ONG ID provided as a parameter.
+      parameters:
+      - description: ID of the ONG to be retrieved
+        in: path
+        name: ongID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OngListMapper'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Find ONG by ID
+      tags:
+      - Ong
     patch:
       consumes:
       - application/json
