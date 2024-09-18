@@ -265,6 +265,18 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
+// User login with provider
+// @Summary User login with provider
+// @Description Logs in a user using a specified provider (SSO) and returns a JWT token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param provider path string true "The provider for Single Sign-On (e.g., google, facebook)"
+// @Param UserSSODto body dto.UserSSODto true "User login information with SSO"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /user/{provider}/login [post]
 func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) {
 	provider := chi.URLParam(r, "provider")
 

@@ -301,6 +301,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{provider}/login": {
+            "post": {
+                "description": "Logs in a user using a specified provider (SSO) and returns a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login with provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The provider for Single Sign-On (e.g., google, facebook)",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User login information with SSO",
+                        "name": "UserSSODto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserSSODto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/user/{userID}/my-pets": {
             "get": {
                 "description": "List all pets owned by the user corresponding to the provided user ID",
@@ -643,6 +687,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserSSODto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
