@@ -320,9 +320,6 @@ const docTemplate = `{
         "/user/login": {
             "post": {
                 "description": "Logs in a user and returns a JWT token",
-        "/user/{userID}": {
-            "get": {
-                "description": "Retrieves User details based on the User ID provided as a parameter.",
                 "consumes": [
                     "application/json"
                 ],
@@ -389,6 +386,41 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UserSSODto"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{userID}": {
+            "get": {
+                "description": "Retrieves User details based on the User ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find User by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the User to be retrieved",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

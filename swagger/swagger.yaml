@@ -539,6 +539,18 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UserSSODto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: User login with provider
+      tags:
+      - User
   /user/{userID}:
     get:
       consumes:
@@ -561,7 +573,6 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: User login with provider
       summary: Find User by ID
       tags:
       - User
