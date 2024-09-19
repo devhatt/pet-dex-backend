@@ -180,8 +180,19 @@ func (oc *OngController) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Deletes the ONG entity by ID.
+// @Summary Delete ONG by ID.
+// @Description Deletes the ONG corresponding to the provided ID in the request parameter.
+// @Tags Ong
+// @Accept json
+// @Produce json
+// @Param ongID path string true "ID of the ONG to be deleted"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /ongs/{ongID} [delete]
 func (oc *OngController) Delete(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "ongID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
 		oc.logger.Error("error on ong controller: ", err)

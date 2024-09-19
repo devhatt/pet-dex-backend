@@ -339,6 +339,29 @@ paths:
       tags:
       - Ong
   /ongs/{ongID}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the ONG corresponding to the provided ID in the request
+        parameter.
+      parameters:
+      - description: ID of the ONG to be deleted
+        in: path
+        name: ongID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Delete ONG by ID.
+      tags:
+      - Ong
     get:
       consumes:
       - application/json

@@ -109,6 +109,39 @@
                     }
                 }
             },
+            "delete": {
+                "description": "Deletes the ONG corresponding to the provided ID in the request parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Delete ONG by ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the ONG to be deleted",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates the details of an existing Ong based on the provided Ong ID.",
                 "consumes": [
