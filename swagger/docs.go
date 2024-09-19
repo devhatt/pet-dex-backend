@@ -22,7 +22,99 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ongs/": {
+            "get": {
+                "description": "This endpoint allows you to retrieve a list Ong organized according to query parameters..\n## Samples requests\n\n` + "`" + `` + "`" + `` + "`" + `\nGET /api/ongs/\nGET /api/ongs?limite=10\u0026offset=2\nGET /api/ongs?sortBy=name\u0026order=asc\n\n` + "`" + `` + "`" + `` + "`" + `",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "View list of Ong.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Query limits the return of 10 data.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "name",
+                        "description": "Property used to sort and organize displayed data",
+                        "name": "sortBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc",
+                        "description": "Data can be returned in ascending (asc) or descending (desc) order",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "0",
+                        "description": "Initial position of the offset that marks the beginning of the display of the next elements",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngListMapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/ongs/{ongID}": {
+            "get": {
+                "description": "Retrieves ONG details based on the ONG ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Find ONG by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the ONG to be retrieved",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngListMapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates the details of an existing Ong based on the provided Ong ID.",
                 "consumes": [
@@ -188,6 +280,127 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/create-account": {
+            "post": {
+                "description": "Creates user and insert into the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Creates user",
+                "parameters": [
+                    {
+                        "description": "User object information to create",
+                        "name": "userDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserInsertDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Logs in a user and returns a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "User login information",
+                        "name": "userLoginDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserLoginDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{provider}/login": {
+            "post": {
+                "description": "Logs in a user using a specified provider (SSO) and returns a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login with provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The provider for Single Sign-On (e.g., google, facebook)",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User login information with SSO",
+                        "name": "UserSSODto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserSSODto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/user/{userID}/my-pets": {
             "get": {
                 "description": "List all pets owned by the user corresponding to the provided user ID",
@@ -343,7 +556,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.Link": {
+        "dto.LinkDto": {
             "type": "object",
             "properties": {
                 "text": {
@@ -353,6 +566,41 @@ const docTemplate = `{
                 "url": {
                     "type": "string",
                     "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngListMapper": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adoptionPolicy": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "openingHours": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },
@@ -366,7 +614,7 @@ const docTemplate = `{
                 "links": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.Link"
+                        "$ref": "#/definitions/dto.LinkDto"
                     }
                 },
                 "openingHours": {
@@ -483,6 +731,77 @@ const docTemplate = `{
                 "neededSpecialCare": {
                     "type": "boolean",
                     "example": true
+                }
+            }
+        },
+        "dto.UserInsertDto": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "birthdate": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "São Paulo"
+                },
+                "document": {
+                    "type": "string",
+                    "example": "12345678900"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "claudio@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Claúdio"
+                },
+                "pass": {
+                    "type": "string",
+                    "example": "Senhasegur@123"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "21912345678"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "developer"
+                },
+                "state": {
+                    "type": "string",
+                    "example": "São Paulo"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "fisica"
+                }
+            }
+        },
+        "dto.UserLoginDto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserSSODto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

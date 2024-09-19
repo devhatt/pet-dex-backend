@@ -31,23 +31,23 @@ func (_m *MockOngRepository) EXPECT() *MockOngRepository_Expecter {
 }
 
 // FindByID provides a mock function with given fields: ID
-func (_m *MockOngRepository) FindByID(ID uuid.UUID) (*entity.Ong, error) {
+func (_m *MockOngRepository) FindByID(ID uuid.UUID) (*dto.OngListMapper, error) {
 	ret := _m.Called(ID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindByID")
 	}
 
-	var r0 *entity.Ong
+	var r0 *dto.OngListMapper
 	var r1 error
-	if rf, ok := ret.Get(0).(func(uuid.UUID) (*entity.Ong, error)); ok {
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (*dto.OngListMapper, error)); ok {
 		return rf(ID)
 	}
-	if rf, ok := ret.Get(0).(func(uuid.UUID) *entity.Ong); ok {
+	if rf, ok := ret.Get(0).(func(uuid.UUID) *dto.OngListMapper); ok {
 		r0 = rf(ID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.Ong)
+			r0 = ret.Get(0).(*dto.OngListMapper)
 		}
 	}
 
