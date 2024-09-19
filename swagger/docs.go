@@ -280,6 +280,9 @@ const docTemplate = `{
         "/user/{userID}": {
             "patch": {
                 "description": "Updates the details of an existing user based on the provided user ID and payload",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -287,6 +290,24 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Update user information",
+                "parameters": [
+                {
+                "type": "string",
+                "description": "User ID",
+                "name": "userID",
+                "in": "path",
+                "required": true
+                 },
+                 {
+                        "description": "User object information for update of data",
+                        "name": "userDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserUpdateDto"
+                    }
+                 }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
