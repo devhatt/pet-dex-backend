@@ -112,14 +112,15 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 // @Summary Update user information
 // @Description Updates the details of an existing user based on the provided user ID and payload
 // @Tags User
+// @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
+// @Param userID path string true "User ID"
 // @Param user body dto.UserUpdateDto true "User update payload"
 // @Success 200 {object} dto.UserUpdateDto
 // @Failure 400
 // @Failure 404
 // @Failure 500
-// @Router /users/{userId} [patch]
+// @Router /user/{userID} [patch]
 func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	IDStr := chi.URLParam(r, "userID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
