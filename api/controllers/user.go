@@ -138,8 +138,19 @@ func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// FindUser Retrieves User information from its provided ID.
+// @Summary Find User by ID
+// @Description Retrieves User details based on the User ID provided as a parameter.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userID path string true "ID of the User to be retrieved"
+// @Success 200 {object} entity.User
+// @Failure 400
+// @Failure 500
+// @Router /user/{userID} [get]
 func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
