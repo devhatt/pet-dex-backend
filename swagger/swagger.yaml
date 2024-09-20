@@ -51,7 +51,7 @@ definitions:
         type: string
       links:
         items:
-          $ref: "#/definitions/dto.LinkDto"
+          $ref: '#/definitions/dto.LinkDto'
         type: array
       openingHours:
         example: "08:00"
@@ -60,7 +60,7 @@ definitions:
         example: "119596995887"
         type: string
       user:
-        $ref: "#/definitions/dto.UserUpdateDto"
+        $ref: '#/definitions/dto.UserUpdateDto'
     type: object
   dto.PetInsertDto:
     properties:
@@ -113,13 +113,13 @@ definitions:
         example: small
         type: string
       special_care:
-        $ref: "#/definitions/dto.SpecialCareDto"
+        $ref: '#/definitions/dto.SpecialCareDto'
       tags:
         example: Dog
         type: string
       vaccines:
         items:
-          $ref: "#/definitions/dto.VaccinesDto"
+          $ref: '#/definitions/dto.VaccinesDto'
         type: array
       weight:
         example: 4.8
@@ -260,14 +260,14 @@ definitions:
       size:
         type: string
       special_care:
-        $ref: "#/definitions/entity.SpecialCare"
+        $ref: '#/definitions/entity.SpecialCare'
       tags:
         type: string
       user_id:
         type: string
       vaccines:
         items:
-          $ref: "#/definitions/entity.Vaccines"
+          $ref: '#/definitions/entity.Vaccines'
         type: array
       weight:
         type: number
@@ -284,7 +284,7 @@ definitions:
   entity.User:
     properties:
       addresses:
-        $ref: "#/definitions/entity.Address"
+        $ref: '#/definitions/entity.Address'
       avatar_url:
         type: string
       birthdate:
@@ -334,7 +334,7 @@ info:
   license:
     name: MIT license
     url: https://github.com/devhatt/pet-dex-backend?tab=MIT-1-ov-file#readme
-  title: "PetDex: Documentação API"
+  title: 'PetDex: Documentação API'
   version: "1.0"
 paths:
   /ongs/:
@@ -350,59 +350,56 @@ paths:
 
         ```
       parameters:
-        - description: Query limits the return of 10 data.
-          example: "10"
-          in: query
-          name: limit
-          type: string
-        - description: Property used to sort and organize displayed data
-          example: name
-          in: query
-          name: sortBy
-          type: string
-        - description:
-            Data can be returned in ascending (asc) or descending (desc)
-            order
-          example: desc
-          in: query
-          name: order
-          type: string
-        - default: "0"
-          description:
-            Initial position of the offset that marks the beginning of the
-            display of the next elements
-          in: query
-          name: offset
-          type: string
+      - description: Query limits the return of 10 data.
+        example: "10"
+        in: query
+        name: limit
+        type: string
+      - description: Property used to sort and organize displayed data
+        example: name
+        in: query
+        name: sortBy
+        type: string
+      - description: Data can be returned in ascending (asc) or descending (desc)
+          order
+        example: desc
+        in: query
+        name: order
+        type: string
+      - default: "0"
+        description: Initial position of the offset that marks the beginning of the
+          display of the next elements
+        in: query
+        name: offset
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/dto.OngListMapper"
+            $ref: '#/definitions/dto.OngListMapper'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: View list of Ong.
       tags:
-        - Ong
+      - Ong
   /ongs/{ongID}:
     delete:
       consumes:
-        - application/json
-      description:
-        Deletes the ONG corresponding to the provided ID in the request
+      - application/json
+      description: Deletes the ONG corresponding to the provided ID in the request
         parameter.
       parameters:
-        - description: ID of the ONG to be deleted
-          in: path
-          name: ongID
-          required: true
-          type: string
+      - description: ID of the ONG to be deleted
+        in: path
+        name: ongID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -412,49 +409,48 @@ paths:
           description: Internal Server Error
       summary: Delete ONG by ID.
       tags:
-        - Ong
+      - Ong
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves ONG details based on the ONG ID provided as a parameter.
       parameters:
-        - description: ID of the ONG to be retrieved
-          in: path
-          name: ongID
-          required: true
-          type: string
+      - description: ID of the ONG to be retrieved
+        in: path
+        name: ongID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/dto.OngListMapper"
+            $ref: '#/definitions/dto.OngListMapper'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: Find ONG by ID
       tags:
-        - Ong
+      - Ong
     patch:
       consumes:
-        - application/json
-      description:
-        Updates the details of an existing Ong based on the provided Ong
+      - application/json
+      description: Updates the details of an existing Ong based on the provided Ong
         ID.
       parameters:
-        - description: Ong id to be updated
-          in: path
-          name: ongID
-          required: true
-          type: string
-        - description: Data to update of the Ong
-          in: body
-          name: ongDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.OngUpdateDto"
+      - description: Ong id to be updated
+        in: path
+        name: ongID
+        required: true
+        type: string
+      - description: Data to update of the Ong
+        in: body
+        name: ongDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OngUpdateDto'
       responses:
         "201":
           description: Created
@@ -464,39 +460,38 @@ paths:
           description: Internal Server Error
       summary: Update Ong By ID
       tags:
-        - Ong
+      - Ong
   /pets/:
     get:
       description: Public route for viewing all pets.
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/entity.Pet"
+            $ref: '#/definitions/entity.Pet'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: View list of all pets.
       tags:
-        - Pet
+      - Pet
     post:
       consumes:
-        - application/json
-      description:
-        Sends the Pet's registration data via the request body for persistence
+      - application/json
+      description: Sends the Pet's registration data via the request body for persistence
         in the database.
       parameters:
-        - description: Pet object information for registration
-          in: body
-          name: petDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.PetInsertDto"
+      - description: Pet object information for registration
+        in: body
+        name: petDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PetInsertDto'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -506,70 +501,69 @@ paths:
           description: Internal Server Error
       summary: Create Pet by petDto
       tags:
-        - Pet
+      - Pet
   /pets/{petID}:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves Pet details based on the pet ID provided as a parameter.
       parameters:
-        - description: ID of the Pet to be retrieved
-          in: path
-          name: petID
-          required: true
-          type: string
+      - description: ID of the Pet to be retrieved
+        in: path
+        name: petID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/entity.Pet"
+            $ref: '#/definitions/entity.Pet'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: Find Pet by ID
       tags:
-        - Pet
+      - Pet
   /pets/breeds/:
     get:
       description: Retrieves list of all pet breeds
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/dto.BreedList"
+            $ref: '#/definitions/dto.BreedList'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: View list of all Breeds
       tags:
-        - Pet
+      - Pet
   /user/{provider}/login:
     post:
       consumes:
-        - application/json
-      description:
-        Logs in a user using a specified provider (SSO) and returns a JWT
+      - application/json
+      description: Logs in a user using a specified provider (SSO) and returns a JWT
         token
       parameters:
-        - description: The provider for Single Sign-On (e.g., google, facebook)
-          in: path
-          name: provider
-          required: true
-          type: string
-        - description: User login information with SSO
-          in: body
-          name: UserSSODto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.UserSSODto"
+      - description: The provider for Single Sign-On (e.g., google, facebook)
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: User login information with SSO
+        in: body
+        name: UserSSODto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserSSODto'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -579,85 +573,116 @@ paths:
           description: Internal Server Error
       summary: User login with provider
       tags:
-        - User
+      - User
   /user/{userID}:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves User details based on the User ID provided as a parameter.
       parameters:
-        - description: ID of the User to be retrieved
-          in: path
-          name: userID
-          required: true
-          type: string
+      - description: ID of the User to be retrieved
+        in: path
+        name: userID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/entity.User"
+            $ref: '#/definitions/entity.User'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: Find User by ID
       tags:
-        - User
-  /user/{userID}/my-pets:
-    get:
+      - User
+    patch:
       consumes:
-        - application/json
-      description:
-        List all pets owned by the user corresponding to the provided user
-        ID
+      - application/json
+      description: Updates the details of an existing user based on the provided user
+        ID and payload
       parameters:
-        - description: ID of the User
-          in: path
-          name: userID
-          required: true
-          type: string
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      - description: User update payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserUpdateDto'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/entity.Pet"
+            $ref: '#/definitions/dto.UserUpdateDto'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Update user information
+      tags:
+      - User
+  /user/{userID}/my-pets:
+    get:
+      consumes:
+      - application/json
+      description: List all pets owned by the user corresponding to the provided user
+        ID
+      parameters:
+      - description: ID of the User
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Pet'
         "400":
           description: Bad Request
         "500":
           description: Internal Server Error
       summary: List pets by user id
       tags:
-        - User
+      - User
   /user/{userID}/pets/{petID}:
     patch:
       consumes:
-        - application/json
-      description:
-        Update the Pet's registration data via the request body for persistence
+      - application/json
+      description: Update the Pet's registration data via the request body for persistence
         in the database.
       parameters:
-        - description: User ID
-          in: path
-          name: userID
-          required: true
-          type: string
-        - description: Pet ID
-          in: path
-          name: petID
-          required: true
-          type: string
-        - description: Pet object information for update of data
-          in: body
-          name: petDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.PetUpdateDto"
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      - description: Pet ID
+        in: path
+        name: petID
+        required: true
+        type: string
+      - description: Pet object information for update of data
+        in: body
+        name: petDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PetUpdateDto'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -667,21 +692,21 @@ paths:
           description: Internal Server Error
       summary: Update an Pet existing.
       tags:
-        - User
+      - User
   /user/create-account:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Creates user and insert into the database
       parameters:
-        - description: User object information to create
-          in: body
-          name: userDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.UserInsertDto"
+      - description: User object information to create
+        in: body
+        name: userDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserInsertDto'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
@@ -691,21 +716,21 @@ paths:
           description: Internal Server Error
       summary: Creates user
       tags:
-        - User
+      - User
   /user/login:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Logs in a user and returns a JWT token
       parameters:
-        - description: User login information
-          in: body
-          name: userLoginDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.UserLoginDto"
+      - description: User login information
+        in: body
+        name: userLoginDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginDto'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -717,37 +742,5 @@ paths:
           description: Internal Server Error
       summary: User login
       tags:
-        - User
-
-    /user/{userID}:
-    patch:
-      consumes:
-        - application/json
-      description: Updates the details of an existing user based on the provided user ID and payload.
-      parameters:
-        - description: User ID
-          in: path
-          name: userID
-          required: true
-          type: string
-        - description: User object information for update of data
-          in: body
-          name: userDto
-          required: true
-          schema:
-            $ref: "#/definitions/dto.UserUpdateDto"
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: "#/definitions/dto.UserUpdateDto"
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      summary: Update user information.
-      tags:
-        - User
+      - User
 swagger: "2.0"
