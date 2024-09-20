@@ -12,8 +12,8 @@ e utilizar o pacote:
 package mail
 ```
 
-## 1. Create Email Config
-Para criar um email, você deve primeiro configurar o email. Para isso, use a função **CriarConfig**, passando o email, a senha (secret), o provedor, o endereço do host e a porta do host.
+## 1. Criar configuração de email
+Para criar um email, você deve primeiro configurar o email. Para isso, use a função **CreateConfig**, passando o email, a senha (secret), o provedor, o endereço do host e a porta do host.
 
 assim:
 
@@ -67,7 +67,7 @@ Isso retorna uma struct Mensagem com os seguintes campos:
 ```
 
 ## 4. Adicionando Anexos
-Se o email precisar incluir anexos, use o método AnexarArquivo:
+Se o email precisar incluir anexos, use o método AttachFile:
 
 err := message.AttachFile("/path/to/file.txt")
 
