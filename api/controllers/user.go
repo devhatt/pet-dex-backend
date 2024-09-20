@@ -119,9 +119,9 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 // @Failure 400
 // @Failure 404
 // @Failure 500
-// @Router /users/{userId} [put]
+// @Router /users/{userId} [patch]
 func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 
 	if err != nil {
