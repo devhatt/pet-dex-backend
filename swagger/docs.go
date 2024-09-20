@@ -115,6 +115,39 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "description": "Deletes the ONG corresponding to the provided ID in the request parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Delete ONG by ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the ONG to be deleted",
+                        "name": "ongID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates the details of an existing Ong based on the provided Ong ID.",
                 "consumes": [
@@ -391,6 +424,44 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{userID}": {
+            "get": {
+                "description": "Retrieves User details based on the User ID provided as a parameter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find User by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the User to be retrieved",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -851,6 +922,32 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Address": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Pet": {
             "type": "object",
             "properties": {
@@ -918,6 +1015,53 @@ const docTemplate = `{
                 },
                 "neededSpecialCare": {
                     "type": "boolean"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "$ref": "#/definitions/entity.Address"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pushNotificationsEnabled": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },

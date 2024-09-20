@@ -45,7 +45,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 				r.Get("/{userID}/my-pets", controllers.PetController.ListUserPets)
 				r.Patch("/{userID}/pets/{petID}", controllers.PetController.Update)
 				r.Patch("/{userID}", controllers.UserController.Update)
-				r.Get("/{id}", controllers.UserController.FindByID)
+				r.Get("/{userID}", controllers.UserController.FindByID)
 				r.Delete("/{id}", controllers.UserController.Delete)
 			})
 			private.Route("/settings", func(r chi.Router) {
