@@ -625,8 +625,6 @@ paths:
             $ref: '#/definitions/dto.UserUpdateDto'
         "400":
           description: Bad Request
-        "404":
-          description: Not Found
         "500":
           description: Internal Server Error
       summary: Update user information
