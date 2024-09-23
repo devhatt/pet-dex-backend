@@ -118,7 +118,6 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 // @Param user body dto.UserUpdateDto true "User update payload"
 // @Success 200 {object} dto.UserUpdateDto
 // @Failure 400
-// @Failure 404
 // @Failure 500
 // @Router /user/{userID} [patch]
 func (uc *UserController) Update(w http.ResponseWriter, r *http.Request) {
