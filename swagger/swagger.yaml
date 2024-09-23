@@ -599,6 +599,37 @@ paths:
       summary: Find User by ID
       tags:
       - User
+    patch:
+      consumes:
+      - application/json
+      description: Updates the details of an existing user based on the provided user
+        ID and payload
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      - description: User update payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserUpdateDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserUpdateDto'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Update user information
+      tags:
+      - User
   /user/{userID}/my-pets:
     get:
       consumes:
