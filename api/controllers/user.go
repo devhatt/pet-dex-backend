@@ -207,6 +207,16 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Enable push notifications
+// @Summary Enable push notifications
+// @Description Activates push notifications for the user
+// @Tags Settings
+// @Accept json
+// @Produce json
+// @Success 204 "No Content"
+// @Failure 400 "Bad request"
+// @Failure 500 "Internal server error"
+// @Router /settings/push-notifications [patch]
 func (uc *UserController) UpdatePushNotificationSettings(w http.ResponseWriter, r *http.Request) {
 	userIdStr := r.Header.Get("userId")
 
@@ -233,10 +243,9 @@ func (uc *UserController) UpdatePushNotificationSettings(w http.ResponseWriter, 
 	}
 
 	err = uc.usecase.UpdatePushNotificationSettings(userId, userPushNotificationEnabled)
-
 	if err != nil {
 		uc.logger.Error("[#UserController.PushNotificationSettings] Error trying to update push notification user -> Error: ", err)
-		http.Error(w, "Error trying to update push notification User ", http.StatusBadRequest)
+		http.Error(w, "Error trying to update push notification User ", http.StatusInternalServerError)
 		return
 	}
 
