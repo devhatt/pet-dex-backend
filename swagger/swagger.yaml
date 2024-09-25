@@ -544,6 +544,23 @@ paths:
       summary: View list of all Breeds
       tags:
       - Pet
+  /settings/push-notifications:
+    patch:
+      consumes:
+      - application/json
+      description: Activates push notifications for the user
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+      summary: Enable push notifications
+      tags:
+      - Settings
   /user/{provider}/login:
     post:
       consumes:

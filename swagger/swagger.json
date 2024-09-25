@@ -307,6 +307,32 @@
                 }
             }
         },
+        "/settings/push-notifications": {
+            "patch": {
+                "description": "Activates push notifications for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Enable push notifications",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/user/create-account": {
             "post": {
                 "description": "Creates user and insert into the database",
