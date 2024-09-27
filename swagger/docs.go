@@ -416,38 +416,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{id}": {
-            "delete": {
-                "description": "Marks a user as deleted (soft delete) without removing them from the database",
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
         "/user/{provider}/login": {
             "post": {
                 "description": "Logs in a user using a specified provider (SSO) and returns a JWT token",
@@ -526,6 +494,36 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Marks a user as deleted (soft delete) without removing them from the database",
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             },
