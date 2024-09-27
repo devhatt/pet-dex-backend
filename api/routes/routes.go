@@ -46,7 +46,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 				r.Patch("/{userID}/pets/{petID}", controllers.PetController.Update)
 				r.Patch("/{userID}", controllers.UserController.Update)
 				r.Get("/{userID}", controllers.UserController.FindByID)
-				r.Delete("/{id}", controllers.UserController.Delete)
+				r.Delete("/{userID}", controllers.UserController.Delete)
 			})
 			private.Route("/settings", func(r chi.Router) {
 				r.Patch("/push-notifications", controllers.UserController.UpdatePushNotificationSettings)

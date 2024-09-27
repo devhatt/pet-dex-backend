@@ -195,7 +195,7 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 "Bad request"
 // @Failure 401 "Unauthorized"
 // @Failure 500 "Internal server error"
-// @Router /user/{id} [delete]
+// @Router /user/{userID} [delete]
 func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	userIDFromTokenStr := r.Header.Get("UserId")
 	userIDFromToken, err := uniqueEntityId.ParseID(userIDFromTokenStr)
@@ -205,7 +205,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
 		uc.logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: ", err)
