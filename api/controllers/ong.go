@@ -25,6 +25,16 @@ func NewOngcontroller(usecase *usecase.OngUsecase) *OngController {
 	}
 }
 
+// Add Ong to the database.
+// @Summary Create Ong
+// @Description Sends the Ong registration data via the request body for persistence in the database.
+// @Tags Ong
+// @Accept json
+// @Param ongDto body dto.OngInsertDto true "Ong object information for registration"
+// @Success 201
+// @Failure 400
+// @Failure 500
+// @Router /ongs/ [post]
 func (oc *OngController) Insert(w http.ResponseWriter, r *http.Request) {
 	var ongDto dto.OngInsertDto
 	err := json.NewDecoder(r.Body).Decode(&ongDto)
