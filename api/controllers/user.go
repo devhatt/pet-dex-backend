@@ -186,6 +186,16 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// Delete user
+// @Summary Delete user
+// @Description Marks a user as deleted (soft delete) without removing them from the database
+// @Tags User
+// @Param userID path string true "User ID"
+// @Success 204 "No Content"
+// @Failure 400 "Bad request"
+// @Failure 401 "Unauthorized"
+// @Failure 500 "Internal server error"
+// @Router /user/{userID} [delete]
 func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	userIDFromTokenStr := r.Header.Get("UserId")
 	userIDFromToken, err := uniqueEntityId.ParseID(userIDFromTokenStr)
@@ -195,7 +205,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	IDStr := chi.URLParam(r, "id")
+	IDStr := chi.URLParam(r, "userID")
 	ID, err := uniqueEntityId.ParseID(IDStr)
 	if err != nil {
 		uc.logger.Error("[#UserController.Delete] Erro ao tentar converter o body da requisição -> Erro: ", err)
@@ -212,10 +222,11 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	err = uc.usecase.Delete(ID)
 	if err != nil {
 		uc.logger.Error("[#UserController.Delete] Erro ao tentar deletar o usuário -> Erro: ", err)
-		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusBadRequest)
+		http.Error(w, "Erro ao tentar atualizar o usuário ", http.StatusInternalServerError)
 		return
 	}
 
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // Enable push notifications

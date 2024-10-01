@@ -523,6 +523,36 @@
                     }
                 }
             },
+            "delete": {
+                "description": "Marks a user as deleted (soft delete) without removing them from the database",
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates the details of an existing user based on the provided user ID and payload",
                 "consumes": [
