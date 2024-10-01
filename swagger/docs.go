@@ -82,9 +82,6 @@ const docTemplate = `{
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "Ong"
                 ],
@@ -102,10 +99,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.OngListMapper"
-                        }
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request"

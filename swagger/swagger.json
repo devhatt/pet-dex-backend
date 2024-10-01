@@ -76,9 +76,6 @@
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "Ong"
                 ],
@@ -96,10 +93,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.OngListMapper"
-                        }
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request"

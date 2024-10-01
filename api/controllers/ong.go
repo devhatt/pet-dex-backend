@@ -30,9 +30,8 @@ func NewOngcontroller(usecase *usecase.OngUsecase) *OngController {
 // @Description Sends the Ong registration data via the request body for persistence in the database.
 // @Tags Ong
 // @Accept json
-// @Produce json
 // @Param ongDto body dto.OngInsertDto true "Ong object information for registration"
-// @Success 201 {object} dto.OngListMapper
+// @Success 201
 // @Failure 400
 // @Failure 500
 // @Router /ongs/ [post]

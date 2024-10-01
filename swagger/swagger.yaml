@@ -424,13 +424,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.OngInsertDto'
-      produces:
-      - application/json
       responses:
         "201":
           description: Created
-          schema:
-            $ref: '#/definitions/dto.OngListMapper'
         "400":
           description: Bad Request
         "500":
