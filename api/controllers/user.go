@@ -190,7 +190,7 @@ func (uc *UserController) FindByID(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete user
 // @Description Marks a user as deleted (soft delete) without removing them from the database
 // @Tags User
-// @Param id path int true "User ID"
+// @Param userID path string true "User ID"
 // @Success 204 "No Content"
 // @Failure 400 "Bad request"
 // @Failure 401 "Unauthorized"

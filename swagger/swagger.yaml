@@ -598,9 +598,9 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: id
+        name: userID
         required: true
-        type: integer
+        type: string
       responses:
         "204":
           description: No Content
