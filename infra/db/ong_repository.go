@@ -132,7 +132,7 @@ func (or *OngRepository) Update(id uniqueEntityId.ID, ongToUpdate entity.Ong) er
 		values = append(values, ongToUpdate.AdoptionPolicy)
 	}
 
-	if string(*ongToUpdate.Links) != "" {
+	if len(ongToUpdate.Links) != 0 {
 		query = query + " links =?"
 		values = append(values, ongToUpdate.Links)
 	}

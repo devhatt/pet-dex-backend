@@ -76,6 +76,44 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
+            },
+            "post": {
+                "description": "Sends the Ong registration data via the request body for persistence in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ong"
+                ],
+                "summary": "Create Ong",
+                "parameters": [
+                    {
+                        "description": "Ong object information for registration",
+                        "name": "ongDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngInsertDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OngListMapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/ongs/{ongID}": {
@@ -651,6 +689,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.Link": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.LinkDto": {
             "type": "object",
             "properties": {
@@ -661,6 +710,35 @@ const docTemplate = `{
                 "url": {
                     "type": "string",
                     "example": "https://www.facebook.com/"
+                }
+            }
+        },
+        "dto.OngInsertDto": {
+            "type": "object",
+            "properties": {
+                "adoptionPolicy": {
+                    "type": "string"
+                },
+                "birthdate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Link"
+                    }
+                },
+                "openingHours": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.UserInsertDto"
                 }
             }
         },

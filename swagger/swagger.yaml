@@ -12,6 +12,13 @@ definitions:
         example: Pastor Alemão
         type: string
     type: object
+  dto.Link:
+    properties:
+      text:
+        type: string
+      url:
+        type: string
+    type: object
   dto.LinkDto:
     properties:
       text:
@@ -20,6 +27,25 @@ definitions:
       url:
         example: https://www.facebook.com/
         type: string
+    type: object
+  dto.OngInsertDto:
+    properties:
+      adoptionPolicy:
+        type: string
+      birthdate:
+        type: string
+      createdAt:
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.Link'
+        type: array
+      openingHours:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserInsertDto'
     type: object
   dto.OngListMapper:
     properties:
@@ -384,6 +410,32 @@ paths:
         "500":
           description: Internal Server Error
       summary: View list of Ong.
+      tags:
+      - Ong
+    post:
+      consumes:
+      - application/json
+      description: Sends the Ong registration data via the request body for persistence
+        in the database.
+      parameters:
+      - description: Ong object information for registration
+        in: body
+        name: ongDto
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OngInsertDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.OngListMapper'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create Ong
       tags:
       - Ong
   /ongs/{ongID}:
