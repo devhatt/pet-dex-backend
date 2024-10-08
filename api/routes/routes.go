@@ -54,6 +54,7 @@ func InitRoutes(controllers Controllers, c *chi.Mux) {
 		})
 
 		r.Group(func(public chi.Router) {
+			public.Get("/user", controllers.UserController.RetrieveUserList)
 			public.Post("/user/create-account", controllers.UserController.Insert)
 			public.Post("/user/{provider}/login", controllers.UserController.ProviderLogin)
 			public.Post("/user/login", controllers.UserController.Login)

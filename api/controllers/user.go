@@ -7,6 +7,7 @@ import (
 	"pet-dex-backend/v2/infra/config"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 	"pet-dex-backend/v2/usecase"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -374,5 +375,42 @@ func (uc *UserController) ProviderLogin(w http.ResponseWriter, r *http.Request) 
 	token, _ := uc.usecase.NewAccessToken(user.ID.String(), user.Name, user.Email)
 
 	w.Header().Add("Authorization", token)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (uc *UserController) RetrieveUserList(w http.ResponseWriter, r *http.Request) {
+	page := 1
+	limit := 10
+	search := ""
+
+	if p := r.URL.Query().Get("page"); p != "" {
+		if pInt, err := strconv.Atoi(p); err == nil {
+			page = pInt
+		}
+	}
+	if l := r.URL.Query().Get("limit"); l != "" {
+		if lInt, err := strconv.Atoi(l); err == nil {
+			limit = lInt
+		}
+	}
+	if s := r.URL.Query().Get("search"); s != "" {
+		search = s
+	}
+
+	input := dto.NewUserListInput(page, limit, search)
+
+	user, err := uc.usecase.RetrieveUserList(input)
+
+	if err != nil {
+		logger.Error("error on user controller: ", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	if err = json.NewEncoder(w).Encode(&user); err != nil {
+		logger.Error("error on user controller: ", err)
+		http.Error(w, "Failed to encode user", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }

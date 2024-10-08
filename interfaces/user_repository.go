@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/entity/dto"
 	"pet-dex-backend/v2/pkg/uniqueEntityId"
 )
 
@@ -11,7 +12,7 @@ type UserRepository interface {
 	Delete(id uniqueEntityId.ID) error
 	FindByID(ID uniqueEntityId.ID) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
-	List() ([]entity.User, error)
+	List(*dto.UserListInput) (*dto.UserListOutput, error)
 	ChangePassword(userId uniqueEntityId.ID, newPassword string) error
 	AdressRepo
 }
