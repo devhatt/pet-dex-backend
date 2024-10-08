@@ -203,3 +203,14 @@ func (uc *UserUsecase) NewAccessToken(id string, name string, email string) (str
 		},
 	})
 }
+
+func (uc *UserUsecase) RetrieveUserList(input *dto.UserListInput) (*dto.UserListOutput, error) {
+	output, err := uc.repo.List(input)
+
+	if err != nil {
+		uc.logger.Error("error listing users", err)
+		return nil, errors.New("error retrieving users")
+	}
+
+	return output, nil
+}
